@@ -1,4 +1,4 @@
-# Diagrama de clases para MecaFix
+# Diagrama de clases para MecaFix ⚙️
 
 El objetivo del diagrama de clases es mostrar modelado de la capa de dominio, permitiendo 
 observar de qué se **componen** todas y cada una de las entidades que la conforman, y que relaciones existen entre estas.
