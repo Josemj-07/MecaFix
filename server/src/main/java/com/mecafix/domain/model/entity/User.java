@@ -12,7 +12,7 @@ public class User {
     private Role userRole;
 
     public User(Long idUser, Email userEmail, String passwordHash, String name, Role role ) {
-        if(idUser == null ||idUser < 0 || passwordHash  == null || name == null || role == null) {
+        if(idUser == null ||idUser < 0 || passwordHash  == null || name == null || role == null || userEmail == null) {
             throw new InvalidUserException();
         }
         this.idUser = idUser;
