@@ -12,7 +12,7 @@ public record Email(String address) {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9+._-]+@[A-Za-z0-9._-]+$");
 
     public Email {
-        if (address == null) {
+        if (address == null || address.isBlank()) {
             throw new InvalidEmailException(); //validate if email is null
         }
         address = address.trim().toLowerCase();
