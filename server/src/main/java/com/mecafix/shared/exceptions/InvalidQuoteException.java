@@ -1,8 +1,7 @@
-
 package com.mecafix.shared.exceptions;
 
-public InvalidQuoteException(String message) {
+public class InvalidQuoteException extends RuntimeException {
+    public InvalidQuoteException(String message) {
         super(message);
     }
- 
 }
