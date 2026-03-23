@@ -2,6 +2,7 @@ package com.mecafix.domain.model.valueobject;
 
 import com.mecafix.domain.model.entity.Service;
 import com.mecafix.shared.exceptions.InvalidServiceException;
+import com.mecafix.domain.model.entity.Service;
 
 import java.math.BigDecimal;
 
