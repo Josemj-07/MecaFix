@@ -10,7 +10,7 @@ public class Service {
  
     private final Long id;
     private final String name;
-    private final String description;
+    private  String description;
     private final BigDecimal laborPrice;
  
     public Service(Long id, String name, String description, BigDecimal laborPrice) {

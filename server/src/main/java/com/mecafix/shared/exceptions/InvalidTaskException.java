@@ -4,26 +4,10 @@
  */
 package com.mecafix.shared.exceptions;
 
-/**
- *
- * @author mpaula
- */
-public class InvalidTaskException extends Exception {
+public class InvalidTaskException extends RuntimeException {
 
-    /**
-     * Creates a new instance of <code>InvalidTaskException</code> without
-     * detail message.
-     */
-    public InvalidTaskException() {
+    public InvalidTaskException(String message) {
+        super(message);
     }
 
-    /**
-     * Constructs an instance of <code>InvalidTaskException</code> with the
-     * specified detail message.
-     *
-     * @param msg the detail message.
-     */
-    public InvalidTaskException(String msg) {
-        super(msg);
-    }
 }
