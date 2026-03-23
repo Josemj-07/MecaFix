@@ -4,10 +4,8 @@
  */
 package com.mecafix.domain.model.enums;
 
-/**
- *
- * @author mpaula
- */
 public enum TaskStatus {
-    
+    PENDING,
+    IN_PROGRESS,
+    FINISHED
 }
