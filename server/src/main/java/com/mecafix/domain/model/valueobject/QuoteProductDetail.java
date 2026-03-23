@@ -1,6 +1,7 @@
 package com.mecafix.domain.model.valueobject;
 
-import com.mecafix.domain.model.valueobject.Price;
+import com.mecafix.domain.model.entity.Product;
+import com.mecafix.domain.model.entity.Price;
 import com.mecafix.shared.exceptions.InvalidQuoteException;
 
 import java.math.BigDecimal;

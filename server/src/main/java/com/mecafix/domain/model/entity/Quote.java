@@ -3,6 +3,8 @@ package com.mecafix.domain.model.entity;
 
 
 import com.mecafix.domain.model.enums.QuoteStatus;
+import com.mecafix.domain.model.valueobject.QuoteProductDetail;
+import com.mecafix.domain.model.valueobject.ServiceDetail;
 import com.mecafix.shared.exceptions.InvalidQuoteException;
 
 import java.math.BigDecimal;
@@ -47,8 +49,7 @@ public class Quote {
         this.totalAmount = BigDecimal.ZERO;
         updateTotal();
     }
-    
-    
+
 
     public void addService(ServiceDetail serviceDetail) {
         if (serviceDetail == null) {
@@ -118,4 +119,43 @@ public class Quote {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal productsTotal = products.stream()
-                .
+                .map(QuoteProductDetail::calculateSubTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        this.totalAmount = servicesTotal.add(productsTotal);
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public QuoteStatus getStatus() {
+        return status;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public List<ServiceDetail> getServices() {
+        return Collections.unmodifiableList(services);
+    }
+
+    public List<QuoteProductDetail> getProducts() {
+        return Collections.unmodifiableList(products);
+    }
+
+}
