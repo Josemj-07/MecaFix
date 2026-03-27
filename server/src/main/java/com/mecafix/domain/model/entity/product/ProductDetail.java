@@ -2,15 +2,13 @@ package com.mecafix.domain.model.entity.product;
 
 import com.mecafix.domain.exceptions.InvalidProductDetailException;
 import com.mecafix.domain.exceptions.InvalidProductException;
-import com.mecafix.domain.model.contract.IPagable;
-import com.mecafix.domain.model.entity.person.Person;
+import com.mecafix.domain.model.contract.IPayable;
 import com.mecafix.domain.model.valueobject.Price;
-import com.mecafix.domain.exceptions.InvalidQuoteException;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class ProductDetail implements IPagable {
+public class ProductDetail implements IPayable {
     private final UUID id;
     private final Product product;
     private final Long quantity;

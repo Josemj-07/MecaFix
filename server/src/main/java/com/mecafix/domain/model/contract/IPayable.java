@@ -2,6 +2,6 @@ package com.mecafix.domain.model.contract;
 
 import java.math.BigDecimal;
 
-public interface IPagable {
+public interface IPayable {
    BigDecimal calculateSubTotal();
 }
