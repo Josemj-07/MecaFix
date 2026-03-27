@@ -7,6 +7,7 @@ import com.mecafix.shared.exceptions.VehicleNotFoundException;
 
 import java.util.UUID;
 
+//service
 public class UpdateVehicleService implements UpdateVehicleUseCase {
 
     private final VehicleRepositoryPort vehicleRepository;
