@@ -1,5 +1,5 @@
 package com.mecafix.domain.model.valueobject;
-import com.mecafix.shared.exceptions.InvalidEmailException;
+import com.mecafix.domain.exceptions.InvalidEmailException;
 import java.util.regex.Pattern;
 
 public record Email(String address) {
