@@ -1,9 +1,8 @@
 
 package com.mecafix.domain.model.entity.quote;
 
-import com.mecafix.domain.model.contract.IPagable;
+import com.mecafix.domain.model.contract.IPayable;
 import com.mecafix.domain.model.entity.person.Customer;
-import com.mecafix.domain.model.entity.person.Person;
 import com.mecafix.domain.model.entity.vehicle.Vehicle;
 import com.mecafix.domain.model.enums.QuoteStatus;
 import com.mecafix.domain.exceptions.InvalidQuoteException;
@@ -17,12 +16,12 @@ public class Quote {
     private final UUID id;
     private final Customer customer;
     private final Vehicle vehicle;
-    private final List<IPagable> payable;
+    private final List<IPayable> payable;
     private QuoteStatus status;
     private BigDecimal totalAmount;
     private final LocalDateTime createdDate;
 
-    public static Quote create(Customer customer, Vehicle vehicle, List<IPagable> payable) {
+    public static Quote create(Customer customer, Vehicle vehicle, List<IPayable> payable) {
         return new Quote(customer, vehicle, payable);
     }
 
@@ -37,7 +36,7 @@ public class Quote {
      * @throws InvalidQuoteException if customer or vehicle is null
      */
 
-    private Quote(Customer customer, Vehicle vehicle, List<IPagable> payable) {
+    private Quote(Customer customer, Vehicle vehicle, List<IPayable> payable) {
 
         if (customer == null) {
             throw new InvalidQuoteException("Customer must not be null");
@@ -49,21 +48,21 @@ public class Quote {
         this.id = UUID.randomUUID();
         this.customer = customer;
         this.vehicle = vehicle;
-        this.payable = payable != null ? payable: new ArrayList<IPagable>();
+        this.payable = payable != null ? payable: new ArrayList<IPayable>();
         this.status = QuoteStatus.PENDING;
         this.createdDate = LocalDateTime.now();
         this.totalAmount = calculateTotal();
 
     }
 
-    public void addPayable(IPagable payable) {
+    public void addPayable(IPayable payable) {
         if(payable == null) throw new InvalidQuoteException("Payable object must not be null");
         if(this.status != QuoteStatus.PENDING) throw new InvalidQuoteException("Cannot add anything if the quote is not pending");
         this.payable.add(payable);
         this.totalAmount = calculateTotal();
     }
 
-    public void removePayable(IPagable payable) {
+    public void removePayable(IPayable payable) {
         if(payable == null) throw new InvalidQuoteException("Payable object must not be null");
         if(status != QuoteStatus.PENDING)  throw new InvalidQuoteException("Cannot remove anything if the quote is not pending");
         if(!this.payable.contains(payable)) throw new InvalidQuoteException("Payable object does not exist in the quote");
@@ -90,7 +89,7 @@ public class Quote {
 
     private BigDecimal calculateTotal() {
         return this.payable.stream()
-                .map(IPagable::calculateSubTotal)
+                .map(IPayable::calculateSubTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -119,7 +118,7 @@ public class Quote {
         return createdDate;
     }
 
-    public List<IPagable> getPayable() {
+    public List<IPayable> getPayable() {
         return List.copyOf(this.payable);
     }
 

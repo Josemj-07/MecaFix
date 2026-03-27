@@ -1,13 +1,12 @@
 package com.mecafix.domain.model.entity.service;
 
 import com.mecafix.domain.exceptions.InvalidServiceException;
-import com.mecafix.domain.model.contract.IPagable;
-import com.mecafix.domain.model.entity.product.ProductDetail;
+import com.mecafix.domain.model.contract.IPayable;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class ServiceDetail implements IPagable {
+public class ServiceDetail implements IPayable {
     private final UUID id;
     private final Service service;
     private final BigDecimal appliedLaborPrice;
