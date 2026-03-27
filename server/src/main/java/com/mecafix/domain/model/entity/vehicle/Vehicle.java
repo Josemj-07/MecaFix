@@ -19,7 +19,7 @@ public class Vehicle {
     public static Vehicle create(String plate, String brand, String model, int manufacturingYear, Long mileage, String color) {
         return new Vehicle(plate, brand, model, manufacturingYear, mileage, color);
     }
-
+    
     private Vehicle(String plate, String brand, String model, int manufacturingYear, Long mileage, String color) {
 
         if (plate == null || plate.isBlank()) throw new InvalidVehicleException("Plate must not be empty");
