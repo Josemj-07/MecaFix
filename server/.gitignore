@@ -41,3 +41,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+PROMPT_GENERATE_USE_CASES.md
