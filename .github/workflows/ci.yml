@@ -15,11 +15,6 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     
-   
-    defaults:
-      run:
-        working-directory: ./server
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -29,23 +24,26 @@ jobs:
         with:
           java-version: '25'
           distribution: 'temurin'
-          cache: 'gradle'  
+          cache: 'gradle'
 
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x server/gradlew  # ← Ruta correcta
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4  # ← Actualizado a v4
         with:
           gradle-version: wrapper
 
       - name: Verify code compilation
+        working-directory: ./server  # ← Ejecutar desde server/
         run: ./gradlew classes testClasses --no-daemon
 
       - name: Run Tests
-        run: ./gradlew test --no-daemon
+        working-directory: ./server
+        run: ./gradlew test --no-daemon --continue  # ← --continue para ver todos los fallos
 
       - name: Build Artifact
+        working-directory: ./server
         run: ./gradlew build -x test --no-daemon
 
       - name: Upload Build Artifact
@@ -53,7 +51,7 @@ jobs:
         if: success()
         with:
           name: application-artifact
-          path: server/build/libs/*.jar  # ← Ruta desde la raíz
+          path: server/build/libs/*.jar
           retention-days: 7
 
       - name: Upload Test Results
@@ -61,5 +59,5 @@ jobs:
         if: always()
         with:
           name: test-results
-          path: server/build/reports/tests/test/  # ← Ruta desde la raíz
+          path: server/build/reports/tests/test/
           retention-days: 7
