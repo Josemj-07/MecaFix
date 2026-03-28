@@ -13,36 +13,33 @@ import java.util.List;
 
 public class ServiceOrderMapper {
 
-    private ServiceOrderMapper() { }
+    private ServiceOrderMapper() {
+    }
 
     public static CreateServiceOrderResult toCreateResult(ServiceOrder serviceOrder) {
         return new CreateServiceOrderResult(
                 serviceOrder.getId(),
                 serviceOrder.getQuote().getId(),
                 serviceOrder.getOrderStatus().name(),
-                serviceOrder.getCreationDate()
-        );
+                serviceOrder.getCreationDate());
     }
 
     public static AdvanceOrderStatusResult toAdvanceStatusResult(ServiceOrder serviceOrder) {
         return new AdvanceOrderStatusResult(
                 serviceOrder.getId(),
-                serviceOrder.getOrderStatus().name()
-        );
+                serviceOrder.getOrderStatus().name());
     }
 
     public static StartTaskResult toStartTaskResult(Task task) {
         return new StartTaskResult(
                 task.getId(),
-                task.getStatus().name()
-        );
+                task.getStatus().name());
     }
 
     public static CompleteTaskResult toCompleteTaskResult(Task task) {
         return new CompleteTaskResult(
                 task.getId(),
-                task.getStatus().name()
-        );
+                task.getStatus().name());
     }
 
     public static GetServiceOrderResult toGetResult(ServiceOrder serviceOrder) {
@@ -51,8 +48,7 @@ public class ServiceOrderMapper {
                 serviceOrder.getQuote().getId(),
                 serviceOrder.getOrderStatus().name(),
                 serviceOrder.getCreationDate(),
-                serviceOrder.getTasks().stream().map(ServiceOrderMapper::toTaskResult).toList()
-        );
+                serviceOrder.getTasks().stream().map(ServiceOrderMapper::toTaskResult).toList());
     }
 
     public static ListServiceOrdersResult toListResult(List<ServiceOrder> serviceOrders) {
@@ -67,8 +63,7 @@ public class ServiceOrderMapper {
                 task.getId(),
                 task.getMechanic().getFirstName() + " " + task.getMechanic().getLastName(),
                 task.getServiceDetail().getService().getName(),
-                task.getStatus().name()
-        );
+                task.getStatus().name());
     }
 
     private static ListServiceOrdersResult.ServiceOrderResult toServiceOrderResult(ServiceOrder serviceOrder) {
@@ -76,7 +71,6 @@ public class ServiceOrderMapper {
                 serviceOrder.getId(),
                 serviceOrder.getQuote().getId(),
                 serviceOrder.getOrderStatus().name(),
-                serviceOrder.getCreationDate()
-        );
+                serviceOrder.getCreationDate());
     }
 }
