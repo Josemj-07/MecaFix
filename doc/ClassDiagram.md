@@ -11,301 +11,182 @@ rethinks from occurring during development due to flaws that were not identified
 The diagram was made under the **UML** standard
 ```mermaid
 classDiagram
-    direction TB
-
-%% ── AUTHENTICATION ─────────────────────────────────
-    class User {
-        -Long id
-        -String name
-        -String email
-        -String passwordHash
-        -Role role
-        +getId() Long
-        +getName() String
-        +getEmail() String
-        +getRole() Role
-    }
-
-    class Role {
-        <<enumeration>>
-        ADMINISTRATOR
-        OWNER
-    }
-
-%% ── PEOPLE ─────────────────────────────────────────
-    class Email {
-<<value object>>
--String address
-+getAddress() String
-+isValid() boolean
-}
-
-class Person {
-<<abstract>>
--Long id
--String firstName
--String lastName
--Email email
--String mobilePhone
--String nationalId
--DateTime registrationDate
-+getId() Long
-+getFullName() String
-+getEmail() Email
-+getNationalId() String
-+getRegistrationDate() DateTime
-}
+direction LR
 
 class Customer {
-    }
+  +UUID id
+  +String fullName
+  +String documentNumber
+  +String phone
+  +String email
+  +LocalDateTime createdAt
+}
+
+class Vehicle {
+  +UUID id
+  +String plate
+  +String vin
+  +String brand
+  +String model
+  +int year
+  +String color
+  +UUID customerId
+  +LocalDateTime createdAt
+}
 
 class Mechanic {
--Specialty specialty
--boolean available
-+getSpecialty() Specialty
-+isAvailable() boolean
-+setAvailable(boolean) void
+  +UUID id
+  +String fullName
+  +String phone
+  +String specialty
+  +boolean active
 }
 
-class Specialty {
-<<enumeration>>
-ENGINE
-BRAKES
-ELECTRICAL
-SUSPENSION
-GENERAL
+class Category {
+  +UUID id
+  +String name
+  +String description
+  +boolean active
 }
 
-%% ── VEHICLE ────────────────────────────────────────
-class Vehicle {
--Long id
--String plate
--String brand
--String model
--int manufacturingYear
--int mileage
--String color
-+getPlate() String
-+getBrand() String
-+getModel() String
-+getManufacturingYear() int
-+getMileage() int
-+setMileage(int) void
-+getColor() String
+class Product {
+  +UUID id
+  +String name
+  +String sku
+  +String description
+  +BigDecimal unitPrice
+  +int stock
+  +UUID categoryId
+  +boolean active
 }
 
-%% ── SERVICE ────────────────────────────────────────
 class Service {
--Long id
--String name
--String description
--BigDecimal laborPrice
-+getId() Long
-+getName() String
-+getDescription() String
-+getLaborPrice() BigDecimal
-    }
-
-class ServiceDetail {
--Service service
--BigDecimal appliedPrice
-+getService() Service
-+getAppliedPrice() BigDecimal
-+calculateSubTotal() BigDecimal
-}
-
-%% ── QUOTE ──────────────────────────────────────────
-class QuoteStatus {
-<<enumeration>>
-PENDING
-APPROVED
-REJECTED
-    }
-
-class QuoteProductDetail {
--Product product
--int quantity
--BigDecimal appliedUnitPrice
-+getProduct() Product
-+getQuantity() int
-+getAppliedUnitPrice() BigDecimal
-+calculateSubTotal() BigDecimal
+  +UUID id
+  +String name
+  +String description
+  +BigDecimal basePrice
+  +UUID categoryId
+  +boolean active
 }
 
 class Quote {
--Long id
--Customer customer
--Vehicle vehicle
--List~ServiceDetail~ services
--List~QuoteProductDetail~ products
--QuoteStatus status
--BigDecimal totalAmount
--DateTime date
-+getCustomer() Customer
-+getVehicle() Vehicle
-+getServices() Collection~ServiceDetail~
-+getProducts() Collection~QuoteProductDetail~
-+addService(ServiceDetail) void
-+addProduct(QuoteProductDetail) void
-+updateTotal() void
-+approve() void
-+reject() void
-+getStatus() QuoteStatus
-+getTotalAmount() BigDecimal
+  +UUID id
+  +UUID customerId
+  +UUID vehicleId
+  +QuoteStatus status
+  +BigDecimal subtotal
+  +BigDecimal tax
+  +BigDecimal total
+  +LocalDateTime createdAt
+  +LocalDateTime expiresAt
 }
 
-%% ── SERVICE ORDER ───────────────────────────────────
-class OrderStatus {
-<<enumeration>>
-PENDING
-IN_PROGRESS
-FINISHED
-DELIVERED
+class QuoteItem {
+  +UUID id
+  +UUID quoteId
+  +ItemType itemType
+  +UUID referenceId
+  +String description
+  +BigDecimal unitPrice
+  +int quantity
+  +BigDecimal lineTotal
 }
 
 class ServiceOrder {
--Long id
--Quote quote
--List~Task~ tasks
--OrderStatus status
--DateTime creationDate
-+getQuote() Quote
-+getTasks() Collection~Task~
-+addTask(Task) void
-+getTotal() BigDecimal
-+getId() Long
-+getStatus() OrderStatus
-+getCreationDate() DateTime
-+advanceStatus() void
+  +UUID id
+  +UUID customerId
+  +UUID vehicleId
+  +UUID quoteId
+  +UUID mechanicId
+  +OrderStatus status
+  +BigDecimal subtotal
+  +BigDecimal tax
+  +BigDecimal total
+  +LocalDateTime openedAt
+  +LocalDateTime startedAt
+  +LocalDateTime finishedAt
 }
 
-class TaskStatus {
-<<enumeration>>
-PENDING
-IN_PROGRESS
-FINISHED
-    }
-
-class Task {
--Long id
--Mechanic mechanic
--ServiceDetail serviceDetail
--TaskStatus status
-+getMechanic() Mechanic
-+getServiceDetail() ServiceDetail
-+getStatus() TaskStatus
-+markInProgress() void
-+markFinished() void
+class ServiceOrderItem {
+  +UUID id
+  +UUID serviceOrderId
+  +ItemType itemType
+  +UUID referenceId
+  +String description
+  +BigDecimal unitPrice
+  +int quantity
+  +BigDecimal lineTotal
 }
-
-%% ── PRODUCTS AND SALES ─────────────────────────────
-class Product {
--Long id
--String name
--BigDecimal purchasePrice
--BigDecimal salePrice
--int stock
--String description
-+getId() Long
-+getName() String
-+getPurchasePrice() BigDecimal
-+getSalePrice() BigDecimal
-+getStock() int
-+decreaseStock(int) void
-+increaseStock(int) void
-}
-
-class SaleDetail {
--Product product
--int quantity
--BigDecimal unitPrice
-+getProduct() Product
-+getQuantity() int
-+getUnitPrice() BigDecimal
-+calculateSubTotal() BigDecimal
-}
-
-class Sale {
--Long id
--Customer customer
--List~SaleDetail~ details
--DateTime date
--BigDecimal total
-+getCustomer() Customer
-+getDetails() Collection~SaleDetail~
-+addDetail(SaleDetail) void
-+calculateTotal() BigDecimal
-+getId() Long
-+getDate() DateTime
-+getTotal() BigDecimal
-}
-
-%% ── PAYMENT ────────────────────────────────────────
-class PaymentMethod {
-<<enumeration>>
-CASH
-TRANSFER
-WOMPI
-    }
 
 class Payment {
-<<abstract>>
--Long id
--BigDecimal amount
--DateTime date
--PaymentMethod paymentMethod
-+validatePayment() boolean
-+getId() Long
-+getAmount() BigDecimal
-+getDate() DateTime
-+getPaymentMethod() PaymentMethod
-    }
+  +UUID id
+  +UUID serviceOrderId
+  +PaymentMethod method
+  +PaymentStatus status
+  +BigDecimal amount
+  +String reference
+  +LocalDateTime paidAt
+}
 
-class ServiceOrderPayment {
--ServiceOrder serviceOrder
-+getServiceOrder() ServiceOrder
-    }
+class QuoteStatus {
+  <<enumeration>>
+  DRAFT
+  APPROVED
+  REJECTED
+  EXPIRED
+}
 
-class SalePayment {
--Sale sale
-+getSale() Sale
-    }
+class OrderStatus {
+  <<enumeration>>
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  DELIVERED
+  CANCELLED
+}
 
-%% ════════════════════════════════════════════════════
-%% RELATIONSHIPS
-%% ════════════════════════════════════════════════════
+class ItemType {
+  <<enumeration>>
+  PRODUCT
+  SERVICE
+}
 
-User --> Role : role
+class PaymentMethod {
+  <<enumeration>>
+  CASH
+  CARD
+  TRANSFER
+  DIGITAL_WALLET
+}
 
-Person --> Email : email
-Person <|-- Customer
-Person <|-- Mechanic
-Mechanic --> Specialty : specialty
+class PaymentStatus {
+  <<enumeration>>
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
 
-Customer "1" *-- "0..*" Vehicle : vehicles
+Customer "1" --> "0..*" Vehicle : owns
+Category "1" --> "0..*" Product : groups
+Category "1" --> "0..*" Service : groups
 
-Quote --> Customer : customer
-Quote --> Vehicle : vehicle
-Quote --> QuoteStatus : status
-Quote "1" o-- "1..*" ServiceDetail : services
-Quote "1" o-- "0..*" QuoteProductDetail : products
-ServiceDetail --> Service : service
-QuoteProductDetail --> Product : product
+Customer "1" --> "0..*" Quote : requests
+Vehicle "1" --> "0..*" Quote : quoted for
+Quote "1" --> "1..*" QuoteItem : contains
 
-ServiceOrder --> Quote : quote
-ServiceOrder --> OrderStatus : status
-ServiceOrder "1" o-- "1..*" Task : tasks
-Task --> Mechanic : mechanic
-Task --> ServiceDetail : serviceDetail
-Task --> TaskStatus : status
+Customer "1" --> "0..*" ServiceOrder : opens
+Vehicle "1" --> "0..*" ServiceOrder : receives
+Mechanic "0..1" --> "0..*" ServiceOrder : assigned to
+Quote "0..1" --> "0..1" ServiceOrder : converts to
+ServiceOrder "1" --> "1..*" ServiceOrderItem : contains
 
-Sale --> Customer : customer
-Sale "1" o-- "1..*" SaleDetail : details
-SaleDetail --> Product : product
+ServiceOrder "1" --> "0..*" Payment : paid with
 
-Payment --> PaymentMethod : paymentMethod
-Payment <|-- ServiceOrderPayment
-Payment <|-- SalePayment
-ServiceOrderPayment --> ServiceOrder : serviceOrder
-SalePayment --> Sale : sale
+Quote --> QuoteStatus
+ServiceOrder --> OrderStatus
+QuoteItem --> ItemType
+ServiceOrderItem --> ItemType
+Payment --> PaymentMethod
+Payment --> PaymentStatus
 ```
