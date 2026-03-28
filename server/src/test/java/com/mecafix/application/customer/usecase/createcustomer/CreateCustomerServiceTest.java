@@ -29,7 +29,8 @@ class CreateCustomerServiceTest {
     @Test
     void execute_ShouldCreateAndSaveCustomer() {
         // Arrange
-        CreateCustomerCommand command = new CreateCustomerCommand("Jane", "Doe", "jane.doe@example.com", "9876543210", "87654321B");
+        CreateCustomerCommand command = new CreateCustomerCommand("Jane", "Doe", "jane.doe@example.com", "+9876543210",
+                "87654321");
 
         // Act
         CreateCustomerResult result = createCustomerService.execute(command);

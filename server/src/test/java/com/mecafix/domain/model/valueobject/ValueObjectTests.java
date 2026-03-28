@@ -1,6 +1,11 @@
 package com.mecafix.domain.model.valueobject;
 
 import org.junit.jupiter.api.Test;
+
+import com.mecafix.domain.exceptions.InvalidEmailException;
+import com.mecafix.domain.exceptions.InvalidMobilePhoneException;
+import com.mecafix.domain.exceptions.InvalidNationalIdException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -14,28 +19,28 @@ class ValueObjectTests {
 
     @Test
     void testEmail_InvalidEmail() {
-        assertThrows(IllegalArgumentException.class, () -> new Email("invalid-email"));
+        assertThrows(InvalidEmailException.class, () -> new Email("invalid-email"));
     }
 
     @Test
     void testMobilePhone_ValidPhone() {
-        MobilePhone phone = new MobilePhone("1234567890");
-        assertEquals("1234567890", phone.mobilePhone());
+        MobilePhone phone = new MobilePhone("+1234567890");
+        assertEquals("+1234567890", phone.mobilePhone());
     }
 
     @Test
     void testMobilePhone_InvalidPhone() {
-        assertThrows(IllegalArgumentException.class, () -> new MobilePhone("123"));
+        assertThrows(InvalidMobilePhoneException.class, () -> new MobilePhone("123"));
     }
 
     @Test
     void testDni_ValidDni() {
-        Dni dni = new Dni("12345678A");
-        assertEquals("12345678A", dni.dni());
+        Dni dni = new Dni("12345678");
+        assertEquals("12345678", dni.dni());
     }
 
     @Test
     void testDni_InvalidDni() {
-        assertThrows(IllegalArgumentException.class, () -> new Dni("A12"));
+        assertThrows(InvalidNationalIdException.class, () -> new Dni("A12"));
     }
 }

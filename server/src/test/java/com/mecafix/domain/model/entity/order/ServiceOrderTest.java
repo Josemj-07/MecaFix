@@ -29,16 +29,16 @@ class ServiceOrderTest {
     @Test
     void testAdvanceOrderStatus_ShouldFollowTransitions() {
         Quote quote = mock(Quote.class);
-        ServiceOrder order = ServiceOrder.create(quote, List.of());
+        ServiceOrder order = ServiceOrder.create(quote, List.of(mock(Task.class)));
 
         assertEquals(OrderStatus.CREATED, order.getOrderStatus());
-        
+
         order.advanceOrderStatus();
         assertEquals(OrderStatus.IN_PROGRESS, order.getOrderStatus());
-        
+
         order.advanceOrderStatus();
         assertEquals(OrderStatus.FINALIZED, order.getOrderStatus());
-        
+
         order.advanceOrderStatus();
         assertEquals(OrderStatus.DELIVERED, order.getOrderStatus());
     }

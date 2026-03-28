@@ -31,8 +31,10 @@ class ListCustomersServiceTest {
 
     @Test
     void execute_ShouldReturnListOfCustomers() {
-        Customer c1 = Customer.create("A", "B", new Email("a@b.com"), new MobilePhone("1111111111"), new Dni("11111111A"));
-        Customer c2 = Customer.create("C", "D", new Email("c@d.com"), new MobilePhone("2222222222"), new Dni("22222222B"));
+        Customer c1 = Customer.create("A", "B", new Email("a@b.com"), new MobilePhone("+1111111111"),
+                new Dni("11111111"));
+        Customer c2 = Customer.create("C", "D", new Email("c@d.com"), new MobilePhone("+2222222222"),
+                new Dni("22222222"));
 
         when(customerRepository.findAll()).thenReturn(List.of(c1, c2));
 
