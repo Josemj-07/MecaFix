@@ -33,15 +33,17 @@ class UpdateCustomerServiceTest {
 
     @Test
     void execute_ShouldUpdateAndSaveCustomer() {
-        Customer customer = Customer.create("Jack", "Smith", new Email("jack@smith.com"), new MobilePhone("1112223333"), new Dni("11111111X"));
+        Customer customer = Customer.create("Jack", "Smith", new Email("jack@smith.com"),
+                new MobilePhone("+1112223333"), new Dni("11111111"));
         when(customerRepository.findById(customer.getId())).thenReturn(Optional.of(customer));
 
-        UpdateCustomerCommand command = new UpdateCustomerCommand(customer.getId().toString(), "new@smith.com", null, null);
+        UpdateCustomerCommand command = new UpdateCustomerCommand(customer.getId().toString(), "new@smith.com", null,
+                null);
 
         UpdateCustomerResult result = updateCustomerService.execute(command);
 
         assertEquals("new@smith.com", result.email());
-        assertEquals("1112223333", result.mobilePhone()); // should remain unchanged
+        assertEquals("+1112223333", result.mobilePhone()); // should remain unchanged
 
         verify(customerRepository).save(any(Customer.class));
     }

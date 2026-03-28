@@ -27,18 +27,18 @@ class TaskTest {
     @Test
     void testMarkInProgress() {
         Task task = Task.create(mock(Mechanic.class), mock(ServiceDetail.class));
-        
+
         task.markInProgress();
-        
+
         assertEquals(TaskStatus.IN_PROGRESS, task.getStatus());
     }
 
     @Test
     void testMarkFinished() {
         Task task = Task.create(mock(Mechanic.class), mock(ServiceDetail.class));
-        
+        task.markInProgress();
         task.markFinished();
-        
+
         assertEquals(TaskStatus.FINISHED, task.getStatus());
     }
 }
