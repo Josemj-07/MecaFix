@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mecafix.domain.model.entity.order;
 
+import com.mecafix.domain.exceptions.InvalidServiceOrderException;
 import com.mecafix.domain.model.entity.person.Mechanic;
 import com.mecafix.domain.model.entity.service.ServiceDetail;
 import com.mecafix.domain.model.enums.TaskStatus;
@@ -24,6 +21,11 @@ public class Task {
     public static Task create(Mechanic mechanic, ServiceDetail serviceDetail) {
         return new Task(mechanic, serviceDetail);
     }
+
+    public static Task reBuild(String id, Mechanic mechanic, ServiceDetail serviceDetail) {
+        return new Task(id, mechanic, serviceDetail);
+    }
+
     private Task(Mechanic mechanic, ServiceDetail serviceDetail) {
         if (mechanic == null) throw new InvalidTaskException("Mechanic must not be null");
         if (serviceDetail == null) throw new InvalidTaskException("Service detail must not be null");
@@ -34,6 +36,18 @@ public class Task {
         this.status = TaskStatus.PENDING;
         this. creationDate = LocalDateTime.now();
 
+    }
+
+    private Task(String id, Mechanic mechanic, ServiceDetail serviceDetail) {
+        if (mechanic == null) throw new InvalidTaskException("Mechanic must not be null");
+        if (serviceDetail == null) throw new InvalidTaskException("Service detail must not be null");
+        if(id == null) throw new InvalidServiceOrderException("id must not be null");
+
+        this.id = UUID.fromString(id);
+        this.mechanic = mechanic;
+        this.serviceDetail = serviceDetail;
+        this.status = TaskStatus.PENDING;
+        this. creationDate = LocalDateTime.now();
     }
 
 

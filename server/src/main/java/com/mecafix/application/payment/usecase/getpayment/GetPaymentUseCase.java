@@ -1,21 +1,21 @@
 package com.mecafix.application.payment.usecase.getpayment;
 
 import com.mecafix.application.payment.mapper.PaymentMapper;
-import com.mecafix.application.payment.port.out.PaymentRepositoryPort;
+
 import com.mecafix.domain.model.entity.payment.Payment;
-import com.mecafix.shared.exceptions.PaymentNotFoundException;
+import com.mecafix.application.exceptions.PaymentNotFoundException;
+import com.mecafix.domain.port.payment.PaymentRepositoryPort;
 
 import java.util.UUID;
 
-public class GetPaymentService implements GetPaymentUseCase {
+public class  GetPaymentUseCase {
 
     private final PaymentRepositoryPort paymentRepository;
 
-    public GetPaymentService(PaymentRepositoryPort paymentRepository) {
+    public GetPaymentUseCase(PaymentRepositoryPort paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
 
-    @Override
     public GetPaymentResult execute(GetPaymentCommand command) {
 
         Payment payment = paymentRepository.findById(UUID.fromString(command.paymentId()))

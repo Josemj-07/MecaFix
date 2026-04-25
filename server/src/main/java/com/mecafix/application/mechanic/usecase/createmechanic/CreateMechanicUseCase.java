@@ -1,23 +1,23 @@
 package com.mecafix.application.mechanic.usecase.createmechanic;
 
 import com.mecafix.application.mechanic.mapper.MechanicMapper;
-import com.mecafix.application.mechanic.port.out.MechanicRepositoryPort;
+
 import com.mecafix.domain.model.entity.person.Mechanic;
 import com.mecafix.domain.model.enums.Specialty;
 import com.mecafix.domain.model.valueobject.Dni;
 import com.mecafix.domain.model.valueobject.Email;
 import com.mecafix.domain.model.valueobject.MobilePhone;
-import com.mecafix.shared.exceptions.MechanicAlreadyExistsException;
+import com.mecafix.application.exceptions.MechanicAlreadyExistsException;
+import com.mecafix.domain.port.mechanic.MechanicRepositoryPort;
 
-public class CreateMechanicService implements CreateMechanicUseCase {
+public class  CreateMechanicUseCase {
 
     private final MechanicRepositoryPort mechanicRepository;
 
-    public CreateMechanicService(MechanicRepositoryPort mechanicRepository) {
+    public CreateMechanicUseCase(MechanicRepositoryPort mechanicRepository) {
         this.mechanicRepository = mechanicRepository;
     }
 
-    @Override
     public CreateMechanicResult execute(CreateMechanicCommand command) {
 
         if (mechanicRepository.existsByDni(command.nationalId())) {

@@ -1,20 +1,20 @@
 package com.mecafix.application.service.usecase.listservices;
 
 import com.mecafix.application.service.mapper.ServiceMapper;
-import com.mecafix.application.service.port.out.ServiceRepositoryPort;
 import com.mecafix.domain.model.entity.service.Service;
+import com.mecafix.domain.port.service.ServiceRepositoryPort;
 
 import java.util.List;
 
-public class ListServicesService implements ListServicesUseCase {
+public class ListServicesUseCase {
 
     private final ServiceRepositoryPort serviceRepository;
 
-    public ListServicesService(ServiceRepositoryPort serviceRepository) {
+    public ListServicesUseCase(ServiceRepositoryPort serviceRepository) {
         this.serviceRepository = serviceRepository;
     }
 
-    @Override
+
     public ListServicesResult execute(ListServicesCommand command) {
 
         List<Service> services = serviceRepository.findAll();

@@ -40,6 +40,25 @@ public abstract class Person {
         this.registrationDate = LocalDateTime.now();
     }
 
+    protected Person(String id, String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
+        firstName = firstName == null ? null : firstName.trim();
+        if (firstName == null || firstName.isBlank()) throw new InvalidPersonException("First name must not be empty");
+        lastName = lastName == null ? null : lastName.trim();
+        if (lastName == null || lastName.isBlank()) throw new InvalidPersonException("Last name must not be empty");
+        if (email == null) throw new InvalidPersonException("Email must not be null");
+        if(id == null) throw new InvalidPersonException("id must not be null");
+        if (mobilePhone == null) throw new InvalidPersonException("Mobile phone must not be null");
+        if (nationalId == null) throw new InvalidPersonException("National id must not be empty");
+
+        this.id = UUID.fromString(id);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.mobilePhone = mobilePhone;
+        this.dni = nationalId;
+        this.registrationDate = LocalDateTime.now();
+    }
+
     public UUID getId() { return this.id; }
 
     public String getFirstName() { return firstName; }

@@ -1,4 +1,4 @@
-package com.mecafix.shared.exceptions;
+package com.mecafix.application.exceptions;
 
 public class PaymentNotFoundException extends RuntimeException {
     public PaymentNotFoundException(String message) {

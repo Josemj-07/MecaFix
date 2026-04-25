@@ -2,6 +2,7 @@ package com.mecafix.domain.model.entity.product;
 
 import com.mecafix.domain.model.valueobject.Price;
 import com.mecafix.domain.exceptions.InvalidProductException;
+import org.jspecify.annotations.NonNull;
 
 import java.util.UUID;
 
@@ -15,6 +16,10 @@ public class Product {
 
     public static Product create(String name, String description, Price price, int stock, Category category) {
         return new Product(name, description, price, stock, category);
+    }
+
+    public static Product reBuild(String id, String name, String description, Price price, int stock, Category category) {
+        return new Product(id, name, description, price, stock, category);
     }
 
     private Product(String name, String description, Price price, int stock, Category category) {
@@ -33,6 +38,32 @@ public class Product {
             throw new InvalidProductException("Stock must not be less than zero");
 
         this.id = UUID.randomUUID();
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.category = category;
+    }
+
+    private Product(String id, String name, String description, Price price, int stock, Category category) {
+        name = name == null ? null : name.trim();
+        if (name == null || name.isBlank())
+            throw new InvalidProductException("the field name must not be empty");
+
+        description = description == null ? null : description.trim();
+        if (description == null || description.isBlank())
+            throw new InvalidProductException("description must not be empty");
+
+        if (price == null)
+            throw new InvalidProductException("Price must not be null");
+
+        if (stock < 0)
+            throw new InvalidProductException("Stock must not be less than zero");
+
+        if(id == null)
+            throw new InvalidProductException("id must not be null");
+
+        this.id = UUID.fromString(id);
         this.name = name;
         this.description = description;
         this.price = price;

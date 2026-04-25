@@ -1,21 +1,20 @@
 package com.mecafix.application.serviceorder.usecase.getserviceorder;
 
 import com.mecafix.application.serviceorder.mapper.ServiceOrderMapper;
-import com.mecafix.application.serviceorder.port.out.ServiceOrderRepositoryPort;
 import com.mecafix.domain.model.entity.order.ServiceOrder;
-import com.mecafix.shared.exceptions.ServiceOrderNotFoundException;
+import com.mecafix.application.exceptions.ServiceOrderNotFoundException;
+import com.mecafix.domain.port.serviceorder.ServiceOrderRepositoryPort;
 
 import java.util.UUID;
 
-public class GetServiceOrderService implements GetServiceOrderUseCase {
+public class GetServiceOrderUseCase {
 
     private final ServiceOrderRepositoryPort serviceOrderRepository;
 
-    public GetServiceOrderService(ServiceOrderRepositoryPort serviceOrderRepository) {
+    public GetServiceOrderUseCase(ServiceOrderRepositoryPort serviceOrderRepository) {
         this.serviceOrderRepository = serviceOrderRepository;
     }
 
-    @Override
     public GetServiceOrderResult execute(GetServiceOrderCommand command) {
         ServiceOrder serviceOrder = serviceOrderRepository.findById(UUID.fromString(command.serviceOrderId()))
                 .orElseThrow(() -> new ServiceOrderNotFoundException("Service order not found with id " + command.serviceOrderId()));

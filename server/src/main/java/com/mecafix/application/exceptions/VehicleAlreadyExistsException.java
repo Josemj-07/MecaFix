@@ -1,4 +1,4 @@
-package com.mecafix.shared.exceptions;
+package com.mecafix.application.exceptions;
 
 public class VehicleAlreadyExistsException extends RuntimeException {
     public VehicleAlreadyExistsException(String message) {

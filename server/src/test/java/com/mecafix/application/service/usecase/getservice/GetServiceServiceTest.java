@@ -2,7 +2,7 @@ package com.mecafix.application.service.usecase.getservice;
 
 import com.mecafix.application.service.port.out.ServiceRepositoryPort;
 import com.mecafix.domain.model.entity.service.Service;
-import com.mecafix.shared.exceptions.ServiceNotFoundException;
+import com.mecafix.application.exceptions.ServiceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

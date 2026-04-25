@@ -1,4 +1,4 @@
-package com.mecafix.shared.exceptions;
+package com.mecafix.application.exceptions;
 
 public class QuoteNotFoundException extends RuntimeException {
     public QuoteNotFoundException(String message) {

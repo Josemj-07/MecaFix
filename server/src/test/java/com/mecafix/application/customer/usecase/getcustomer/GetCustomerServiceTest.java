@@ -5,7 +5,7 @@ import com.mecafix.domain.model.entity.person.Customer;
 import com.mecafix.domain.model.valueobject.Dni;
 import com.mecafix.domain.model.valueobject.Email;
 import com.mecafix.domain.model.valueobject.MobilePhone;
-import com.mecafix.shared.exceptions.CustomerNotFoundException;
+import com.mecafix.application.exceptions.CustomerNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

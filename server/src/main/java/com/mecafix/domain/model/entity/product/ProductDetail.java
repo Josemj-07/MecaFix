@@ -18,6 +18,8 @@ public class ProductDetail implements IPayable {
         return new ProductDetail(product, quantity);
     }
 
+    public static ProductDetail reBuild(String id, Product product, Long quantity) { return new ProductDetail(id, product, quantity);}
+
     private ProductDetail(Product product, Long quantity) {
         if (product == null) throw new InvalidProductDetailException("Product must not be null");
         if(quantity == null) throw new InvalidProductDetailException("Quantity must not be null");
@@ -25,6 +27,19 @@ public class ProductDetail implements IPayable {
         if(quantity > product.getStock()) throw new InvalidProductException("Insufficient stock for the requested quantity");
 
         this.id = UUID.randomUUID();
+        this.product = product;
+        this.quantity = quantity;
+        this.appliedPrice = product.getPrice();
+    }
+
+    private ProductDetail(String id, Product product, Long quantity) {
+        if (product == null) throw new InvalidProductDetailException("Product must not be null");
+        if(id == null) throw new InvalidProductDetailException("id must not be null");
+        if(quantity == null) throw new InvalidProductDetailException("Quantity must not be null");
+        if (quantity <= 0) throw new InvalidProductDetailException("Quantity must be greater than zero");
+        if(quantity > product.getStock()) throw new InvalidProductException("Insufficient stock for the requested quantity");
+
+        this.id = UUID.fromString(id);
         this.product = product;
         this.quantity = quantity;
         this.appliedPrice = product.getPrice();

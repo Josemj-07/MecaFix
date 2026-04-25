@@ -1,6 +1,7 @@
 package com.mecafix.domain.model.entity.product;
 
 import com.mecafix.domain.exceptions.InvalidCategoryException;
+import com.mecafix.domain.exceptions.InvalidPersonException;
 
 import java.util.UUID;
 
@@ -19,6 +20,15 @@ public class Category {
         }
 
         this.id = UUID.randomUUID();
+        this.name = name;
+    }
+
+    private Category(String id, String name) {
+        name = name == null ? null : name.trim();
+        if (name == null || name.isBlank()) throw new InvalidCategoryException("Name must not be empty");
+        if(id == null) throw new InvalidPersonException("id must not be null");
+
+        this.id = UUID.fromString(id);
         this.name = name;
     }
 

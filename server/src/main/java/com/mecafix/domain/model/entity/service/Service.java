@@ -17,6 +17,10 @@ public class Service {
         return new Service(name, description, laborPrice);
     }
 
+    public static Service reBuild(String id, String name, String description, BigDecimal laborPrice) {
+        return new Service(id, name, description, laborPrice);
+    }
+
     private Service(String name, String description, BigDecimal laborPrice) {
         name = name == null ? null : name.trim();
         if (name == null || name.isBlank()) throw new InvalidServiceException("Name must not be empty");
@@ -29,6 +33,27 @@ public class Service {
             throw new InvalidServiceException("Labor price must not be negative");
 
         this.id = UUID.randomUUID();
+        this.name = name;
+        this.description = description;
+        this.laborPrice = laborPrice;
+    }
+
+
+    private Service(String id, String name, String description, BigDecimal laborPrice) {
+        name = name == null ? null : name.trim();
+        if (name == null || name.isBlank()) throw new InvalidServiceException("Name must not be empty");
+
+        description = description == null ? null : description.trim();
+        if (description == null || description.isBlank())
+            throw new InvalidServiceException("Description must not be empty");
+
+        if (laborPrice == null || laborPrice.compareTo(BigDecimal.ZERO) < 0)
+            throw new InvalidServiceException("Labor price must not be negative");
+
+        if(id == null)
+            throw new InvalidServiceException("id must not be null");
+
+        this.id = UUID.fromString(id);
         this.name = name;
         this.description = description;
         this.laborPrice = laborPrice;

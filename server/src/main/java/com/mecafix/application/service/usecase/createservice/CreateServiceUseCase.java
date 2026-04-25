@@ -1,18 +1,17 @@
 package com.mecafix.application.service.usecase.createservice;
 
 import com.mecafix.application.service.mapper.ServiceMapper;
-import com.mecafix.application.service.port.out.ServiceRepositoryPort;
 import com.mecafix.domain.model.entity.service.Service;
+import com.mecafix.domain.port.service.ServiceRepositoryPort;
 
-public class CreateServiceService implements CreateServiceUseCase {
+public class CreateServiceUseCase {
 
     private final ServiceRepositoryPort serviceRepository;
 
-    public CreateServiceService(ServiceRepositoryPort serviceRepository) {
+    public CreateServiceUseCase(ServiceRepositoryPort serviceRepository) {
         this.serviceRepository = serviceRepository;
     }
 
-    @Override
     public CreateServiceResult execute(CreateServiceCommand command) {
 
         Service service = Service.create(

@@ -13,11 +13,25 @@ public class ServiceDetail implements IPayable {
 
     public static ServiceDetail create(Service service){return new ServiceDetail(service);}
 
+    public static ServiceDetail reBuild(String id, Service service){return new ServiceDetail(id, service);}
+
     private ServiceDetail(Service service) {
         if (service == null) {
             throw new InvalidServiceException("Service must not be null");
         }
         this.id = UUID.randomUUID();
+        this.service = service;
+        this.appliedLaborPrice = service.getLaborPrice();
+    }
+
+    private ServiceDetail(String id, Service service) {
+        if (service == null) {
+            throw new InvalidServiceException("Service must not be null");
+        }
+        if(id == null) {
+            throw new InvalidServiceException("id must not be null");
+        }
+        this.id = UUID.fromString(id);
         this.service = service;
         this.appliedLaborPrice = service.getLaborPrice();
     }

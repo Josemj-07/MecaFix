@@ -1,11 +1,7 @@
 package com.mecafix.application.quote.usecase.createquote;
 
-import com.mecafix.application.customer.port.out.CustomerRepositoryPort;
+
 import com.mecafix.application.quote.mapper.QuoteMapper;
-import com.mecafix.application.product.port.out.ProductRepositoryPort;
-import com.mecafix.application.quote.port.out.QuoteRepositoryPort;
-import com.mecafix.application.service.port.out.ServiceRepositoryPort;
-import com.mecafix.application.vehicle.port.out.VehicleRepositoryPort;
 import com.mecafix.domain.model.contract.IPayable;
 import com.mecafix.domain.model.entity.person.Customer;
 import com.mecafix.domain.model.entity.product.Product;
@@ -14,14 +10,19 @@ import com.mecafix.domain.model.entity.quote.Quote;
 import com.mecafix.domain.model.entity.service.Service;
 import com.mecafix.domain.model.entity.service.ServiceDetail;
 import com.mecafix.domain.model.entity.vehicle.Vehicle;
-import com.mecafix.shared.exceptions.CustomerNotFoundException;
-import com.mecafix.shared.exceptions.VehicleNotFoundException;
+import com.mecafix.domain.port.customer.CustomerRepositoryPort;
+import com.mecafix.domain.port.product.ProductRepositoryPort;
+import com.mecafix.domain.port.quote.QuoteRepositoryPort;
+import com.mecafix.domain.port.service.ServiceRepositoryPort;
+import com.mecafix.domain.port.vehicle.VehicleRepositoryPort;
+import com.mecafix.application.exceptions.CustomerNotFoundException;
+import com.mecafix.application.exceptions.VehicleNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CreateQuoteService implements CreateQuoteUseCase {
+public class CreateQuoteUseCase{
 
     private final QuoteRepositoryPort quoteRepository;
     private final CustomerRepositoryPort customerRepository;
@@ -29,7 +30,7 @@ public class CreateQuoteService implements CreateQuoteUseCase {
     private final ServiceRepositoryPort serviceRepository;
     private final ProductRepositoryPort productRepository;
 
-    public CreateQuoteService(QuoteRepositoryPort quoteRepository,
+    public CreateQuoteUseCase(QuoteRepositoryPort quoteRepository,
             CustomerRepositoryPort customerRepository,
             VehicleRepositoryPort vehicleRepository,
             ServiceRepositoryPort serviceRepository,
@@ -41,7 +42,7 @@ public class CreateQuoteService implements CreateQuoteUseCase {
         this.productRepository = productRepository;
     }
 
-    @Override
+
     public CreateQuoteResult execute(CreateQuoteCommand command) {
 
         Customer customer = customerRepository.findById(UUID.fromString(command.customerId()))

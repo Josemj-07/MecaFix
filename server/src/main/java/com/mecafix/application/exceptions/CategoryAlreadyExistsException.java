@@ -1,4 +1,4 @@
-package com.mecafix.shared.exceptions;
+package com.mecafix.application.exceptions;
 
 public class CategoryAlreadyExistsException extends RuntimeException {
     public CategoryAlreadyExistsException(String message) {

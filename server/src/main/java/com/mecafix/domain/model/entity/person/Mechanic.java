@@ -17,8 +17,21 @@ public class Mechanic extends Person{
         );
     }
 
+    private static Mechanic reBuild(String id, String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId, Specialty specialty) {
+        return new Mechanic( id,
+                firstName, lastName, email, mobilePhone,
+                nationalId, specialty
+        );
+    }
+
     private Mechanic(String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId, Specialty specialty){
         super(firstName, lastName, email, mobilePhone, nationalId);
+        if(specialty == null) throw new InvalidMechanicException("speciality must not be null");
+        this.specialty = specialty;
+    }
+
+    private Mechanic(String id, String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId, Specialty specialty) {
+        super(id, firstName, lastName, email, mobilePhone, nationalId);
         if(specialty == null) throw new InvalidMechanicException("speciality must not be null");
         this.specialty = specialty;
     }

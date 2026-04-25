@@ -20,8 +20,20 @@ public class Customer extends Person {
         );
     }
 
+    public static Customer reBuild(String id, String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
+        return new Customer( id,
+                firstName, lastName, email,
+                mobilePhone, nationalId
+        );
+    }
+
     private Customer(String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
         super(firstName, lastName, email, mobilePhone, nationalId);
+        this.vehicles = new ArrayList<>();
+    }
+
+    private Customer(String id, String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
+        super(id, firstName, lastName, email, mobilePhone, nationalId);
         this.vehicles = new ArrayList<>();
     }
 

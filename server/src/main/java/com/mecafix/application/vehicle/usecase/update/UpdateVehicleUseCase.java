@@ -1,22 +1,22 @@
 package com.mecafix.application.vehicle.usecase.update;
 
 import com.mecafix.application.vehicle.mapper.VehicleMapper;
-import com.mecafix.application.vehicle.port.out.VehicleRepositoryPort;
+
 import com.mecafix.domain.model.entity.vehicle.Vehicle;
-import com.mecafix.shared.exceptions.VehicleNotFoundException;
+import com.mecafix.domain.port.vehicle.VehicleRepositoryPort;
+import com.mecafix.application.exceptions.VehicleNotFoundException;
 
 import java.util.UUID;
 
 //service
-public class UpdateVehicleService implements UpdateVehicleUseCase {
+public class UpdateVehicleUseCase {
 
     private final VehicleRepositoryPort vehicleRepository;
 
-    public UpdateVehicleService(VehicleRepositoryPort vehicleRepository) {
+    public UpdateVehicleUseCase(VehicleRepositoryPort vehicleRepository) {
         this.vehicleRepository = vehicleRepository;
     }
 
-    @Override
     public UpdateVehicleResult execute(UpdateVehicleCommand command) {
 
         Vehicle vehicle = vehicleRepository.findById(UUID.fromString(command.vehicleId()))

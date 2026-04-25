@@ -1,27 +1,26 @@
 package com.mecafix.application.vehicle.usecase.register;
 
-import com.mecafix.application.customer.port.out.CustomerRepositoryPort;
 import com.mecafix.application.vehicle.mapper.VehicleMapper;
-import com.mecafix.application.vehicle.port.out.VehicleRepositoryPort;
 import com.mecafix.domain.model.entity.person.Customer;
 import com.mecafix.domain.model.entity.vehicle.Vehicle;
-import com.mecafix.shared.exceptions.CustomerNotFoundException;
-import com.mecafix.shared.exceptions.VehicleAlreadyExistsException;
+import com.mecafix.application.exceptions.CustomerNotFoundException;
+import com.mecafix.application.exceptions.VehicleAlreadyExistsException;
+import com.mecafix.domain.port.customer.CustomerRepositoryPort;
+import com.mecafix.domain.port.vehicle.VehicleRepositoryPort;
 
 import java.util.UUID;
 
 
-public class RegisterVehicleService implements RegisterVehicleUseCase {
+public class RegisterVehicleUseCase {
 
     private final CustomerRepositoryPort customerRepository;
     private final VehicleRepositoryPort vehicleRepository;
 
-    public RegisterVehicleService(CustomerRepositoryPort customerRepository, VehicleRepositoryPort vehicleRepository) {
+    public RegisterVehicleUseCase(CustomerRepositoryPort customerRepository, VehicleRepositoryPort vehicleRepository) {
         this.customerRepository = customerRepository;
         this.vehicleRepository = vehicleRepository;
     }
 
-    @Override
     public RegisterVehicleResult execute(RegisterVehicleCommand command) {
 
         if (vehicleRepository.existsByPlate(command.plate())) {

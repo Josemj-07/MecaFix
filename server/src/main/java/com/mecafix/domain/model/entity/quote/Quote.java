@@ -25,6 +25,10 @@ public class Quote {
         return new Quote(customer, vehicle, payable);
     }
 
+    public static Quote reBuild(String id, Customer customer, Vehicle vehicle, List<IPayable> payable) {
+        return new Quote(id,customer, vehicle, payable);
+    }
+
     /**
      * Creates a new quote with the specified customer, vehicle, and payable items.
      * A quote can be created empty and items can be added later.
@@ -54,6 +58,30 @@ public class Quote {
         this.totalAmount = calculateTotal();
 
     }
+
+    private Quote(String id, Customer customer, Vehicle vehicle, List<IPayable> payable) {
+
+        if (customer == null) {
+            throw new InvalidQuoteException("Customer must not be null");
+        }
+        if (vehicle == null) {
+            throw new InvalidQuoteException("Vehicle must not be null");
+        }
+        if(id == null) {
+            throw new InvalidQuoteException("id must not be null");
+        }
+
+        this.id = UUID.fromString(id);
+        this.customer = customer;
+        this.vehicle = vehicle;
+        this.payable = payable != null ? payable: new ArrayList<IPayable>();
+        this.status = QuoteStatus.PENDING;
+        this.createdDate = LocalDateTime.now();
+        this.totalAmount = calculateTotal();
+
+    }
+
+
 
     public void addPayable(IPayable payable) {
         if(payable == null) throw new InvalidQuoteException("Payable object must not be null");

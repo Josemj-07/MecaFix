@@ -20,10 +20,25 @@ public class ServiceOrder {
         return new ServiceOrder(quote, tasks);
     }
 
+    public static ServiceOrder reBuild(String id, Quote quote, List<Task> tasks) {
+        return new ServiceOrder(id, quote, tasks);
+    }
+
     private ServiceOrder(Quote quote, List<Task> tasks) {
         if(quote == null) throw new InvalidServiceOrderException("quote must not be null");
         if(tasks == null || tasks.isEmpty()) throw new InvalidServiceOrderException("tasks must not be empty");
         this.id = UUID.randomUUID();
+        this.quote = quote;
+        this.tasks = tasks;
+        this.orderStatus = OrderStatus.CREATED;
+        this.creationDate = LocalDateTime.now();
+    }
+
+    private ServiceOrder(String id, Quote quote, List<Task> tasks) {
+        if(quote == null) throw new InvalidServiceOrderException("quote must not be null");
+        if(id == null) throw new InvalidServiceOrderException("id must not be null");
+        if(tasks == null || tasks.isEmpty()) throw new InvalidServiceOrderException("tasks must not be empty");
+        this.id = UUID.fromString(id);
         this.quote = quote;
         this.tasks = tasks;
         this.orderStatus = OrderStatus.CREATED;

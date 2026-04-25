@@ -19,6 +19,10 @@ public class Vehicle {
     public static Vehicle create(String plate, String brand, String model, int manufacturingYear, Long mileage, String color) {
         return new Vehicle(plate, brand, model, manufacturingYear, mileage, color);
     }
+
+    public static Vehicle create(String id, String plate, String brand, String model, int manufacturingYear, Long mileage, String color) {
+        return new Vehicle(id, plate, brand, model, manufacturingYear, mileage, color);
+    }
     
     private Vehicle(String plate, String brand, String model, int manufacturingYear, Long mileage, String color) {
 
@@ -30,6 +34,25 @@ public class Vehicle {
         if (color == null || color.isBlank()) throw new InvalidVehicleException("Color must not be empty");
 
         this.id = UUID.randomUUID();
+        this.plate = plate.trim().toUpperCase();
+        this.brand = brand.trim();
+        this.model = model.trim();
+        this.manufacturingYear = manufacturingYear;
+        this.mileage = mileage;
+        this.color = color.trim();
+    }
+
+    private Vehicle(String id, String plate, String brand, String model, int manufacturingYear, Long mileage, String color) {
+
+        if (plate == null || plate.isBlank()) throw new InvalidVehicleException("Plate must not be empty");
+        if (brand == null || brand.isBlank()) throw new InvalidVehicleException("Brand must not be empty");
+        if (model == null || model.isBlank()) throw new InvalidVehicleException("Model must not be empty");
+        if (manufacturingYear < EARLIEST_MANUFACTURING_YEAR|| manufacturingYear > Year.now().getValue()) throw new InvalidVehicleException("Manufacturing year is not valid");
+        if (mileage < 0) throw new InvalidVehicleException("Mileage must not be negative");
+        if (color == null || color.isBlank()) throw new InvalidVehicleException("Color must not be empty");
+        if(id == null) throw new InvalidVehicleException("id must not be null");
+
+        this.id = UUID.fromString(id);
         this.plate = plate.trim().toUpperCase();
         this.brand = brand.trim();
         this.model = model.trim();

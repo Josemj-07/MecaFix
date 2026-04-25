@@ -1,21 +1,20 @@
 package com.mecafix.application.product.usecase.updateproductstock;
 
 import com.mecafix.application.product.mapper.ProductMapper;
-import com.mecafix.application.product.port.out.ProductRepositoryPort;
 import com.mecafix.domain.model.entity.product.Product;
-import com.mecafix.shared.exceptions.ProductNotFoundException;
+import com.mecafix.application.exceptions.ProductNotFoundException;
+import com.mecafix.domain.port.product.ProductRepositoryPort;
 
 import java.util.UUID;
 
-public class UpdateProductStockService implements UpdateProductStockUseCase {
+public class UpdateProductStockUseCase {
 
     private final ProductRepositoryPort productRepository;
 
-    public UpdateProductStockService(ProductRepositoryPort productRepository) {
+    public UpdateProductStockUseCase(ProductRepositoryPort productRepository) {
         this.productRepository = productRepository;
     }
 
-    @Override
     public UpdateProductStockResult execute(UpdateProductStockCommand command) {
 
         Product product = productRepository.findById(UUID.fromString(command.productId()))
