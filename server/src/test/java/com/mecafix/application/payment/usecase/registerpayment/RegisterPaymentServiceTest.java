@@ -1,9 +1,9 @@
 package com.mecafix.application.payment.usecase.registerpayment;
 
-import com.mecafix.application.payment.port.out.PaymentRepositoryPort;
-import com.mecafix.application.serviceorder.port.out.ServiceOrderRepositoryPort;
 import com.mecafix.domain.model.entity.order.ServiceOrder;
 import com.mecafix.domain.model.entity.payment.Payment;
+import com.mecafix.domain.port.payment.PaymentRepositoryPort;
+import com.mecafix.domain.port.serviceorder.ServiceOrderRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,11 +30,11 @@ class RegisterPaymentServiceTest {
     @Mock
     private ServiceOrderRepositoryPort serviceOrderRepository;
 
-    private RegisterPaymentService registerPaymentService;
+    private RegisterPaymentUseCase registerPaymentUseCase;
 
     @BeforeEach
     void setUp() {
-        registerPaymentService = new RegisterPaymentService(paymentRepository, serviceOrderRepository);
+        registerPaymentUseCase = new RegisterPaymentUseCase(paymentRepository, serviceOrderRepository);
     }
 
     @Test
@@ -51,7 +51,7 @@ class RegisterPaymentServiceTest {
 
         RegisterPaymentCommand command = new RegisterPaymentCommand(orderId.toString(), BigDecimal.valueOf(100), "CASH");
 
-        RegisterPaymentResult result = registerPaymentService.execute(command);
+        RegisterPaymentResult result = registerPaymentUseCase.execute(command);
 
         assertNotNull(result.id());
         assertEquals("CASH", result.paymentMethod());

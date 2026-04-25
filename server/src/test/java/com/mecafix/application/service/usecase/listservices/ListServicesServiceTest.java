@@ -1,7 +1,7 @@
 package com.mecafix.application.service.usecase.listservices;
 
-import com.mecafix.application.service.port.out.ServiceRepositoryPort;
 import com.mecafix.domain.model.entity.service.Service;
+import com.mecafix.domain.port.service.ServiceRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,11 +20,11 @@ class ListServicesServiceTest {
     @Mock
     private ServiceRepositoryPort serviceRepository;
 
-    private ListServicesService listServicesService;
+    private ListServicesUseCase listServicesUseCase;
 
     @BeforeEach
     void setUp() {
-        listServicesService = new ListServicesService(serviceRepository);
+        listServicesUseCase = new ListServicesUseCase(serviceRepository);
     }
 
     @Test
@@ -34,7 +34,7 @@ class ListServicesServiceTest {
 
         when(serviceRepository.findAll()).thenReturn(List.of(s1, s2));
 
-        ListServicesResult result = listServicesService.execute(new ListServicesCommand());
+        ListServicesResult result = listServicesUseCase.execute(new ListServicesCommand());
 
         assertEquals(2, result.services().size());
     }

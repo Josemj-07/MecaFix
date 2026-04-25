@@ -1,9 +1,9 @@
 package com.mecafix.application.serviceorder.usecase.starttask;
 
-import com.mecafix.application.serviceorder.port.out.ServiceOrderRepositoryPort;
 import com.mecafix.domain.model.entity.order.ServiceOrder;
 import com.mecafix.domain.model.entity.order.Task;
 import com.mecafix.domain.model.enums.TaskStatus;
+import com.mecafix.domain.port.serviceorder.ServiceOrderRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +25,11 @@ class StartTaskServiceTest {
     @Mock
     private ServiceOrderRepositoryPort serviceOrderRepository;
 
-    private StartTaskService startTaskService;
+    private StartTaskUseCase startTaskUseCase;
 
     @BeforeEach
     void setUp() {
-        startTaskService = new StartTaskService(serviceOrderRepository);
+        startTaskUseCase = new StartTaskUseCase(serviceOrderRepository);
     }
 
     @Test
@@ -45,7 +45,7 @@ class StartTaskServiceTest {
         
         when(serviceOrderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
-        startTaskService.execute(new StartTaskCommand(orderId.toString(), taskId.toString()));
+        startTaskUseCase.execute(new StartTaskCommand(orderId.toString(), taskId.toString()));
 
         verify(task).markInProgress();
         verify(serviceOrderRepository).save(order);

@@ -1,15 +1,16 @@
 package com.mecafix.application.serviceorder.usecase.createserviceorder;
 
-import com.mecafix.application.mechanic.port.out.MechanicRepositoryPort;
-import com.mecafix.application.quote.port.out.QuoteRepositoryPort;
-import com.mecafix.application.service.port.out.ServiceRepositoryPort;
-import com.mecafix.application.serviceorder.port.out.ServiceOrderRepositoryPort;
+
 import com.mecafix.domain.exceptions.InvalidServiceOrderException;
 import com.mecafix.domain.model.entity.order.ServiceOrder;
 import com.mecafix.domain.model.entity.person.Mechanic;
 import com.mecafix.domain.model.entity.quote.Quote;
 import com.mecafix.domain.model.entity.service.Service;
 import com.mecafix.domain.model.enums.QuoteStatus;
+import com.mecafix.domain.port.mechanic.MechanicRepositoryPort;
+import com.mecafix.domain.port.quote.QuoteRepositoryPort;
+import com.mecafix.domain.port.service.ServiceRepositoryPort;
+import com.mecafix.domain.port.serviceorder.ServiceOrderRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,11 +40,11 @@ class CreateServiceOrderServiceTest {
     @Mock
     private ServiceRepositoryPort serviceRepository;
 
-    private CreateServiceOrderService createServiceOrderService;
+    private CreateServiceOrderUseCase createServiceOrderUseCase;
 
     @BeforeEach
     void setUp() {
-        createServiceOrderService = new CreateServiceOrderService(serviceOrderRepository, quoteRepository,
+        createServiceOrderUseCase = new CreateServiceOrderUseCase(serviceOrderRepository, quoteRepository,
                 mechanicRepository, serviceRepository);
     }
 
@@ -57,7 +58,7 @@ class CreateServiceOrderServiceTest {
 
         CreateServiceOrderCommand command = new CreateServiceOrderCommand(quoteId.toString(), List.of());
 
-        assertThrows(InvalidServiceOrderException.class, () -> createServiceOrderService.execute(command));
+        assertThrows(InvalidServiceOrderException.class, () -> createServiceOrderUseCase.execute(command));
     }
 
     @Test
@@ -78,7 +79,7 @@ class CreateServiceOrderServiceTest {
                 UUID.randomUUID().toString(), UUID.randomUUID().toString());
         CreateServiceOrderCommand command = new CreateServiceOrderCommand(quoteId.toString(), List.of(tc));
 
-        CreateServiceOrderResult result = createServiceOrderService.execute(command);
+        CreateServiceOrderResult result = createServiceOrderUseCase.execute(command);
 
         assertNotNull(result);
         verify(serviceOrderRepository).save(any(ServiceOrder.class));

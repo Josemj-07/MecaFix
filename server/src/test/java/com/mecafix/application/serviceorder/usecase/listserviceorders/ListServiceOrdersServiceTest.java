@@ -1,9 +1,9 @@
 package com.mecafix.application.serviceorder.usecase.listserviceorders;
 
-import com.mecafix.application.serviceorder.port.out.ServiceOrderRepositoryPort;
 import com.mecafix.domain.model.entity.order.ServiceOrder;
 import com.mecafix.domain.model.entity.quote.Quote;
 import com.mecafix.domain.model.enums.OrderStatus;
+import com.mecafix.domain.port.serviceorder.ServiceOrderRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,11 +24,11 @@ class ListServiceOrdersServiceTest {
     @Mock
     private ServiceOrderRepositoryPort serviceOrderRepository;
 
-    private ListServiceOrdersService listServiceOrdersService;
+    private ListServiceOrdersUseCase listServiceOrdersUseCase;
 
     @BeforeEach
     void setUp() {
-        listServiceOrdersService = new ListServiceOrdersService(serviceOrderRepository);
+        listServiceOrdersUseCase = new ListServiceOrdersUseCase(serviceOrderRepository);
     }
 
     @Test
@@ -44,7 +44,7 @@ class ListServiceOrdersServiceTest {
         
         when(serviceOrderRepository.findAll()).thenReturn(List.of(order));
 
-        ListServiceOrdersResult result = listServiceOrdersService.execute(new ListServiceOrdersCommand());
+        ListServiceOrdersResult result = listServiceOrdersUseCase.execute(new ListServiceOrdersCommand());
 
         assertEquals(1, result.serviceOrders().size());
     }

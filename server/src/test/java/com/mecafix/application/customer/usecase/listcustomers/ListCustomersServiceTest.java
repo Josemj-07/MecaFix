@@ -1,10 +1,10 @@
 package com.mecafix.application.customer.usecase.listcustomers;
 
-import com.mecafix.application.customer.port.out.CustomerRepositoryPort;
 import com.mecafix.domain.model.entity.person.Customer;
 import com.mecafix.domain.model.valueobject.Dni;
 import com.mecafix.domain.model.valueobject.Email;
 import com.mecafix.domain.model.valueobject.MobilePhone;
+import com.mecafix.domain.port.customer.CustomerRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,11 +22,11 @@ class ListCustomersServiceTest {
     @Mock
     private CustomerRepositoryPort customerRepository;
 
-    private ListCustomersService listCustomersService;
+    private ListCustomersUseCase listCustomersUseCase;
 
     @BeforeEach
     void setUp() {
-        listCustomersService = new ListCustomersService(customerRepository);
+        listCustomersUseCase = new ListCustomersUseCase(customerRepository);
     }
 
     @Test
@@ -38,7 +38,7 @@ class ListCustomersServiceTest {
 
         when(customerRepository.findAll()).thenReturn(List.of(c1, c2));
 
-        ListCustomersResult result = listCustomersService.execute(new ListCustomersCommand());
+        ListCustomersResult result = listCustomersUseCase.execute(new ListCustomersCommand());
 
         assertEquals(2, result.customers().size());
     }

@@ -1,8 +1,8 @@
 package com.mecafix.application.service.usecase.getservice;
 
-import com.mecafix.application.service.port.out.ServiceRepositoryPort;
 import com.mecafix.domain.model.entity.service.Service;
 import com.mecafix.application.exceptions.ServiceNotFoundException;
+import com.mecafix.domain.port.service.ServiceRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +25,11 @@ class GetServiceServiceTest {
     @Mock
     private ServiceRepositoryPort serviceRepository;
 
-    private GetServiceService getServiceService;
+    private GetServiceUseCase getServiceUseCase;
 
     @BeforeEach
     void setUp() {
-        getServiceService = new GetServiceService(serviceRepository);
+        getServiceUseCase = new GetServiceUseCase(serviceRepository);
     }
 
     @Test
@@ -37,7 +37,7 @@ class GetServiceServiceTest {
         Service service = Service.create("Test", "Desc", BigDecimal.valueOf(50));
         when(serviceRepository.findById(service.getId())).thenReturn(Optional.of(service));
 
-        GetServiceResult result = getServiceService.execute(new GetServiceCommand(service.getId().toString()));
+        GetServiceResult result = getServiceUseCase.execute(new GetServiceCommand(service.getId().toString()));
 
         assertNotNull(result);
         assertEquals(service.getId(), result.id());
@@ -49,6 +49,6 @@ class GetServiceServiceTest {
         UUID id = UUID.randomUUID();
         when(serviceRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThrows(ServiceNotFoundException.class, () -> getServiceService.execute(new GetServiceCommand(id.toString())));
+        assertThrows(ServiceNotFoundException.class, () -> getServiceUseCase.execute(new GetServiceCommand(id.toString())));
     }
 }

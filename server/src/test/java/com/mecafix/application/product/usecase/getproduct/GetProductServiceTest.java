@@ -1,9 +1,9 @@
 package com.mecafix.application.product.usecase.getproduct;
 
-import com.mecafix.application.product.port.out.ProductRepositoryPort;
 import com.mecafix.domain.model.entity.product.Category;
 import com.mecafix.domain.model.entity.product.Product;
 import com.mecafix.domain.model.valueobject.Price;
+import com.mecafix.domain.port.product.ProductRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +23,11 @@ class GetProductServiceTest {
     @Mock
     private ProductRepositoryPort productRepository;
 
-    private GetProductService getProductService;
+    private GetProductUseCase getProductUseCase;
 
     @BeforeEach
     void setUp() {
-        getProductService = new GetProductService(productRepository);
+        getProductUseCase = new GetProductUseCase(productRepository);
     }
 
     @Test
@@ -36,7 +36,7 @@ class GetProductServiceTest {
         Product product = Product.create("Tire", "A tire", new Price(BigDecimal.TEN, BigDecimal.valueOf(20)), 4, category);
         when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
 
-        GetProductResult result = getProductService.execute(new GetProductCommand(product.getId().toString()));
+        GetProductResult result = getProductUseCase.execute(new GetProductCommand(product.getId().toString()));
 
         assertNotNull(result);
         assertEquals(product.getId(), result.id());

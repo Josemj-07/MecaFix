@@ -1,9 +1,9 @@
 package com.mecafix.application.product.usecase.listproducts;
 
-import com.mecafix.application.product.port.out.ProductRepositoryPort;
 import com.mecafix.domain.model.entity.product.Category;
 import com.mecafix.domain.model.entity.product.Product;
 import com.mecafix.domain.model.valueobject.Price;
+import com.mecafix.domain.port.product.ProductRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,11 +22,11 @@ class ListProductsServiceTest {
     @Mock
     private ProductRepositoryPort productRepository;
 
-    private ListProductsService listProductsService;
+    private ListProductsUseCase listProductsUseCase;
 
     @BeforeEach
     void setUp() {
-        listProductsService = new ListProductsService(productRepository);
+        listProductsUseCase = new ListProductsUseCase(productRepository);
     }
 
     @Test
@@ -37,7 +37,7 @@ class ListProductsServiceTest {
 
         when(productRepository.findAll()).thenReturn(List.of(p1, p2));
 
-        ListProductsResult result = listProductsService.execute(new ListProductsCommand());
+        ListProductsResult result = listProductsUseCase.execute(new ListProductsCommand());
 
         assertEquals(2, result.products().size());
     }

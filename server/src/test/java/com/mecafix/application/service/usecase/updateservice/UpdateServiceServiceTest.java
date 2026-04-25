@@ -1,7 +1,7 @@
 package com.mecafix.application.service.usecase.updateservice;
 
-import com.mecafix.application.service.port.out.ServiceRepositoryPort;
 import com.mecafix.domain.model.entity.service.Service;
+import com.mecafix.domain.port.service.ServiceRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,11 +22,11 @@ class UpdateServiceServiceTest {
     @Mock
     private ServiceRepositoryPort serviceRepository;
 
-    private UpdateServiceService updateServiceService;
+    private UpdateServiceUseCase updateServiceUseCase;
 
     @BeforeEach
     void setUp() {
-        updateServiceService = new UpdateServiceService(serviceRepository);
+        updateServiceUseCase = new UpdateServiceUseCase(serviceRepository);
     }
 
     @Test
@@ -36,7 +36,7 @@ class UpdateServiceServiceTest {
 
         UpdateServiceCommand command = new UpdateServiceCommand(service.getId().toString(), "New desc", null);
 
-        UpdateServiceResult result = updateServiceService.execute(command);
+        UpdateServiceResult result = updateServiceUseCase.execute(command);
 
         assertEquals("New desc", result.description());
 

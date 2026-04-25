@@ -1,11 +1,11 @@
 package com.mecafix.application.customer.usecase.getcustomer;
 
-import com.mecafix.application.customer.port.out.CustomerRepositoryPort;
 import com.mecafix.domain.model.entity.person.Customer;
 import com.mecafix.domain.model.valueobject.Dni;
 import com.mecafix.domain.model.valueobject.Email;
 import com.mecafix.domain.model.valueobject.MobilePhone;
 import com.mecafix.application.exceptions.CustomerNotFoundException;
+import com.mecafix.domain.port.customer.CustomerRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +27,11 @@ class GetCustomerServiceTest {
     @Mock
     private CustomerRepositoryPort customerRepository;
 
-    private GetCustomerService getCustomerService;
+    private GetCustomerUseCase getCustomerService;
 
     @BeforeEach
     void setUp() {
-        getCustomerService = new GetCustomerService(customerRepository);
+        getCustomerService = new GetCustomerUseCase(customerRepository);
     }
 
     @Test

@@ -1,9 +1,9 @@
 package com.mecafix.application.product.usecase.updateproductstock;
 
-import com.mecafix.application.product.port.out.ProductRepositoryPort;
 import com.mecafix.domain.model.entity.product.Category;
 import com.mecafix.domain.model.entity.product.Product;
 import com.mecafix.domain.model.valueobject.Price;
+import com.mecafix.domain.port.product.ProductRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +25,11 @@ class UpdateProductStockServiceTest {
     @Mock
     private ProductRepositoryPort productRepository;
 
-    private UpdateProductStockService updateProductStockService;
+    private UpdateProductStockUseCase updateProductStockUseCase;
 
     @BeforeEach
     void setUp() {
-        updateProductStockService = new UpdateProductStockService(productRepository);
+        updateProductStockUseCase = new UpdateProductStockUseCase(productRepository);
     }
 
     @Test
@@ -39,7 +39,7 @@ class UpdateProductStockServiceTest {
         when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
 
         UpdateProductStockCommand command = new UpdateProductStockCommand(product.getId().toString(), 5, "INCREASE");
-        UpdateProductStockResult result = updateProductStockService.execute(command);
+        UpdateProductStockResult result = updateProductStockUseCase.execute(command);
 
         assertEquals(15, result.stock());
         verify(productRepository).save(any(Product.class));
@@ -52,7 +52,7 @@ class UpdateProductStockServiceTest {
         when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
 
         UpdateProductStockCommand command = new UpdateProductStockCommand(product.getId().toString(), 5, "DECREASE");
-        UpdateProductStockResult result = updateProductStockService.execute(command);
+        UpdateProductStockResult result = updateProductStockUseCase.execute(command);
 
         assertEquals(5, result.stock());
         verify(productRepository).save(any(Product.class));
@@ -65,6 +65,6 @@ class UpdateProductStockServiceTest {
         when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
 
         UpdateProductStockCommand command = new UpdateProductStockCommand(product.getId().toString(), 5, "INVALID");
-        assertThrows(IllegalArgumentException.class, () -> updateProductStockService.execute(command));
+        assertThrows(IllegalArgumentException.class, () -> updateProductStockUseCase.execute(command));
     }
 }

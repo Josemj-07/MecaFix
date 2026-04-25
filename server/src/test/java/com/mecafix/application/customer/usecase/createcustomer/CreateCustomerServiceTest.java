@@ -1,7 +1,7 @@
 package com.mecafix.application.customer.usecase.createcustomer;
 
-import com.mecafix.application.customer.port.out.CustomerRepositoryPort;
 import com.mecafix.domain.model.entity.person.Customer;
+import com.mecafix.domain.port.customer.CustomerRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +19,11 @@ class CreateCustomerServiceTest {
     @Mock
     private CustomerRepositoryPort customerRepository;
 
-    private CreateCustomerService createCustomerService;
+    private CreateCustomerUseCase createCustomerUseCase;
 
     @BeforeEach
     void setUp() {
-        createCustomerService = new CreateCustomerService(customerRepository);
+        createCustomerUseCase = new CreateCustomerUseCase(customerRepository);
     }
 
     @Test
@@ -33,7 +33,7 @@ class CreateCustomerServiceTest {
                 "87654321");
 
         // Act
-        CreateCustomerResult result = createCustomerService.execute(command);
+        CreateCustomerResult result = createCustomerUseCase.execute(command);
 
         // Assert
         assertNotNull(result.id());

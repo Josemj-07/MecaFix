@@ -1,9 +1,9 @@
 package com.mecafix.application.serviceorder.usecase.getserviceorder;
 
-import com.mecafix.application.serviceorder.port.out.ServiceOrderRepositoryPort;
 import com.mecafix.domain.model.entity.order.ServiceOrder;
 import com.mecafix.domain.model.entity.quote.Quote;
 import com.mecafix.domain.model.enums.OrderStatus;
+import com.mecafix.domain.port.serviceorder.ServiceOrderRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +25,11 @@ class GetServiceOrderServiceTest {
     @Mock
     private ServiceOrderRepositoryPort serviceOrderRepository;
 
-    private GetServiceOrderService getServiceOrderService;
+    private GetServiceOrderUseCase getServiceOrderUseCase;
 
     @BeforeEach
     void setUp() {
-        getServiceOrderService = new GetServiceOrderService(serviceOrderRepository);
+        getServiceOrderUseCase = new GetServiceOrderUseCase(serviceOrderRepository);
     }
 
     @Test
@@ -47,7 +47,7 @@ class GetServiceOrderServiceTest {
         
         when(serviceOrderRepository.findById(id)).thenReturn(Optional.of(order));
 
-        GetServiceOrderResult result = getServiceOrderService.execute(new GetServiceOrderCommand(id.toString()));
+        GetServiceOrderResult result = getServiceOrderUseCase.execute(new GetServiceOrderCommand(id.toString()));
 
         assertNotNull(result);
     }

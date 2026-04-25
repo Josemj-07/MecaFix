@@ -1,9 +1,10 @@
 package com.mecafix.application.serviceorder.usecase.completetask;
 
-import com.mecafix.application.serviceorder.port.out.ServiceOrderRepositoryPort;
+
 import com.mecafix.domain.model.entity.order.ServiceOrder;
 import com.mecafix.domain.model.entity.order.Task;
 import com.mecafix.domain.model.enums.TaskStatus;
+import com.mecafix.domain.port.serviceorder.ServiceOrderRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +26,11 @@ class CompleteTaskServiceTest {
     @Mock
     private ServiceOrderRepositoryPort serviceOrderRepository;
 
-    private CompleteTaskService completeTaskService;
+    private CompleteTaskUseCase completeTaskUseCase;
 
     @BeforeEach
     void setUp() {
-        completeTaskService = new CompleteTaskService(serviceOrderRepository);
+        completeTaskUseCase = new CompleteTaskUseCase(serviceOrderRepository);
     }
 
     @Test
@@ -45,7 +46,7 @@ class CompleteTaskServiceTest {
         
         when(serviceOrderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
-        completeTaskService.execute(new CompleteTaskCommand(orderId.toString(), taskId.toString()));
+        completeTaskUseCase.execute(new CompleteTaskCommand(orderId.toString(), taskId.toString()));
 
         verify(task).markFinished();
         verify(serviceOrderRepository).save(order);
