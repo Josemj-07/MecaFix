@@ -311,4 +311,10 @@ public class UseCaseConfig {
             VehicleRepositoryPort vehicleRepository) {
         return new UpdateVehicleUseCase(vehicleRepository);
     }
+
+    // ── Security ──────────────────────────────────────────────
+    @Bean
+    public org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+    }
 }
