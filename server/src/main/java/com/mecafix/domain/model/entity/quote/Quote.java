@@ -81,20 +81,10 @@ public class Quote {
 
     }
 
-
-
     public void addPayable(IPayable payable) {
         if(payable == null) throw new InvalidQuoteException("Payable object must not be null");
         if(this.status != QuoteStatus.PENDING) throw new InvalidQuoteException("Cannot add anything if the quote is not pending");
         this.payable.add(payable);
-        this.totalAmount = calculateTotal();
-    }
-
-    public void removePayable(IPayable payable) {
-        if(payable == null) throw new InvalidQuoteException("Payable object must not be null");
-        if(status != QuoteStatus.PENDING)  throw new InvalidQuoteException("Cannot remove anything if the quote is not pending");
-        if(!this.payable.contains(payable)) throw new InvalidQuoteException("Payable object does not exist in the quote");
-        this.payable.remove(payable);
         this.totalAmount = calculateTotal();
     }
 
