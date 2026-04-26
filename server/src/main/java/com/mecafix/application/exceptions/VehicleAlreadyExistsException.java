@@ -1,6 +1,8 @@
 package com.mecafix.application.exceptions;
 
-public class VehicleAlreadyExistsException extends RuntimeException {
+import com.mecafix.domain.exceptions.ConflictException;
+
+public class VehicleAlreadyExistsException extends ConflictException {
     public VehicleAlreadyExistsException(String message) {
         super(message);
     }

@@ -1,6 +1,8 @@
 package com.mecafix.application.exceptions;
 
-public class TaskNotFoundException extends RuntimeException {
+import com.mecafix.domain.exceptions.NotFoundException;
+
+public class TaskNotFoundException extends NotFoundException {
     public TaskNotFoundException(String message) {
         super(message);
     }

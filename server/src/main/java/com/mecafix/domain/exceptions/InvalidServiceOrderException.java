@@ -1,6 +1,6 @@
 package com.mecafix.domain.exceptions;
 
-public class InvalidServiceOrderException extends RuntimeException {
+public class InvalidServiceOrderException extends InvalidDataException {
     public InvalidServiceOrderException() {
         super("INVALID_SERVICE_ORDER");
     }

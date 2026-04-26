@@ -1,6 +1,8 @@
 package com.mecafix.application.exceptions;
 
-public class CategoryNotFoundException extends RuntimeException {
+import com.mecafix.domain.exceptions.NotFoundException;
+
+public class CategoryNotFoundException extends NotFoundException {
     public CategoryNotFoundException(String message) {
         super(message);
     }

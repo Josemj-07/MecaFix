@@ -1,6 +1,8 @@
 package com.mecafix.application.exceptions;
 
-public class PaymentNotFoundException extends RuntimeException {
+import com.mecafix.domain.exceptions.NotFoundException;
+
+public class PaymentNotFoundException extends NotFoundException {
     public PaymentNotFoundException(String message) {
         super(message);
     }

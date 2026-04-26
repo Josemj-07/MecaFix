@@ -1,6 +1,8 @@
 package com.mecafix.application.exceptions;
 
-public class MechanicAlreadyExistsException extends RuntimeException {
+import com.mecafix.domain.exceptions.ConflictException;
+
+public class MechanicAlreadyExistsException extends ConflictException {
     public MechanicAlreadyExistsException(String message) {
         super(message);
     }

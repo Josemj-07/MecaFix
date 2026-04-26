@@ -1,6 +1,8 @@
 package com.mecafix.application.exceptions;
 
-public class ServiceNotFoundException extends RuntimeException {
+import com.mecafix.domain.exceptions.NotFoundException;
+
+public class ServiceNotFoundException extends NotFoundException {
     public ServiceNotFoundException(String message) {
         super(message);
     }

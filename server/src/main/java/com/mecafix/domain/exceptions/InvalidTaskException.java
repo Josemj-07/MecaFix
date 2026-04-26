@@ -4,7 +4,7 @@
  */
 package com.mecafix.domain.exceptions;
 
-public class InvalidTaskException extends RuntimeException {
+public class InvalidTaskException extends InvalidDataException {
 
     public InvalidTaskException(String message) {
         super(message);

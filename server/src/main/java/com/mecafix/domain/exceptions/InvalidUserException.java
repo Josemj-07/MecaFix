@@ -1,6 +1,6 @@
 package com.mecafix.domain.exceptions;
 
-public class InvalidUserException extends RuntimeException {
+public class InvalidUserException extends InvalidDataException {
 
     public InvalidUserException() {
         super("INVALID_USER");

@@ -1,6 +1,8 @@
 package com.mecafix.application.exceptions;
 
-public class CategoryAlreadyExistsException extends RuntimeException {
+import com.mecafix.domain.exceptions.ConflictException;
+
+public class CategoryAlreadyExistsException extends ConflictException {
     public CategoryAlreadyExistsException(String message) {
         super(message);
     }
