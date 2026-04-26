@@ -1,6 +1,8 @@
 package com.mecafix.application.exceptions;
 
-public class ProductNotFoundException extends RuntimeException {
+import com.mecafix.domain.exceptions.NotFoundException;
+
+public class ProductNotFoundException extends NotFoundException {
     public ProductNotFoundException(String message) {
         super(message);
     }

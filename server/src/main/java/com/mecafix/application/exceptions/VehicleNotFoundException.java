@@ -1,6 +1,8 @@
 package com.mecafix.application.exceptions;
 
-public class VehicleNotFoundException extends RuntimeException {
+import com.mecafix.domain.exceptions.NotFoundException;
+
+public class VehicleNotFoundException extends NotFoundException {
     public VehicleNotFoundException(String message) {
         super(message);
     }
