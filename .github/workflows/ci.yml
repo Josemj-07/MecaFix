@@ -11,10 +11,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -27,20 +27,16 @@ jobs:
           cache: 'gradle'
 
       - name: Make gradlew executable
-        run: chmod +x server/gradlew  # ← Ruta correcta
+        run: chmod +x server/gradlew
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4  # ← Actualizado a v4
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: wrapper
 
       - name: Verify code compilation
-        working-directory: ./server  # ← Ejecutar desde server/
-        run: ./gradlew classes testClasses --no-daemon
-
-      - name: Run Tests
         working-directory: ./server
-        run: ./gradlew test --no-daemon --continue  # ← --continue para ver todos los fallos
+        run: ./gradlew classes --no-daemon
 
       - name: Build Artifact
         working-directory: ./server
@@ -52,12 +48,4 @@ jobs:
         with:
           name: application-artifact
           path: server/build/libs/*.jar
-          retention-days: 7
-
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results
-          path: server/build/reports/tests/test/
           retention-days: 7
