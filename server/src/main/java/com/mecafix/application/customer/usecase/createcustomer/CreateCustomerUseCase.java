@@ -20,9 +20,10 @@ public class CreateCustomerUseCase {
         Customer customer = Customer.create(
                 command.firstName(),
                 command.lastName(),
-                new Email(command.email()),
-                new MobilePhone(command.mobilePhone()),
-                new Dni(command.nationalId()));
+                command.email(),
+                command.mobilePhone(),
+                command.nationalId(),
+                new java.util.ArrayList<>());
 
         customerRepository.save(customer);
 

@@ -18,7 +18,7 @@ public class Product {
         return new Product(name, description, price, stock, category);
     }
 
-    public static Product reBuild(String id, String name, String description, Price price, int stock, Category category) {
+    public static Product reBuild(UUID id, String name, String description, Price price, int stock, Category category) {
         return new Product(id, name, description, price, stock, category);
     }
 
@@ -45,7 +45,7 @@ public class Product {
         this.category = category;
     }
 
-    private Product(String id, String name, String description, Price price, int stock, Category category) {
+    private Product(UUID id, String name, String description, Price price, int stock, Category category) {
         name = name == null ? null : name.trim();
         if (name == null || name.isBlank())
             throw new InvalidProductException("the field name must not be empty");
@@ -63,7 +63,7 @@ public class Product {
         if(id == null)
             throw new InvalidProductException("id must not be null");
 
-        this.id = UUID.fromString(id);
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;

@@ -25,8 +25,8 @@ public class Quote {
         return new Quote(customer, vehicle, payable);
     }
 
-    public static Quote reBuild(String id, Customer customer, Vehicle vehicle, List<IPayable> payable) {
-        return new Quote(id,customer, vehicle, payable);
+    public static Quote reBuild(UUID id, Customer customer, Vehicle vehicle, List<IPayable> payable, QuoteStatus status, LocalDateTime createdDate) {
+        return new Quote(id, customer, vehicle, payable, status, createdDate);
     }
 
     /**
@@ -59,7 +59,7 @@ public class Quote {
 
     }
 
-    private Quote(String id, Customer customer, Vehicle vehicle, List<IPayable> payable) {
+    private Quote(UUID id, Customer customer, Vehicle vehicle, List<IPayable> payable, QuoteStatus status, LocalDateTime createdDate) {
 
         if (customer == null) {
             throw new InvalidQuoteException("Customer must not be null");
@@ -71,12 +71,12 @@ public class Quote {
             throw new InvalidQuoteException("id must not be null");
         }
 
-        this.id = UUID.fromString(id);
+        this.id = id;
         this.customer = customer;
         this.vehicle = vehicle;
         this.payable = payable != null ? payable: new ArrayList<IPayable>();
-        this.status = QuoteStatus.PENDING;
-        this.createdDate = LocalDateTime.now();
+        this.status = status != null ? status : QuoteStatus.PENDING;
+        this.createdDate = createdDate != null ? createdDate : LocalDateTime.now();
         this.totalAmount = calculateTotal();
 
     }

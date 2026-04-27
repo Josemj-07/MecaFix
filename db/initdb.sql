@@ -58,7 +58,7 @@ create table customer
 );
 
 
-create table vehicule
+create table vehicle
 (
     id                uuid         not null
         primary key,
@@ -117,7 +117,7 @@ create table service_detail
 (
     id                uuid           not null
         primary key,
-    appliedlaborprice numeric(12, 3) not null,
+    appliedprice numeric(12, 3) not null,
     id_service        uuid
         references public.service,
     id_quote          uuid

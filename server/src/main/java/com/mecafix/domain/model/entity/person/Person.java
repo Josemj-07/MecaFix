@@ -22,25 +22,25 @@ public abstract class Person {
      * Subclasses should provide factory methods (create()) for instantiation.
      */
 
-    protected Person(String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
+    protected Person(String firstName, String lastName, String email, String mobilePhone, String dni) {
         firstName = firstName == null ? null : firstName.trim();
         if (firstName == null || firstName.isBlank()) throw new InvalidPersonException("First name must not be empty");
         lastName = lastName == null ? null : lastName.trim();
         if (lastName == null || lastName.isBlank()) throw new InvalidPersonException("Last name must not be empty");
         if (email == null) throw new InvalidPersonException("Email must not be null");
         if (mobilePhone == null) throw new InvalidPersonException("Mobile phone must not be null");
-        if (nationalId == null) throw new InvalidPersonException("National id must not be empty");
+        if (dni == null) throw new InvalidPersonException("National id must not be empty");
 
         this.id = UUID.randomUUID();
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
-        this.mobilePhone = mobilePhone;
-        this.dni = nationalId;
+        this.email = new Email(email);
+        this.mobilePhone = new MobilePhone(mobilePhone);
+        this.dni = new Dni(dni);
         this.registrationDate = LocalDateTime.now();
     }
 
-    protected Person(String id, String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
+    protected Person(UUID id, String firstName,String lastName, String email, String mobilePhone, String dni) {
         firstName = firstName == null ? null : firstName.trim();
         if (firstName == null || firstName.isBlank()) throw new InvalidPersonException("First name must not be empty");
         lastName = lastName == null ? null : lastName.trim();
@@ -48,15 +48,16 @@ public abstract class Person {
         if (email == null) throw new InvalidPersonException("Email must not be null");
         if(id == null) throw new InvalidPersonException("id must not be null");
         if (mobilePhone == null) throw new InvalidPersonException("Mobile phone must not be null");
-        if (nationalId == null) throw new InvalidPersonException("National id must not be empty");
+        if (dni == null) throw new InvalidPersonException("National id must not be empty");
 
-        this.id = UUID.fromString(id);
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
-        this.mobilePhone = mobilePhone;
-        this.dni = nationalId;
+        this.email = new Email(email);
+        this.mobilePhone = new MobilePhone(mobilePhone);
+        this.dni = new Dni(dni);
         this.registrationDate = LocalDateTime.now();
+
     }
 
     public UUID getId() { return this.id; }

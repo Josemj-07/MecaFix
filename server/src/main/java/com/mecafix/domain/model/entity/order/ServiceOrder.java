@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ServiceOrder {
+
     private final UUID id;
     private final Quote quote;
     private final List<Task> tasks;
@@ -17,59 +18,90 @@ public class ServiceOrder {
     private final LocalDateTime creationDate;
 
     public static ServiceOrder create(Quote quote, List<Task> tasks) {
-        return new ServiceOrder(quote, tasks);
+        return new ServiceOrder(UUID.randomUUID(), quote, tasks, OrderStatus.CREATED, LocalDateTime.now());
     }
 
-    public static ServiceOrder reBuild(String id, Quote quote, List<Task> tasks) {
-        return new ServiceOrder(id, quote, tasks);
+    public static ServiceOrder reBuild(
+            UUID id,
+            Quote quote,
+            List<Task> tasks,
+            OrderStatus orderStatus,
+            LocalDateTime creationDate
+    ) {
+        return new ServiceOrder(id, quote, tasks, orderStatus, creationDate);
     }
 
-    private ServiceOrder(Quote quote, List<Task> tasks) {
-        if(quote == null) throw new InvalidServiceOrderException("quote must not be null");
-        if(tasks == null || tasks.isEmpty()) throw new InvalidServiceOrderException("tasks must not be empty");
-        this.id = UUID.randomUUID();
+    private ServiceOrder(
+            UUID id,
+            Quote quote,
+            List<Task> tasks,
+            OrderStatus orderStatus,
+            LocalDateTime creationDate
+    ) {
+
+        validate(id, quote, tasks);
+
+        if (orderStatus == null)
+            throw new InvalidServiceOrderException("orderStatus must not be null");
+
+        if (creationDate == null)
+            throw new InvalidServiceOrderException("creationDate must not be null");
+
+        this.id = id;
         this.quote = quote;
-        this.tasks = tasks;
-        this.orderStatus = OrderStatus.CREATED;
-        this.creationDate = LocalDateTime.now();
+        this.tasks = new ArrayList<>(tasks); // copia defensiva
+        this.orderStatus = orderStatus;
+        this.creationDate = creationDate;
     }
 
-    private ServiceOrder(String id, Quote quote, List<Task> tasks) {
-        if(quote == null) throw new InvalidServiceOrderException("quote must not be null");
-        if(id == null) throw new InvalidServiceOrderException("id must not be null");
-        if(tasks == null || tasks.isEmpty()) throw new InvalidServiceOrderException("tasks must not be empty");
-        this.id = UUID.fromString(id);
-        this.quote = quote;
-        this.tasks = tasks;
-        this.orderStatus = OrderStatus.CREATED;
-        this.creationDate = LocalDateTime.now();
+    private void validate(UUID id, Quote quote, List<Task> tasks) {
+
+        if (id == null)
+            throw new InvalidServiceOrderException("id must not be null");
+
+        if (quote == null)
+            throw new InvalidServiceOrderException("quote must not be null");
+
+        if (tasks == null || tasks.isEmpty())
+            throw new InvalidServiceOrderException("tasks must not be empty");
     }
 
-    public List<Task> getTasks() {return List.copyOf(this.tasks);}
+    public UUID getId() {
+        return this.id;
+    }
+    public List<Task> getTasks() {
+        return List.copyOf(this.tasks);
+    }
 
-    public UUID getId() {return this.id;}
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
 
-    public LocalDateTime getCreationDate(){return this.creationDate;}
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
 
-    public OrderStatus getOrderStatus() {return this.orderStatus;}
+    public Quote getQuote() {
+        return quote;
+    }
 
-    public Quote getQuote() {return this.quote;}
-
-    public void advanceOrderStatus(){
+    public void advanceOrderStatus() {
         this.orderStatus = this.orderStatus.nextOrderStatus();
     }
 
-    public void addNewTask(List<Task> newTasks) {
+    public void addNewTasks(List<Task> newTasks) {
+
         if (newTasks == null || newTasks.isEmpty()) {
             throw new InvalidServiceOrderException("tasks must not be empty");
         }
 
-        if (this.orderStatus != OrderStatus.CREATED) {
-            throw new InvalidServiceOrderException("cannot add task in this current state");
+        for (Task task : newTasks) {
+            addNewTask(task);
         }
-        this.tasks.addAll(newTasks);
     }
+
     public void addNewTask(Task newTask) {
+
         if (newTask == null) {
             throw new InvalidServiceOrderException("task must not be null");
         }
@@ -81,17 +113,17 @@ public class ServiceOrder {
         this.tasks.add(newTask);
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ServiceOrder)) return false;
-        ServiceOrder that = (ServiceOrder) o;
-
+        if (!(o instanceof ServiceOrder that)) return false;
         return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return this.id.hashCode();
+        return id.hashCode();
     }
+
 }
