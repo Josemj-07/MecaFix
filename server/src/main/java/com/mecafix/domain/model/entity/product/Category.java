@@ -12,6 +12,7 @@ public class Category {
     public static Category create(String name) {
         return new Category(name);
     }
+    public static Category reBuild(UUID id, String name) {return new Category(id, name);}
 
     private Category(String name) {
         name = name == null ? null : name.trim();
@@ -23,12 +24,12 @@ public class Category {
         this.name = name;
     }
 
-    private Category(String id, String name) {
+    private Category(UUID id, String name) {
         name = name == null ? null : name.trim();
         if (name == null || name.isBlank()) throw new InvalidCategoryException("Name must not be empty");
         if(id == null) throw new InvalidPersonException("id must not be null");
 
-        this.id = UUID.fromString(id);
+        this.id = id;
         this.name = name;
     }
 

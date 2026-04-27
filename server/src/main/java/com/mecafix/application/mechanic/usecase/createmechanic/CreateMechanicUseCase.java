@@ -27,9 +27,9 @@ public class  CreateMechanicUseCase {
         Mechanic mechanic = Mechanic.create(
                 command.firstName(),
                 command.lastName(),
-                new Email(command.email()),
-                new MobilePhone(command.mobilePhone()),
-                new Dni(command.nationalId()),
+                command.email(),
+                command.mobilePhone(),
+                command.nationalId(),
                 Specialty.valueOf(command.specialty()));
 
         mechanicRepository.save(mechanic);

@@ -20,7 +20,7 @@ public class Payment {
         return new Payment(amountReceived, paymentMethod, serviceOrder);
     }
 
-    public static Payment reBuild(String id, BigDecimal amountReceived, PaymentMethod paymentMethod, ServiceOrder serviceOrder) {
+    public static Payment reBuild(UUID id, BigDecimal amountReceived, PaymentMethod paymentMethod, ServiceOrder serviceOrder) {
         return new Payment(id, amountReceived, paymentMethod, serviceOrder);
     }
 
@@ -38,14 +38,14 @@ public class Payment {
         this.amountToPay = this.serviceOrder.getQuote().getTotalAmount();
     }
 
-    private Payment(String id, BigDecimal amountReceived, PaymentMethod paymentMethod, ServiceOrder serviceOrder) {
+    private Payment(UUID id, BigDecimal amountReceived, PaymentMethod paymentMethod, ServiceOrder serviceOrder) {
         if (amountReceived == null) throw new InvalidPaymentException("Amount must not be null");
         if(id == null) throw new InvalidPaymentException("Amount must not be null");
         if (amountReceived.compareTo(BigDecimal.ZERO) < 0) throw new InvalidPaymentException("Amount must not be negative");
         if (paymentMethod == null) throw new InvalidPaymentException("Payment method must not be null");
         if (serviceOrder == null) throw new InvalidPaymentException("Service order must not be null");
 
-        this.id = UUID.fromString(id);
+        this.id = id;
         this.paymentMethod = paymentMethod;
         this.amountReceived = amountReceived;
         this.date = LocalDateTime.now();

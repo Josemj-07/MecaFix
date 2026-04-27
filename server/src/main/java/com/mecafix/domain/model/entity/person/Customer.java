@@ -9,32 +9,33 @@ import com.mecafix.domain.model.valueobject.Dni;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class Customer extends Person {
     private final List<Vehicle> vehicles;
 
-    public static Customer create(String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
+    public static Customer create(String firstName, String lastName, String email, String mobilePhone, String nationalId, List<Vehicle> vehicles) {
         return new Customer(
                 firstName, lastName, email,
-                mobilePhone, nationalId
+                mobilePhone, nationalId, vehicles
         );
     }
 
-    public static Customer reBuild(String id, String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
+    public static Customer reBuild(UUID id, String firstName, String lastName, String email, String mobilePhone, String nationalId, List<Vehicle> vehicles) {
         return new Customer( id,
                 firstName, lastName, email,
-                mobilePhone, nationalId
+                mobilePhone, nationalId, vehicles
         );
     }
 
-    private Customer(String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
+    private Customer(String firstName, String lastName, String email, String mobilePhone, String nationalId, List<Vehicle> vehicles) {
         super(firstName, lastName, email, mobilePhone, nationalId);
-        this.vehicles = new ArrayList<>();
+        this.vehicles= vehicles != null ? new ArrayList<>(vehicles) : new ArrayList<>();
     }
 
-    private Customer(String id, String firstName, String lastName, Email email, MobilePhone mobilePhone, Dni nationalId) {
+    private Customer(UUID id, String firstName, String lastName, String  email, String mobilePhone, String nationalId, List<Vehicle> vehicles) {
         super(id, firstName, lastName, email, mobilePhone, nationalId);
-        this.vehicles = new ArrayList<>();
+        this.vehicles = vehicles != null ? new ArrayList<>(vehicles) : new ArrayList<>();
     }
 
 

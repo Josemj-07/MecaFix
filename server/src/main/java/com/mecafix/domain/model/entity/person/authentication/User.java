@@ -17,6 +17,10 @@ public class User {
         return new User(userEmail, passwordHash, name, role);
     }
 
+    public static User reBuild(UUID id,Email userEmail, String passwordHash, String name, Role role) {
+        return new User(id, userEmail, passwordHash, name, role);
+    }
+
     private User(Email userEmail, String passwordHash, String name, Role role) {
         validateNotNull(userEmail, passwordHash, name, role);
 
@@ -26,6 +30,21 @@ public class User {
         validateNotBlank(name, passwordHash);
 
         this.id = UUID.randomUUID();
+        this.email = userEmail;
+        this.passwordHash = passwordHash;
+        this.name = name;
+        this.role = role;
+    }
+
+    private User(UUID id, Email userEmail, String passwordHash, String name, Role role) {
+        validateNotNull(userEmail, passwordHash, name, role);
+
+        name = name == null ? null : name.trim();
+        passwordHash = passwordHash == null ? null : passwordHash.trim();
+
+        validateNotBlank(name, passwordHash);
+
+        this.id = id;
         this.email = userEmail;
         this.passwordHash = passwordHash;
         this.name = name;

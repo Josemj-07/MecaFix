@@ -9,9 +9,15 @@ import com.mecafix.domain.port.mechanic.MechanicRepositoryPort;
 import com.mecafix.domain.port.payment.PaymentRepositoryPort;
 import com.mecafix.domain.port.product.ProductRepositoryPort;
 import com.mecafix.domain.port.quote.QuoteRepositoryPort;
+import com.mecafix.domain.port.security.JwtTokenPort;
 import com.mecafix.domain.port.service.ServiceRepositoryPort;
 import com.mecafix.domain.port.serviceorder.ServiceOrderRepositoryPort;
+import com.mecafix.domain.port.user.UserRepositoryPort;
+import com.mecafix.domain.port.util.PasswordHasher;
 import com.mecafix.domain.port.vehicle.VehicleRepositoryPort;
+
+import com.mecafix.application.auth.usecase.login.LoginUseCase;
+import com.mecafix.application.auth.usecase.register.RegisterUserUseCase;
 
 import com.mecafix.application.category.usecase.createcategory.CreateCategoryUseCase;
 import com.mecafix.application.category.usecase.getcategory.GetCategoryUseCase;
@@ -310,6 +316,22 @@ public class UseCaseConfig {
     public UpdateVehicleUseCase updateVehicleUseCase(
             VehicleRepositoryPort vehicleRepository) {
         return new UpdateVehicleUseCase(vehicleRepository);
+    }
+
+    // ── Auth ──────────────────────────────────────────────────
+    @Bean
+    public LoginUseCase loginUseCase(
+            UserRepositoryPort userRepository,
+            PasswordHasher passwordHasher,
+            JwtTokenPort jwtTokenPort) {
+        return new LoginUseCase(userRepository, passwordHasher, jwtTokenPort);
+    }
+
+    @Bean
+    public RegisterUserUseCase registerUserUseCase(
+            UserRepositoryPort userRepository,
+            PasswordHasher passwordHasher) {
+        return new RegisterUserUseCase(userRepository, passwordHasher);
     }
 
     // ── Security ──────────────────────────────────────────────

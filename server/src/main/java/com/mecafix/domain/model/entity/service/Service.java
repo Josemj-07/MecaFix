@@ -17,7 +17,7 @@ public class Service {
         return new Service(name, description, laborPrice);
     }
 
-    public static Service reBuild(String id, String name, String description, BigDecimal laborPrice) {
+    public static Service reBuild(UUID id, String name, String description, BigDecimal laborPrice) {
         return new Service(id, name, description, laborPrice);
     }
 
@@ -39,7 +39,7 @@ public class Service {
     }
 
 
-    private Service(String id, String name, String description, BigDecimal laborPrice) {
+    private Service(UUID id, String name, String description, BigDecimal laborPrice) {
         name = name == null ? null : name.trim();
         if (name == null || name.isBlank()) throw new InvalidServiceException("Name must not be empty");
 
@@ -53,7 +53,7 @@ public class Service {
         if(id == null)
             throw new InvalidServiceException("id must not be null");
 
-        this.id = UUID.fromString(id);
+        this.id = id;
         this.name = name;
         this.description = description;
         this.laborPrice = laborPrice;
