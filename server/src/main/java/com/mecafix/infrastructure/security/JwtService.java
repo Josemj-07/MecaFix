@@ -33,7 +33,7 @@ public class JwtService implements JwtTokenPort {
     @Override
     public boolean isTokenValid(String token, String username) {
         final String tokenUsername = extractUsername(token);
-        return tokenUsername.equals(username) && !isTokenExpired(token);
+        return tokenUsername.equals(username) && isTokenExpired(token);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class JwtService implements JwtTokenPort {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        return username.equals(userDetails.getUsername()) && isTokenExpired(token);
     }
 
     // ── Internal helpers ────────────────────────────────────
@@ -70,7 +70,7 @@ public class JwtService implements JwtTokenPort {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
+        return !extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
