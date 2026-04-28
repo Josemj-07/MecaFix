@@ -14,10 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StartTaskServiceTest {
@@ -38,11 +35,11 @@ class StartTaskServiceTest {
         Task task = mock(Task.class);
         UUID taskId = UUID.randomUUID();
         UUID orderId = UUID.randomUUID();
-        
+
         when(task.getId()).thenReturn(taskId);
         when(task.getStatus()).thenReturn(TaskStatus.IN_PROGRESS);
         when(order.getTasks()).thenReturn(List.of(task));
-        
+
         when(serviceOrderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
         startTaskUseCase.execute(new StartTaskCommand(orderId.toString(), taskId.toString()));

@@ -1,10 +1,7 @@
 package com.mecafix.application.customer.usecase.getcustomer;
 
-import com.mecafix.domain.model.entity.person.Customer;
-import com.mecafix.domain.model.valueobject.Dni;
-import com.mecafix.domain.model.valueobject.Email;
-import com.mecafix.domain.model.valueobject.MobilePhone;
 import com.mecafix.application.exceptions.CustomerNotFoundException;
+import com.mecafix.domain.model.entity.person.Customer;
 import com.mecafix.domain.port.customer.CustomerRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,8 +34,8 @@ class GetCustomerServiceTest {
 
     @Test
     void execute_ShouldReturnCustomer_WhenExists() {
-        Customer customer = Customer.create("Jack", "Smith", new Email("jack@smith.com"),
-                new MobilePhone("+1112223333"), new Dni("11111111"));
+        Customer customer = Customer.create("Jack", "Smith", "jack@smith.com",
+                "+1112223333", "11111111", new ArrayList<>());
         UUID id = customer.getId();
 
         when(customerRepository.findById(id)).thenReturn(Optional.of(customer));

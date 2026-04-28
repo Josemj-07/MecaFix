@@ -2,7 +2,7 @@ package com.mecafix.infrastructure.rest.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -52,5 +52,6 @@ public class VehicleController {
         return ResponseEntity.noContent().build();
     }
 
-    public record UpdateVehicleBody(Long mileage, String color) {}
+    public record UpdateVehicleBody(Long mileage, String color) {
+    }
 }

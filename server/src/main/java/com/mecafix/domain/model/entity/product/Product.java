@@ -2,8 +2,6 @@ package com.mecafix.domain.model.entity.product;
 
 import com.mecafix.domain.model.valueobject.Price;
 import com.mecafix.domain.exceptions.InvalidProductException;
-import org.jspecify.annotations.NonNull;
-
 import java.util.UUID;
 
 public class Product {
@@ -60,7 +58,7 @@ public class Product {
         if (stock < 0)
             throw new InvalidProductException("Stock must not be less than zero");
 
-        if(id == null)
+        if (id == null)
             throw new InvalidProductException("id must not be null");
 
         this.id = id;

@@ -30,7 +30,7 @@ class ValueObjectTests {
 
     @Test
     void testMobilePhone_InvalidPhone() {
-        assertThrows(InvalidMobilePhoneException.class, () -> new MobilePhone("123"));
+        assertThrows(InvalidMobilePhoneException.class, () -> new MobilePhone("+571234asdb"));
     }
 
     @Test
