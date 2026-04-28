@@ -1,6 +1,5 @@
 package com.mecafix.application.serviceorder.usecase.completetask;
 
-
 import com.mecafix.domain.model.entity.order.ServiceOrder;
 import com.mecafix.domain.model.entity.order.Task;
 import com.mecafix.domain.model.enums.TaskStatus;
@@ -15,10 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CompleteTaskServiceTest {
@@ -39,11 +35,11 @@ class CompleteTaskServiceTest {
         Task task = mock(Task.class);
         UUID taskId = UUID.randomUUID();
         UUID orderId = UUID.randomUUID();
-        
+
         when(task.getId()).thenReturn(taskId);
         when(task.getStatus()).thenReturn(TaskStatus.FINISHED);
         when(order.getTasks()).thenReturn(List.of(task));
-        
+
         when(serviceOrderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
         completeTaskUseCase.execute(new CompleteTaskCommand(orderId.toString(), taskId.toString()));

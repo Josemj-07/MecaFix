@@ -11,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Bridges the domain User with Spring Security's UserDetailsService.
- * Loads user by email (used as username in this system).
- */
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -29,7 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 userEntity.getEmail(),
                 userEntity.getPasswordHash(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name()))
-        );
+                List.of(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name())));
     }
 }

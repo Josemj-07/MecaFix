@@ -1,9 +1,6 @@
 package com.mecafix.application.customer.usecase.updatecustomer;
 
 import com.mecafix.domain.model.entity.person.Customer;
-import com.mecafix.domain.model.valueobject.Dni;
-import com.mecafix.domain.model.valueobject.Email;
-import com.mecafix.domain.model.valueobject.MobilePhone;
 import com.mecafix.domain.port.customer.CustomerRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,8 +31,8 @@ class UpdateCustomerServiceTest {
 
     @Test
     void execute_ShouldUpdateAndSaveCustomer() {
-        Customer customer = Customer.create("Jack", "Smith", new Email("jack@smith.com"),
-                new MobilePhone("+1112223333"), new Dni("11111111"));
+        Customer customer = Customer.create("Jack", "Smith", "jack@smith.com",
+                "+1112223333", "11111111", new ArrayList<>());
         when(customerRepository.findById(customer.getId())).thenReturn(Optional.of(customer));
 
         UpdateCustomerCommand command = new UpdateCustomerCommand(customer.getId().toString(), "new@smith.com", null,
