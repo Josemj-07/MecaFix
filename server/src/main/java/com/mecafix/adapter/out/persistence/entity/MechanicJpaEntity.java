@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name="mechanic")
+@Table(name = "mechanic")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,10 +17,10 @@ public class MechanicJpaEntity {
     @Id
     private UUID id;
 
-    @Column(name= "firstname", nullable = false)
+    @Column(name = "firstname", nullable = false)
     private String firstName;
 
-    @Column(name= "lastname", nullable = false)
+    @Column(name = "lastname", nullable = false)
     private String lastName;
 
     @Column(name = "email", nullable = false)
@@ -32,7 +32,7 @@ public class MechanicJpaEntity {
     @Column(unique = true, nullable = false)
     private String dni;
 
-    @Column(name="speciality", nullable = false)
+    @Column(name = "specialty", nullable = false)
     @Enumerated(EnumType.STRING)
     private Specialty specialty;
 }
