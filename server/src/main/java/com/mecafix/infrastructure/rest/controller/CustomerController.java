@@ -2,7 +2,6 @@ package com.mecafix.infrastructure.rest.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -88,10 +87,12 @@ public class CustomerController {
             @PathVariable String id,
             @RequestBody UpdateCustomerBody body) {
         log.info("REST | PATCH /customers/{}", id);
-        UpdateCustomerCommand command = new UpdateCustomerCommand(id, body.email(), body.mobilePhone(), body.nationalId());
+        UpdateCustomerCommand command = new UpdateCustomerCommand(id, body.email(), body.mobilePhone(),
+                body.nationalId());
         updateCustomerUseCase.execute(command);
         return ResponseEntity.noContent().build();
     }
 
-    public record UpdateCustomerBody(String email, String mobilePhone, String nationalId) {}
+    public record UpdateCustomerBody(String email, String mobilePhone, String nationalId) {
+    }
 }

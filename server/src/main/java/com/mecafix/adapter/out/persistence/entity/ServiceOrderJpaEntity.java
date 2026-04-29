@@ -5,13 +5,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name="service_order")
+@Table(name = "service_order")
 @NoArgsConstructor
 @Getter
 @AllArgsConstructor

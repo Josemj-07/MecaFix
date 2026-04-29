@@ -1,6 +1,5 @@
 package com.mecafix.adapter.out.persistence.entity;
 
-import com.mecafix.domain.model.enums.OrderStatus;
 import com.mecafix.domain.model.enums.QuoteStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name="quote")
+@Table(name = "quote")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,17 +22,17 @@ public class QuoteJpaEntity {
     private UUID id;
 
     @OneToOne
-    @JoinColumn(name="id_vehicle")
+    @JoinColumn(name = "id_vehicle")
     private VehicleJpaEntity vehicle;
 
-    @Column(name="status", nullable = false)
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private QuoteStatus orderStatus;
 
-    @Column(name="totalamount", nullable = false)
+    @Column(name = "totalamount", nullable = false)
     private BigDecimal totalAmount;
 
-    @Column(name="creationdate", nullable = false)
+    @Column(name = "creationdate", nullable = false)
     private LocalDateTime creationDate;
 
     @OneToMany(mappedBy = "quote", cascade = CascadeType.ALL, orphanRemoval = true)

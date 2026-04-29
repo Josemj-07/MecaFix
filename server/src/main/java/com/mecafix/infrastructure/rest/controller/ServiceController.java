@@ -2,7 +2,6 @@ package com.mecafix.infrastructure.rest.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -80,5 +79,6 @@ public class ServiceController {
         return ResponseEntity.noContent().build();
     }
 
-    public record UpdateServiceBody(String description, BigDecimal laborPrice) {}
+    public record UpdateServiceBody(String description, BigDecimal laborPrice) {
+    }
 }

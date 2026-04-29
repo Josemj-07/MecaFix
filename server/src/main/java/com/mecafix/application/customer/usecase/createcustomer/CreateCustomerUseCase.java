@@ -2,9 +2,6 @@ package com.mecafix.application.customer.usecase.createcustomer;
 
 import com.mecafix.application.customer.mapper.CustomerMapper;
 import com.mecafix.domain.model.entity.person.Customer;
-import com.mecafix.domain.model.valueobject.Dni;
-import com.mecafix.domain.model.valueobject.Email;
-import com.mecafix.domain.model.valueobject.MobilePhone;
 import com.mecafix.domain.port.customer.CustomerRepositoryPort;
 
 public class CreateCustomerUseCase {

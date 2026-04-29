@@ -2,7 +2,6 @@ package com.mecafix.infrastructure.rest.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -95,6 +94,9 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    public record UpdateProductPriceBody(BigDecimal purchasePrice, BigDecimal salePrice) {}
-    public record UpdateProductStockBody(int quantity, String operation) {}
+    public record UpdateProductPriceBody(BigDecimal purchasePrice, BigDecimal salePrice) {
+    }
+
+    public record UpdateProductStockBody(int quantity, String operation) {
+    }
 }
