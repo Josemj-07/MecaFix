@@ -1,0 +1,63 @@
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../features/auth/store/authStore';
+import {
+  LayoutDashboard, Package, FolderOpen, ArrowLeftRight,
+  Users, Car, Wrench, ClipboardList, FileText,
+  CreditCard, BarChart3, LogOut, Settings,
+} from 'lucide-react';
+
+const adminLinks = [
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/products', icon: Package, label: 'Productos' },
+  { to: '/categories', icon: FolderOpen, label: 'Categorías' },
+  { to: '/inventory', icon: ArrowLeftRight, label: 'Inventario' },
+  { to: '/customers', icon: Users, label: 'Clientes' },
+  { to: '/vehicles', icon: Car, label: 'Vehículos' },
+  { to: '/services', icon: Wrench, label: 'Servicios' },
+  { to: '/orders', icon: ClipboardList, label: 'Órdenes' },
+  { to: '/quotes', icon: FileText, label: 'Cotizaciones' },
+  { to: '/payments', icon: CreditCard, label: 'Pagos' },
+  { to: '/reports', icon: BarChart3, label: 'Reportes' },
+];
+
+export default function Sidebar() {
+  const { user, logout } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => { logout(); navigate('/login'); };
+
+  const links = user?.role === 'MECHANIC'
+    ? adminLinks.filter(l => ['/dashboard', '/products', '/orders', '/vehicles', '/services', '/customers'].includes(l.to))
+    : adminLinks;
+
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-brand">
+        <div className="sidebar-brand-icon">MF</div>
+        <span className="sidebar-brand-text">MecaFix</span>
+      </div>
+
+      <nav className="sidebar-nav">
+        <div className="sidebar-section">Principal</div>
+        {links.slice(0, 4).map(link => (
+          <NavLink key={link.to} to={link.to} className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}>
+            <link.icon size={18} /> {link.label}
+          </NavLink>
+        ))}
+
+        <div className="sidebar-section">Gestión</div>
+        {links.slice(4).map(link => (
+          <NavLink key={link.to} to={link.to} className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}>
+            <link.icon size={18} /> {link.label}
+          </NavLink>
+        ))}
+      </nav>
+
+      <div className="sidebar-footer">
+        <button className="sidebar-link" onClick={handleLogout} style={{ width: '100%' }}>
+          <LogOut size={18} /> Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+  );
+}
