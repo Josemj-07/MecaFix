@@ -8,16 +8,19 @@ export default function CustomersPage() {
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Customer | null>(null);
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', address: '', dni: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', dni: '' });
 
   const load = () => { customersApi.getAll().then(r => setItems(r.data)); };
   useEffect(() => { load(); }, []);
   const filtered = items.filter(c => `${c.firstName} ${c.lastName}`.toLowerCase().includes(search.toLowerCase()));
 
-  const openNew = () => { setEditing(null); setForm({ firstName: '', lastName: '', email: '', phone: '', address: '', dni: '' }); setShowModal(true); };
-  const openEdit = (c: Customer) => { setEditing(c); setForm({ firstName: c.firstName, lastName: c.lastName, email: c.email || '', phone: c.phone || '', address: c.address || '', dni: c.dni || '' }); setShowModal(true); };
+  const openNew = () => { setEditing(null); setForm({ firstName: '', lastName: '', email: '', phone: '', dni: '' }); setShowModal(true); };
+  const openEdit = (c: Customer) => { setEditing(c); setForm({ firstName: c.firstName, lastName: c.lastName, email: c.email || '', phone: c.phone || '', dni: c.dni || '' }); setShowModal(true); };
   const submit = async (e: FormEvent) => { e.preventDefault(); editing ? await customersApi.update(editing.id, form) : await customersApi.create(form); setShowModal(false); load(); };
-  const del = async (id: number) => { if(confirm('¿Eliminar?')){ await customersApi.delete(id); load(); } };
+  const del = async (id: string | number) => { 
+    // if(confirm('¿Eliminar?')){ await customersApi.delete(id); load(); } 
+    alert('La eliminación de clientes no está habilitada en esta versión.');
+  };
   const set = (f: string) => (e: React.ChangeEvent<HTMLInputElement>) => setForm(p => ({ ...p, [f]: e.target.value }));
 
   return (
@@ -34,7 +37,6 @@ export default function CustomersPage() {
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}><div className="form-group"><label className="form-label">Nombre</label><input className="form-input" value={form.firstName} onChange={set('firstName')} required/></div><div className="form-group"><label className="form-label">Apellido</label><input className="form-input" value={form.lastName} onChange={set('lastName')} required/></div></div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}><div className="form-group"><label className="form-label">DNI</label><input className="form-input" value={form.dni} onChange={set('dni')}/></div><div className="form-group"><label className="form-label">Teléfono</label><input className="form-input" value={form.phone} onChange={set('phone')}/></div></div>
           <div className="form-group"><label className="form-label">Email</label><input className="form-input" type="email" value={form.email} onChange={set('email')}/></div>
-          <div className="form-group"><label className="form-label">Dirección</label><input className="form-input" value={form.address} onChange={set('address')}/></div>
           <div className="modal-actions"><button type="button" className="btn btn-ghost" onClick={()=>setShowModal(false)}>Cancelar</button><button type="submit" className="btn btn-primary">{editing?'Actualizar':'Crear'}</button></div>
         </form></div></div>}
     </div>

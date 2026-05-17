@@ -10,6 +10,7 @@ public record ListCustomersResult(
             String firstName,
             String lastName,
             String email,
+            String mobilePhone,
             String dni) {
     }
 }

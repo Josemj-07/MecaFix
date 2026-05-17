@@ -53,14 +53,13 @@ export interface InventoryMovement {
 }
 
 export interface Customer {
-  id: number;
+  id: string | number;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  address: string;
   dni: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface Vehicle {

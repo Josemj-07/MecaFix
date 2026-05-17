@@ -2,11 +2,21 @@ import api from '../../../config/axios';
 import type { Customer, Vehicle, Service, ServiceOrder, Quote, Payment, DashboardData } from '../../../domain/models';
 
 export const customersApi = {
-  getAll: () => api.get<Customer[]>('/customers'),
-  getById: (id: number) => api.get<Customer>(`/customers/${id}`),
-  create: (data: Partial<Customer>) => api.post<Customer>('/customers', data),
-  update: (id: number, data: Partial<Customer>) => api.put<Customer>(`/customers/${id}`, data),
-  delete: (id: number) => api.delete(`/customers/${id}`),
+  getAll: () => api.get('/api/v1/customers').then(res => ({ ...res, data: res.data.customers.map((c: any) => ({ ...c, phone: c.mobilePhone })) })),
+  getById: (id: string | number) => api.get(`/api/v1/customers/${id}`).then(res => ({ ...res, data: { ...res.data, phone: res.data.mobilePhone, dni: res.data.dni } })),
+  create: (data: Partial<Customer>) => api.post<Customer>('/api/v1/customers', {
+    firstName: data.firstName,
+    lastName: data.lastName,
+    email: data.email,
+    mobilePhone: data.phone,
+    nationalId: data.dni
+  }),
+  update: (id: string | number, data: Partial<Customer>) => api.patch<Customer>(`/api/v1/customers/${id}`, {
+    email: data.email,
+    mobilePhone: data.phone,
+    nationalId: data.dni
+  }),
+  delete: (id: string | number) => api.delete(`/api/v1/customers/${id}`),
 };
 
 export const vehiclesApi = {

@@ -74,6 +74,7 @@ public class CustomerMapper {
                 customer.getFirstName(),
                 customer.getLastName(),
                 customer.getEmail().address(),
+                customer.getMobilePhone().mobilePhone(),
                 customer.getDni().dni()
         );
     }
