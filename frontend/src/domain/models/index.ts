@@ -63,24 +63,22 @@ export interface Customer {
 }
 
 export interface Vehicle {
-  id: number;
-  customerId: number;
+  id: string | number;
+  customerId: string | number;
   customerName: string;
   brand: string;
   model: string;
   year: number;
   plate: string;
   color: string;
-  vin: string;
+  mileage?: number;
 }
 
 export interface Service {
-  id: number;
+  id: string | number;
   name: string;
   description: string;
-  basePrice: number;
-  estimatedMinutes: number;
-  active: boolean;
+  laborPrice: number;
 }
 
 export interface ServiceOrderItem {

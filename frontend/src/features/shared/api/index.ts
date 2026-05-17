@@ -20,20 +20,46 @@ export const customersApi = {
 };
 
 export const vehiclesApi = {
-  getAll: () => api.get<Vehicle[]>('/vehicles'),
-  getById: (id: number) => api.get<Vehicle>(`/vehicles/${id}`),
-  getByCustomer: (customerId: number) => api.get<Vehicle[]>(`/vehicles/customer/${customerId}`),
-  create: (data: Partial<Vehicle>) => api.post<Vehicle>('/vehicles', data),
-  update: (id: number, data: Partial<Vehicle>) => api.put<Vehicle>(`/vehicles/${id}`, data),
-  delete: (id: number) => api.delete(`/vehicles/${id}`),
+  getAll: async () => {
+    const custRes = await customersApi.getAll();
+    const customers = custRes.data || [];
+    const vehiclesPromises = customers.map((c: any) => 
+      api.get(`/api/v1/customers/${c.id}/vehicles`).then(r => (r.data.vehicles || []).map((v: any) => ({ ...v, year: v.manufacturingYear, customerId: c.id, customerName: `${c.firstName} ${c.lastName}` })))
+    );
+    const vehiclesArrays = await Promise.all(vehiclesPromises);
+    return { data: vehiclesArrays.flat() };
+  },
+  getById: (id: string | number) => api.get<Vehicle>(`/api/v1/vehicles/${id}`), // Optional endpoint
+  getByCustomer: (customerId: string | number) => api.get(`/api/v1/customers/${customerId}/vehicles`).then(r => ({ ...r, data: (r.data.vehicles || []).map((v:any) => ({...v, year: v.manufacturingYear, customerId: customerId}))})),
+  create: (data: any) => api.post<Vehicle>('/api/v1/vehicles', {
+    customerId: data.customerId,
+    plate: data.plate,
+    brand: data.brand,
+    model: data.model,
+    manufacturingYear: data.year,
+    mileage: data.mileage || 0,
+    color: data.color
+  }),
+  update: (id: string | number, data: any) => api.patch<Vehicle>(`/api/v1/vehicles/${id}`, {
+    mileage: data.mileage || 0,
+    color: data.color
+  }),
+  delete: (id: string | number) => api.delete(`/api/v1/vehicles/${id}`),
 };
 
 export const servicesApi = {
-  getAll: () => api.get<Service[]>('/services'),
-  getById: (id: number) => api.get<Service>(`/services/${id}`),
-  create: (data: Partial<Service>) => api.post<Service>('/services', data),
-  update: (id: number, data: Partial<Service>) => api.put<Service>(`/services/${id}`, data),
-  delete: (id: number) => api.delete(`/services/${id}`),
+  getAll: () => api.get('/api/v1/services').then(res => ({ ...res, data: res.data.services })),
+  getById: (id: string | number) => api.get<Service>(`/api/v1/services/${id}`),
+  create: (data: Partial<Service>) => api.post<Service>('/api/v1/services', {
+    name: data.name,
+    description: data.description,
+    laborPrice: data.laborPrice
+  }),
+  update: (id: string | number, data: Partial<Service>) => api.patch<Service>(`/api/v1/services/${id}`, {
+    description: data.description,
+    laborPrice: data.laborPrice
+  }),
+  delete: (id: string | number) => api.delete(`/api/v1/services/${id}`),
 };
 
 export const ordersApi = {

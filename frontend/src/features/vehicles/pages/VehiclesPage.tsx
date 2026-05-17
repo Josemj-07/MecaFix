@@ -8,15 +8,18 @@ export default function VehiclesPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Vehicle | null>(null);
-  const [form, setForm] = useState({ customerId: '', brand: '', model: '', year: '', plate: '', color: '', vin: '' });
+  const [form, setForm] = useState({ customerId: '', brand: '', model: '', year: '', plate: '', color: '' });
 
   const load = () => { vehiclesApi.getAll().then(r => setItems(r.data)); customersApi.getAll().then(r => setCustomers(r.data)); };
   useEffect(() => { load(); }, []);
 
-  const openNew = () => { setEditing(null); setForm({ customerId: '', brand: '', model: '', year: '', plate: '', color: '', vin: '' }); setShowModal(true); };
-  const openEdit = (v: Vehicle) => { setEditing(v); setForm({ customerId: v.customerId.toString(), brand: v.brand, model: v.model, year: v.year?.toString()||'', plate: v.plate, color: v.color||'', vin: v.vin||'' }); setShowModal(true); };
+  const openNew = () => { setEditing(null); setForm({ customerId: '', brand: '', model: '', year: '', plate: '', color: '' }); setShowModal(true); };
+  const openEdit = (v: Vehicle) => { setEditing(v); setForm({ customerId: v.customerId.toString(), brand: v.brand, model: v.model, year: v.year?.toString()||'', plate: v.plate, color: v.color||'' }); setShowModal(true); };
   const submit = async (e: FormEvent) => { e.preventDefault(); const d: Partial<Vehicle> = { ...form, customerId: Number(form.customerId), year: Number(form.year) || undefined }; editing ? await vehiclesApi.update(editing.id, d) : await vehiclesApi.create(d); setShowModal(false); load(); };
-  const del = async (id: number) => { if(confirm('¿Eliminar?')){ await vehiclesApi.delete(id); load(); } };
+  const del = async (id: string | number) => { 
+    // if(confirm('¿Eliminar?')){ await vehiclesApi.delete(id); load(); } 
+    alert('La eliminación de vehículos no está habilitada en esta versión.');
+  };
   const set = (f: string) => (e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => setForm(p => ({ ...p, [f]: e.target.value }));
 
   return (
