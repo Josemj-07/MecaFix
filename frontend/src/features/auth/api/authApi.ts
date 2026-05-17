@@ -6,7 +6,12 @@ export const authApi = {
     api.post<AuthResponse>('/auth/login', { email, password }),
 
   register: (data: { firstName: string; lastName: string; email: string; password: string; role?: string }) =>
-    api.post<AuthResponse>('/auth/register', data),
+    api.post('/auth/register', {
+      email: data.email,
+      password: data.password,
+      name: `${data.firstName} ${data.lastName}`.trim(),
+      role: data.role || 'CLIENT'
+    }),
 
   me: () => api.get<AuthResponse>('/auth/me'),
 };

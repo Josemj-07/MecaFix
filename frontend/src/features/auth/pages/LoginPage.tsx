@@ -14,12 +14,27 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Modo Demo: Iniciar sesión automáticamente sin consultar el backend
-    login(
-      { id: 1, firstName: 'Demo', lastName: 'Admin', email: email || 'admin@mecafix.com', role: 'ADMIN' }, 
-      'mock-demo-token-123'
-    );
-    navigate('/dashboard');
+    setLoading(true);
+    setError('');
+    try {
+      const response = await authApi.login(email, password);
+      // Ensure backend response matches frontend expectations
+      login(
+        {
+          id: Number(response.data.id) || 1, // Fallback if id is string UUID in backend
+          firstName: response.data.firstName || 'Usuario',
+          lastName: response.data.lastName || '',
+          email: response.data.email || email,
+          role: (response.data.role as any) || 'ADMIN'
+        },
+        response.data.token
+      );
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Error al iniciar sesión. Verifica tus credenciales.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

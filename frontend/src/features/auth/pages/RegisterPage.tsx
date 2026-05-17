@@ -14,13 +14,22 @@ export default function RegisterPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault(); setError(''); setLoading(true);
     try {
-      const res = await authApi.register(form);
-      const d = res.data;
-      login({ id: d.id, firstName: d.firstName, lastName: d.lastName, email: d.email, role: d.role as 'ADMIN' | 'MECHANIC' | 'CLIENT' }, d.token);
+      await authApi.register(form);
+      // Auto-login after register
+      const loginRes = await authApi.login(form.email, form.password);
+      login(
+        {
+          id: Number(loginRes.data.id) || 1,
+          firstName: loginRes.data.firstName || form.firstName,
+          lastName: loginRes.data.lastName || form.lastName,
+          email: loginRes.data.email || form.email,
+          role: (loginRes.data.role as any) || form.role
+        },
+        loginRes.data.token
+      );
       navigate('/dashboard');
-    } catch (err: unknown) {
-      const axiosErr = err as { response?: { data?: { error?: string } } };
-      setError(axiosErr.response?.data?.error || 'Error al registrarse');
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.response?.data?.error || 'Error al registrarse. Puede que el email ya exista.');
     } finally { setLoading(false); }
   };
 

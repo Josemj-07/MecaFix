@@ -34,7 +34,18 @@ public class LoginUseCase {
         // 3. Generate JWT
         String token = jwtTokenPort.generateToken(user);
 
-        // 4. Return the token
-        return new LoginResult(token);
+        // 4. Return the token and user details
+        String[] nameParts = user.getName().split(" ", 2);
+        String firstName = nameParts[0];
+        String lastName = nameParts.length > 1 ? nameParts[1] : "";
+
+        return new LoginResult(
+                token,
+                user.getId().toString(),
+                user.getEmail().address(),
+                firstName,
+                lastName,
+                user.getRole().name()
+        );
     }
 }
