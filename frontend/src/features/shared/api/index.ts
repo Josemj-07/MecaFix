@@ -63,27 +63,81 @@ export const servicesApi = {
 };
 
 export const ordersApi = {
-  getAll: () => api.get<ServiceOrder[]>('/service-orders'),
-  getById: (id: number) => api.get<ServiceOrder>(`/service-orders/${id}`),
-  create: (data: unknown) => api.post<ServiceOrder>('/service-orders', data),
-  updateStatus: (id: number, status: string) => api.patch<ServiceOrder>(`/service-orders/${id}/status`, { status }),
-  delete: (id: number) => api.delete(`/service-orders/${id}`),
+  getAll: async () => {
+    try {
+      const ordersRes = await api.get('/api/v1/service-orders');
+      const orders = ordersRes.data.serviceOrders || [];
+      
+      const enrichedOrdersPromises = orders.map(async (o: any) => {
+        try {
+          const quoteRes = await api.get(`/api/v1/quotes/${o.quoteId}`);
+          const q = quoteRes.data;
+          return {
+            ...o,
+            status: o.orderStatus,
+            createdAt: o.creationDate,
+            customerName: q.customerName,
+            vehicleInfo: q.vehiclePlate,
+            totalCost: q.totalAmount,
+          };
+        } catch (err) {
+          return { ...o, status: o.orderStatus, createdAt: o.creationDate, customerName: 'Desconocido', vehicleInfo: 'Desconocido', totalCost: 0 };
+        }
+      });
+      const enrichedOrders = await Promise.all(enrichedOrdersPromises);
+      return { data: enrichedOrders };
+    } catch (err) {
+      return { data: [] };
+    }
+  },
+  getById: (id: string | number) => api.get(`/api/v1/service-orders/${id}`),
+  create: (data: any) => api.post('/api/v1/service-orders', { quoteId: data.quoteId }),
+  updateStatus: (id: string | number, status: string) => api.patch(`/api/v1/service-orders/${id}/advance-status`),
+  delete: (id: string | number) => Promise.reject(new Error("Not supported")),
 };
 
 export const quotesApi = {
-  getAll: () => api.get<Quote[]>('/quotes'),
-  getById: (id: number) => api.get<Quote>(`/quotes/${id}`),
-  create: (data: unknown) => api.post<Quote>('/quotes', data),
-  convert: (id: number) => api.post<ServiceOrder>(`/quotes/${id}/convert`),
-  delete: (id: number) => api.delete(`/quotes/${id}`),
+  getAll: async () => {
+    try {
+      const custRes = await customersApi.getAll();
+      const customers = custRes.data || [];
+      const quotesPromises = customers.map(async (c: any) => {
+        try {
+          const res = await api.get(`/api/v1/quotes/customer/${c.id}`);
+          return (res.data.quotes || []).map((q: any) => ({
+            ...q,
+            customerName: c.firstName + ' ' + c.lastName,
+            vehicleInfo: q.vehiclePlate,
+            createdAt: q.createdDate,
+            totalEstimated: q.totalAmount,
+            convertedToOrder: q.status === 'APPROVED'
+          }));
+        } catch (e) { return []; }
+      });
+      const quotesArrays = await Promise.all(quotesPromises);
+      return { data: quotesArrays.flat() };
+    } catch (e) { return { data: [] }; }
+  },
+  getById: (id: string | number) => api.get(`/api/v1/quotes/${id}`),
+  create: (data: any) => api.post('/api/v1/quotes', {
+    customerId: data.customerId,
+    vehicleId: data.vehicleId,
+    items: data.items || []
+  }),
+  convert: (id: string | number) => api.patch(`/api/v1/quotes/${id}/approve`),
+  delete: (id: string | number) => api.patch(`/api/v1/quotes/${id}/reject`),
 };
 
 export const paymentsApi = {
-  getAll: () => api.get<Payment[]>('/payments'),
-  getByOrder: (orderId: number) => api.get<Payment[]>(`/payments/order/${orderId}`),
-  create: (data: Partial<Payment>) => api.post<Payment>('/payments', data),
+  getAll: async () => ({ data: [] }), // Endpoint no existe en backend actualmente
+  getByOrder: (orderId: string | number) => Promise.resolve({ data: [] }), // Endpoint no existe en backend
+  create: (data: any) => api.post('/api/v1/payments', {
+    serviceOrderId: data.serviceOrderId,
+    amount: data.amount,
+    method: data.method
+  }),
 };
 
 export const reportsApi = {
-  getDashboard: () => api.get<DashboardData>('/reports/dashboard'),
+  getDashboard: async () => Promise.reject(new Error('Endpoint de Dashboard no implementado en backend')),
 };

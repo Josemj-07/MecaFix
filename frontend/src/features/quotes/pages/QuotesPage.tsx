@@ -8,8 +8,8 @@ export default function QuotesPage() {
   const load = () => { quotesApi.getAll().then(r => setItems(r.data)); };
   useEffect(() => { load(); }, []);
 
-  const convert = async (id: number) => { if(confirm('¿Convertir a orden?')){ await quotesApi.convert(id); load(); } };
-  const del = async (id: number) => { if(confirm('¿Eliminar?')){ await quotesApi.delete(id); load(); } };
+  const convert = async (id: string | number) => { if(confirm('¿Convertir a orden?')){ await quotesApi.convert(id); load(); } };
+  const del = async (id: string | number) => { if(confirm('¿Rechazar cotización?')){ await quotesApi.delete(id); load(); } };
 
   return (
     <div>

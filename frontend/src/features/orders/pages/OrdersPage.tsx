@@ -15,7 +15,7 @@ export default function OrdersPage() {
   const load = () => { ordersApi.getAll().then(r => setItems(r.data)); };
   useEffect(() => { load(); }, []);
 
-  const updateStatus = async (id: number, status: string) => { await ordersApi.updateStatus(id, status); load(); };
+  const updateStatus = async (id: string | number, status: string) => { await ordersApi.updateStatus(id, status); load(); };
 
   return (
     <div>
@@ -31,7 +31,7 @@ export default function OrdersPage() {
           <td><div style={{display:'flex',gap:4}}>
             {o.status==='PENDING'&&<button className="btn btn-sm btn-ghost" onClick={()=>updateStatus(o.id,'IN_PROGRESS')} title="Iniciar"><Play size={14}/></button>}
             {o.status==='IN_PROGRESS'&&<button className="btn btn-sm btn-success" onClick={()=>updateStatus(o.id,'COMPLETED')} title="Completar"><CheckCircle size={14}/></button>}
-            {o.status!=='COMPLETED'&&o.status!=='CANCELLED'&&<button className="btn btn-sm btn-ghost" style={{color:'var(--danger)'}} onClick={()=>updateStatus(o.id,'CANCELLED')} title="Cancelar"><XCircle size={14}/></button>}
+            {/* {o.status!=='COMPLETED'&&o.status!=='CANCELLED'&&<button className="btn btn-sm btn-ghost" style={{color:'var(--danger)'}} onClick={()=>updateStatus(o.id,'CANCELLED')} title="Cancelar"><XCircle size={14}/></button>} */}
           </div></td>
         </tr>)}
         {!items.length&&<tr><td colSpan={8} className="empty-state">Sin órdenes</td></tr>}
