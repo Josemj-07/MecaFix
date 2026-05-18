@@ -1,51 +1,50 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { authApi } from '../api/authApi';
-import { useAuthStore } from '../store/authStore';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, CheckCircle2 } from 'lucide-react';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', role: 'ADMINISTRATOR' });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuthStore();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault(); setError(''); setLoading(true);
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
     try {
       await authApi.register(form);
-      // Auto-login after register
-      const loginRes = await authApi.login(form.email, form.password);
-      login(
-        {
-          id: Number(loginRes.data.id) || 1,
-          firstName: loginRes.data.firstName || form.firstName,
-          lastName: loginRes.data.lastName || form.lastName,
-          email: loginRes.data.email || form.email,
-          role: (loginRes.data.role as any) || form.role
-        },
-        loginRes.data.token
-      );
-      navigate('/customers');
+      setSuccess('¡Usuario registrado con éxito en el sistema!');
+      setForm({ firstName: '', lastName: '', email: '', password: '', role: 'ADMINISTRATOR' });
     } catch (err: any) {
-      setError(err.response?.data?.message || err.response?.data?.error || 'Error al registrarse. Puede que el email ya exista.');
-    } finally { setLoading(false); }
+      setError(err.response?.data?.message || err.response?.data?.error || 'Error al registrar el usuario.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm(p => ({ ...p, [field]: e.target.value }));
 
   return (
-    <div className="auth-container">
-      <div className="auth-card fade-in">
-        <div className="auth-brand">
-          <div className="auth-brand-icon">MF</div>
-          <h1>MecaFix</h1>
-          <p>Crear una cuenta nueva</p>
+    <div style={{ maxWidth: 600, margin: '0 auto', padding: '24px 0' }}>
+      <div className="page-header" style={{ marginBottom: 24 }}>
+        <div>
+          <h1 className="page-title">Agregar Administrador</h1>
+          <p className="page-subtitle">Registra nuevos miembros del equipo y asigna sus roles.</p>
         </div>
-        {error && <div className="auth-error">{error}</div>}
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      </div>
+
+      <div className="card" style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+        {error && <div className="auth-error" style={{ marginBottom: 0 }}>{error}</div>}
+        {success && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', borderRadius: 8, color: 'var(--success)', backgroundColor: 'var(--success-bg)', fontWeight: 500 }}>
+            <CheckCircle2 size={18} /> {success}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div className="form-group">
               <label className="form-label">Nombre</label>
               <input className="form-input" placeholder="Juan" value={form.firstName} onChange={set('firstName')} required />
@@ -67,14 +66,13 @@ export default function RegisterPage() {
             <label className="form-label">Rol</label>
             <select className="form-select" value={form.role} onChange={set('role')}>
               <option value="ADMINISTRATOR">Administrador</option>
-              <option value="OWNER">Propietario</option>
+              <option value="OWNER">Propietario (General)</option>
             </select>
           </div>
-          <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}>
-            <UserPlus size={18} /> {loading ? 'Registrando...' : 'Crear Cuenta'}
+          <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: 12, padding: '12px' }}>
+            <UserPlus size={18} /> {loading ? 'Registrando...' : 'Registrar Miembro'}
           </button>
         </form>
-        <div className="auth-footer">¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link></div>
       </div>
     </div>
   );

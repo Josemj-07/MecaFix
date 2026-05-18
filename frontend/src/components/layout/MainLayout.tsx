@@ -13,6 +13,7 @@ const pageTitles: Record<string, string> = {
   '/quotes': 'Cotizaciones',
   '/payments': 'Pagos',
   '/reports': 'Reportes',
+  '/register': 'Agregar Administrador',
 };
 
 export default function MainLayout() {

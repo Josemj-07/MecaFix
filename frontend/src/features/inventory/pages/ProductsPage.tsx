@@ -24,7 +24,7 @@ export default function ProductsPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const data = { name: form.name, code: form.code, description: form.description, categoryId: form.categoryId ? Number(form.categoryId) : undefined, purchasePrice: Number(form.purchasePrice) || 0, salePrice: Number(form.salePrice), stock: Number(form.stock), minStock: Number(form.minStock), unit: form.unit };
+    const data = { name: form.name, code: form.code, description: form.description, categoryId: form.categoryId || undefined, purchasePrice: Number(form.purchasePrice) || 0, salePrice: Number(form.salePrice), stock: Number(form.stock), minStock: Number(form.minStock), unit: form.unit };
     if (editing) await inventoryApi.updateProduct(editing.id, data);
     else await inventoryApi.createProduct(data);
     setShowModal(false); load();

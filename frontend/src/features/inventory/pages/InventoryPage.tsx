@@ -12,7 +12,7 @@ export default function InventoryPage() {
   const load = () => { inventoryApi.getMovements().then(r => setMoves(r.data)); inventoryApi.getProducts().then(r => setProducts(r.data)); };
   useEffect(() => { load(); }, []);
 
-  const submit = async (e: FormEvent) => { e.preventDefault(); await inventoryApi.createMovement({ productId: Number(form.productId), type: form.type, quantity: Number(form.quantity), reason: form.reason }); setShowModal(false); load(); };
+  const submit = async (e: FormEvent) => { e.preventDefault(); await inventoryApi.createMovement({ productId: form.productId, type: form.type, quantity: Number(form.quantity), reason: form.reason }); setShowModal(false); load(); };
   const typeIcon = (t: string) => t === 'ENTRY' ? <ArrowUpCircle size={16} /> : t === 'EXIT' ? <ArrowDownCircle size={16} /> : <Settings size={16} />;
   const typeClass = (t: string) => t === 'ENTRY' ? 'badge-success' : t === 'EXIT' ? 'badge-danger' : 'badge-info';
 

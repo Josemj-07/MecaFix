@@ -3,7 +3,7 @@ import { useAuthStore } from '../../features/auth/store/authStore';
 import {
   Package, FolderOpen, ArrowLeftRight,
   Users, Car, Wrench, ClipboardList, FileText,
-  CreditCard, BarChart3, LogOut, Settings,
+  CreditCard, BarChart3, LogOut, Settings, UserPlus,
 } from 'lucide-react';
 
 const adminLinks = [
@@ -17,6 +17,7 @@ const adminLinks = [
   { to: '/quotes', icon: FileText, label: 'Cotizaciones' },
   { to: '/payments', icon: CreditCard, label: 'Pagos' },
   { to: '/reports', icon: BarChart3, label: 'Reportes' },
+  { to: '/register', icon: UserPlus, label: 'Agregar Admin' },
 ];
 
 export default function Sidebar() {
@@ -25,9 +26,12 @@ export default function Sidebar() {
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
-  const links = user?.role === 'MECHANIC'
-    ? adminLinks.filter(l => ['/products', '/orders', '/vehicles', '/services', '/customers'].includes(l.to))
-    : adminLinks;
+  let links = adminLinks;
+  if (user?.role === 'MECHANIC') {
+    links = adminLinks.filter(l => ['/products', '/orders', '/vehicles', '/services', '/customers'].includes(l.to));
+  } else if (user?.role !== 'OWNER') {
+    links = adminLinks.filter(l => l.to !== '/register');
+  }
 
   return (
     <aside className="sidebar">

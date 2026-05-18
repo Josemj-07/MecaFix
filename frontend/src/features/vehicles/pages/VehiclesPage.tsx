@@ -15,7 +15,7 @@ export default function VehiclesPage() {
 
   const openNew = () => { setEditing(null); setForm({ customerId: '', brand: '', model: '', year: '', plate: '', color: '' }); setShowModal(true); };
   const openEdit = (v: Vehicle) => { setEditing(v); setForm({ customerId: v.customerId.toString(), brand: v.brand, model: v.model, year: v.year?.toString()||'', plate: v.plate, color: v.color||'' }); setShowModal(true); };
-  const submit = async (e: FormEvent) => { e.preventDefault(); const d: Partial<Vehicle> = { ...form, customerId: Number(form.customerId), year: Number(form.year) || undefined }; editing ? await vehiclesApi.update(editing.id, d) : await vehiclesApi.create(d); setShowModal(false); load(); };
+  const submit = async (e: FormEvent) => { e.preventDefault(); const d: Partial<Vehicle> = { ...form, customerId: form.customerId, year: Number(form.year) || undefined }; editing ? await vehiclesApi.update(editing.id, d) : await vehiclesApi.create(d); setShowModal(false); load(); };
   const del = async (id: string | number) => { 
     // if(confirm('¿Eliminar?')){ await vehiclesApi.delete(id); load(); } 
     alert('La eliminación de vehículos no está habilitada en esta versión.');

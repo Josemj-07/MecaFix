@@ -25,7 +25,6 @@ export default function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
@@ -41,6 +40,11 @@ export default function App() {
             <Route path="/quotes" element={<QuotesPage />} />
             <Route path="/payments" element={<PaymentsPage />} />
             <Route path="/reports" element={<ReportsPage />} />
+            
+            {/* Only Owner can register new administrators */}
+            <Route element={<ProtectedRoute allowedRoles={['OWNER']} />}>
+              <Route path="/register" element={<RegisterPage />} />
+            </Route>
           </Route>
         </Route>
 
