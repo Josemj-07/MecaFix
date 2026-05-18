@@ -10,7 +10,7 @@ export const authApi = {
       email: data.email,
       password: data.password,
       name: `${data.firstName} ${data.lastName}`.trim(),
-      role: data.role || 'CLIENT'
+      role: data.role || 'ADMINISTRATOR'
     }),
 
   me: () => api.get<AuthResponse>('/auth/me'),

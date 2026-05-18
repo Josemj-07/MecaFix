@@ -5,7 +5,6 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import MainLayout from './components/layout/MainLayout';
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
-import DashboardPage from './features/dashboard/pages/DashboardPage';
 import ProductsPage from './features/inventory/pages/ProductsPage';
 import CategoriesPage from './features/inventory/pages/CategoriesPage';
 import InventoryPage from './features/inventory/pages/InventoryPage';
@@ -31,7 +30,7 @@ export default function App() {
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/" element={<Navigate to="/customers" replace />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/inventory" element={<InventoryPage />} />

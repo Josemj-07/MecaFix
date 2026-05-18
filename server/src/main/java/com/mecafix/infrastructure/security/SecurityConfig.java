@@ -38,10 +38,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // ── Public ──────────────────────────────────
-                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/login", "/auth/register").permitAll()
 
                         // ── OWNER only ──────────────────────────────
-                        .requestMatchers("/auth/register").hasRole("OWNER")
                         .requestMatchers("/admin/**").hasRole("OWNER")
 
                         // ── ADMINISTRATOR and OWNER ─────────────────

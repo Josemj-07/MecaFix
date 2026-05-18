@@ -1,13 +1,12 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../features/auth/store/authStore';
 import {
-  LayoutDashboard, Package, FolderOpen, ArrowLeftRight,
+  Package, FolderOpen, ArrowLeftRight,
   Users, Car, Wrench, ClipboardList, FileText,
   CreditCard, BarChart3, LogOut, Settings,
 } from 'lucide-react';
 
 const adminLinks = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/products', icon: Package, label: 'Productos' },
   { to: '/categories', icon: FolderOpen, label: 'Categorías' },
   { to: '/inventory', icon: ArrowLeftRight, label: 'Inventario' },
@@ -27,7 +26,7 @@ export default function Sidebar() {
   const handleLogout = () => { logout(); navigate('/login'); };
 
   const links = user?.role === 'MECHANIC'
-    ? adminLinks.filter(l => ['/dashboard', '/products', '/orders', '/vehicles', '/services', '/customers'].includes(l.to))
+    ? adminLinks.filter(l => ['/products', '/orders', '/vehicles', '/services', '/customers'].includes(l.to))
     : adminLinks;
 
   return (
@@ -39,14 +38,14 @@ export default function Sidebar() {
 
       <nav className="sidebar-nav">
         <div className="sidebar-section">Principal</div>
-        {links.slice(0, 4).map(link => (
+        {links.slice(0, 3).map(link => (
           <NavLink key={link.to} to={link.to} className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}>
             <link.icon size={18} /> {link.label}
           </NavLink>
         ))}
 
         <div className="sidebar-section">Gestión</div>
-        {links.slice(4).map(link => (
+        {links.slice(3).map(link => (
           <NavLink key={link.to} to={link.to} className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}>
             <link.icon size={18} /> {link.label}
           </NavLink>

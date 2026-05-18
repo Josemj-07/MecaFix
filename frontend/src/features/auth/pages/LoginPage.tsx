@@ -29,7 +29,7 @@ export default function LoginPage() {
         },
         response.data.token
       );
-      navigate('/dashboard');
+      navigate('/customers');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Error al iniciar sesión. Verifica tus credenciales.');
     } finally {
@@ -59,6 +59,9 @@ export default function LoginPage() {
             <LogIn size={18} /> Iniciar Sesión
           </button>
         </form>
+        <div className="auth-footer">
+          ¿No tienes cuenta? <Link to="/register">Regístrate</Link>
+        </div>
       </div>
     </div>
   );

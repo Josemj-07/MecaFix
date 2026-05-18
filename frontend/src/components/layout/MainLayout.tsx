@@ -3,7 +3,6 @@ import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 
 const pageTitles: Record<string, string> = {
-  '/dashboard': 'Dashboard',
   '/products': 'Productos',
   '/categories': 'Categorías',
   '/inventory': 'Movimientos de Inventario',

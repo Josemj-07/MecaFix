@@ -5,7 +5,7 @@ import { useAuthStore } from '../store/authStore';
 import { UserPlus } from 'lucide-react';
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', role: 'CLIENT' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', role: 'ADMINISTRATOR' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuthStore();
@@ -27,7 +27,7 @@ export default function RegisterPage() {
         },
         loginRes.data.token
       );
-      navigate('/dashboard');
+      navigate('/customers');
     } catch (err: any) {
       setError(err.response?.data?.message || err.response?.data?.error || 'Error al registrarse. Puede que el email ya exista.');
     } finally { setLoading(false); }
@@ -66,9 +66,8 @@ export default function RegisterPage() {
           <div className="form-group">
             <label className="form-label">Rol</label>
             <select className="form-select" value={form.role} onChange={set('role')}>
-              <option value="CLIENT">Cliente</option>
-              <option value="MECHANIC">Mecánico</option>
-              <option value="ADMIN">Administrador</option>
+              <option value="ADMINISTRATOR">Administrador</option>
+              <option value="OWNER">Propietario</option>
             </select>
           </div>
           <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}>

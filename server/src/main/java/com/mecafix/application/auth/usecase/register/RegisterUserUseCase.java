@@ -28,8 +28,8 @@ public class RegisterUserUseCase {
      * @return the result with the new user's data
      */
     public RegisterUserResult execute(RegisterUserCommand command, Role callerRole) {
-        // 1. Verify that the user attempting to register has the OWNER role
-        if (callerRole != Role.OWNER) {
+        // 1. Verify that the user attempting to register has the OWNER role (if authenticated)
+        if (callerRole != null && callerRole != Role.OWNER) {
             throw new InvalidDataException("Only users with OWNER role can register new users");
         }
 

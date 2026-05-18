@@ -35,16 +35,21 @@ public class AuthController {
     }
 
     /**
-     * POST /auth/register — Only accessible by OWNER role.
+     * POST /auth/register — Public registration or registered by another user.
      */
     @PostMapping("/register")
     public ResponseEntity<RegisterUserResult> register(
-            @RequestBody RegisterUserCommand command,
-            Authentication authentication) {
+            @RequestBody RegisterUserCommand command) {
         log.info("REST | POST /auth/register | email={}", command.email());
 
-        // Extract the caller's role from the authentication context
-        Role callerRole = extractRole(authentication);
+        Role callerRole = null;
+        org.springframework.security.core.Authentication authentication = 
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        
+        if (authentication != null && authentication.isAuthenticated() && 
+            !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
+            callerRole = extractRole(authentication);
+        }
 
         RegisterUserResult result = registerUserUseCase.execute(command, callerRole);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
