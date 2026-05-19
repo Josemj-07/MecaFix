@@ -474,13 +474,13 @@ export const paymentsApi = {
 export const mechanicsApi = {
   getAll: () => api.get('/api/v1/mechanics').then(res => ({ ...res, data: res.data.mechanics || [] })),
   getById: (id: string | number) => api.get(`/api/v1/mechanics/${id}`),
-  create: (data: { firstName: string; lastName: string; email: string; phone: string; dni: string; specialty: string }) =>
+  create: (data: { firstName: string; lastName: string; email: string; mobilePhone: string; nationalId: string; specialty: string }) =>
     api.post('/api/v1/mechanics', {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
-      mobilePhone: data.phone,
-      nationalId: data.dni,
+      mobilePhone: data.mobilePhone,
+      nationalId: data.nationalId,
       specialty: data.specialty
     }),
   getBySpecialty: (specialty: string) =>

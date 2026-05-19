@@ -7,7 +7,7 @@ interface Mechanic {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
+  mobilePhone: string;
   specialty: string;
 }
 
@@ -28,7 +28,7 @@ export default function MechanicsPage() {
   const [showModal, setShowModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedMechanic, setSelectedMechanic] = useState<Mechanic | null>(null);
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', dni: '', specialty: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', mobilePhone: '', nationalId: '', specialty: '' });
   const [loading, setLoading] = useState(false);
 
   const load = async () => {
@@ -51,7 +51,7 @@ export default function MechanicsPage() {
   );
 
   const openNew = () => {
-    setForm({ firstName: '', lastName: '', email: '', phone: '', dni: '', specialty: '' });
+    setForm({ firstName: '', lastName: '', email: '', mobilePhone: '', nationalId: '', specialty: '' });
     setShowModal(true);
   };
 
@@ -64,7 +64,7 @@ export default function MechanicsPage() {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-        phone: data.mobilePhone,
+        mobilePhone: data.mobilePhone,
         specialty: data.specialty,
       });
       setShowViewModal(true);
@@ -137,7 +137,7 @@ export default function MechanicsPage() {
                   </div>
                 </td>
                 <td><div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Mail size={14} style={{ color: 'var(--text-muted)' }} />{m.email || '—'}</div></td>
-                <td><div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Phone size={14} style={{ color: 'var(--text-muted)' }} />{m.phone || '—'}</div></td>
+                <td><div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Phone size={14} style={{ color: 'var(--text-muted)' }} />{m.mobilePhone || '—'}</div></td>
                 <td><span className="badge badge-primary"><Wrench size={12} /> {specialtyLabel(m.specialty)}</span></td>
                 <td>
                   <button className="btn btn-icon btn-ghost btn-sm" onClick={() => viewMechanic(m.id)} title="Ver detalles">
@@ -175,12 +175,12 @@ export default function MechanicsPage() {
               </div>
               <div className="form-group">
                 <label className="form-label">Cédula / DNI</label>
-                <input className="form-input" value={form.dni} onChange={set('dni')} required placeholder="Número de identificación" />
+                <input className="form-input" value={form.nationalId} onChange={set('nationalId')} required placeholder="Número de identificación" />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div className="form-group">
                   <label className="form-label">Teléfono</label>
-                  <input className="form-input" value={form.phone} onChange={set('phone')} />
+                  <input className="form-input" value={form.mobilePhone} onChange={set('mobilePhone')} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Especialidad</label>
@@ -231,7 +231,7 @@ export default function MechanicsPage() {
                 <div className="form-group">
                   <label className="form-label">Teléfono</label>
                   <div style={{ padding: '8px 12px', background: 'var(--bg-secondary)', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Phone size={14} style={{ color: 'var(--text-muted)' }} />{selectedMechanic.phone || '—'}
+                    <Phone size={14} style={{ color: 'var(--text-muted)' }} />{selectedMechanic.mobilePhone || '—'}
                   </div>
                 </div>
               </div>
