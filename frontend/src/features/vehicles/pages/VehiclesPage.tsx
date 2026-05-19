@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { vehiclesApi, customersApi } from '../../shared/api';
 import type { Vehicle, Customer } from '../../../domain/models';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2 } from 'lucide-react';
 
 export default function VehiclesPage() {
   const [items, setItems] = useState<Vehicle[]>([]);
@@ -15,11 +15,23 @@ export default function VehiclesPage() {
 
   const openNew = () => { setEditing(null); setForm({ customerId: '', brand: '', model: '', year: '', plate: '', color: '' }); setShowModal(true); };
   const openEdit = (v: Vehicle) => { setEditing(v); setForm({ customerId: v.customerId.toString(), brand: v.brand, model: v.model, year: v.year?.toString()||'', plate: v.plate, color: v.color||'' }); setShowModal(true); };
-  const submit = async (e: FormEvent) => { e.preventDefault(); const d: Partial<Vehicle> = { ...form, customerId: form.customerId, year: Number(form.year) || undefined }; editing ? await vehiclesApi.update(editing.id, d) : await vehiclesApi.create(d); setShowModal(false); load(); };
-  const del = async (id: string | number) => { 
-    // if(confirm('¿Eliminar?')){ await vehiclesApi.delete(id); load(); } 
-    alert('La eliminación de vehículos no está habilitada en esta versión.');
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const d: Partial<Vehicle> = { ...form, customerId: form.customerId, year: Number(form.year) || undefined };
+    try {
+      if (editing) {
+        await vehiclesApi.update(editing.id, d);
+      } else {
+        await vehiclesApi.create(d);
+      }
+      setShowModal(false);
+      load();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.message || 'Error al guardar el vehículo. Asegúrate de que la placa sea única.');
+    }
   };
+
   const set = (f: string) => (e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => setForm(p => ({ ...p, [f]: e.target.value }));
 
   return (
@@ -27,7 +39,7 @@ export default function VehiclesPage() {
       <div className="page-header"><div><h1 className="page-title">Vehículos</h1></div><button className="btn btn-primary" onClick={openNew}><Plus size={18}/>Nuevo</button></div>
       <div className="table-container"><table className="table"><thead><tr><th>Placa</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Cliente</th><th>Color</th><th>Acciones</th></tr></thead><tbody>
         {items.map(v=><tr key={v.id}><td style={{fontFamily:'monospace',color:'var(--accent)'}}>{v.plate}</td><td style={{fontWeight:600,color:'var(--text-primary)'}}>{v.brand}</td><td>{v.model}</td><td>{v.year||'—'}</td><td>{v.customerName}</td><td>{v.color||'—'}</td>
-          <td><div style={{display:'flex',gap:6}}><button className="btn btn-icon btn-ghost btn-sm" onClick={()=>openEdit(v)}><Edit2 size={15}/></button><button className="btn btn-icon btn-ghost btn-sm" style={{color:'var(--danger)'}} onClick={()=>del(v.id)}><Trash2 size={15}/></button></div></td></tr>)}
+          <td><div style={{display:'flex',gap:6}}><button className="btn btn-icon btn-ghost btn-sm" onClick={()=>openEdit(v)}><Edit2 size={15}/></button></div></td></tr>)}
         {!items.length&&<tr><td colSpan={7} className="empty-state">Sin vehículos</td></tr>}
       </tbody></table></div>
       {showModal&&<div className="modal-overlay" onClick={()=>setShowModal(false)}><div className="modal-content" onClick={e=>e.stopPropagation()}><div className="modal-header"><h2 className="modal-title">{editing?'Editar':'Nuevo'} Vehículo</h2><button className="modal-close" onClick={()=>setShowModal(false)}>✕</button></div>

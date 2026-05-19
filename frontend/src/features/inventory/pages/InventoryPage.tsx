@@ -1,43 +1,126 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { inventoryApi } from '../api/inventoryApi';
-import type { InventoryMovement, Product } from '../../../domain/models';
-import { Plus, ArrowUpCircle, ArrowDownCircle, Settings } from 'lucide-react';
+import type { Product } from '../../../domain/models';
+import { ArrowUpCircle, ArrowDownCircle, Search } from 'lucide-react';
 
 export default function InventoryPage() {
-  const [moves, setMoves] = useState<InventoryMovement[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ productId: '', type: 'ENTRY', quantity: '', reason: '' });
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [form, setForm] = useState({ quantity: '', operation: 'INCREASE' });
 
-  const load = () => { inventoryApi.getMovements().then(r => setMoves(r.data)); inventoryApi.getProducts().then(r => setProducts(r.data)); };
+  const load = () => { inventoryApi.getProducts().then(r => setProducts(r.data)).catch(() => setProducts([])); };
   useEffect(() => { load(); }, []);
 
-  const submit = async (e: FormEvent) => { e.preventDefault(); await inventoryApi.createMovement({ productId: form.productId, type: form.type, quantity: Number(form.quantity), reason: form.reason }); setShowModal(false); load(); };
-  const typeIcon = (t: string) => t === 'ENTRY' ? <ArrowUpCircle size={16} /> : t === 'EXIT' ? <ArrowDownCircle size={16} /> : <Settings size={16} />;
-  const typeClass = (t: string) => t === 'ENTRY' ? 'badge-success' : t === 'EXIT' ? 'badge-danger' : 'badge-info';
+  const filtered = products.filter(p =>
+    p.name?.toLowerCase().includes(search.toLowerCase()) ||
+    p.code?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const openAdjust = (p: Product, op: string) => {
+    setSelectedProduct(p);
+    setForm({ quantity: '', operation: op });
+    setShowModal(true);
+  };
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!selectedProduct) return;
+    try {
+      await inventoryApi.updateProductStock(selectedProduct.id, Number(form.quantity), form.operation);
+      setShowModal(false);
+      load();
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Error al ajustar stock');
+    }
+  };
 
   return (
     <div>
-      <div className="page-header"><div><h1 className="page-title">Inventario</h1><p className="page-subtitle">Historial de movimientos</p></div>
-        <button className="btn btn-primary" onClick={() => { setForm({ productId: '', type: 'ENTRY', quantity: '', reason: '' }); setShowModal(true); }}><Plus size={18}/> Registrar Movimiento</button>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Inventario</h1>
+          <p className="page-subtitle">Gestión de stock de productos</p>
+        </div>
       </div>
-      <div className="table-container"><table className="table"><thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Stock Ant.</th><th>Stock Nuevo</th><th>Razón</th><th>Usuario</th></tr></thead><tbody>
-        {moves.map(m => <tr key={m.id}>
-          <td>{new Date(m.createdAt).toLocaleDateString()}</td><td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{m.productName}</td>
-          <td><span className={`badge ${typeClass(m.type)}`}>{typeIcon(m.type)} {m.type}</span></td>
-          <td>{m.quantity}</td><td>{m.previousStock}</td><td>{m.newStock}</td><td>{m.reason || '—'}</td><td>{m.userName || '—'}</td>
-        </tr>)}
-        {!moves.length && <tr><td colSpan={8} className="empty-state">Sin movimientos</td></tr>}
-      </tbody></table></div>
-      {showModal && <div className="modal-overlay" onClick={() => setShowModal(false)}><div className="modal-content" onClick={e => e.stopPropagation()}>
-        <div className="modal-header"><h2 className="modal-title">Registrar Movimiento</h2><button className="modal-close" onClick={() => setShowModal(false)}>✕</button></div>
-        <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div className="form-group"><label className="form-label">Producto</label><select className="form-select" value={form.productId} onChange={e => setForm(p => ({ ...p, productId: e.target.value }))} required><option value="">Seleccionar</option>{products.map(p => <option key={p.id} value={p.id}>{p.name} ({p.stock})</option>)}</select></div>
-          <div className="form-group"><label className="form-label">Tipo</label><select className="form-select" value={form.type} onChange={e => setForm(p => ({ ...p, type: e.target.value }))}><option value="ENTRY">Entrada</option><option value="EXIT">Salida</option><option value="ADJUSTMENT">Ajuste</option></select></div>
-          <div className="form-group"><label className="form-label">Cantidad</label><input className="form-input" type="number" min="1" value={form.quantity} onChange={e => setForm(p => ({ ...p, quantity: e.target.value }))} required /></div>
-          <div className="form-group"><label className="form-label">Razón</label><input className="form-input" value={form.reason} onChange={e => setForm(p => ({ ...p, reason: e.target.value }))} /></div>
-          <div className="modal-actions"><button type="button" className="btn btn-ghost" onClick={() => setShowModal(false)}>Cancelar</button><button type="submit" className="btn btn-primary">Registrar</button></div>
-        </form></div></div>}
+
+      <div className="filter-row">
+        <div className="search-bar" style={{ flex: 1, maxWidth: 400 }}>
+          <Search size={18} style={{ color: 'var(--text-muted)' }} />
+          <input placeholder="Buscar producto..." value={search} onChange={e => setSearch(e.target.value)} />
+        </div>
+      </div>
+
+      <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr><th>Código</th><th>Producto</th><th>Stock Actual</th><th>Stock Mín.</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            {filtered.map(p => (
+              <tr key={p.id}>
+                <td style={{ fontFamily: 'monospace', color: 'var(--accent)' }}>{p.code}</td>
+                <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{p.name}</td>
+                <td style={{ fontWeight: 700, fontSize: '1.05rem' }}>{p.stock} {p.unit || 'und'}</td>
+                <td>{p.minStock || '—'}</td>
+                <td>
+                  {p.stock <= (p.minStock || 0)
+                    ? <span className="badge badge-danger">⚠ Crítico</span>
+                    : p.stock <= (p.minStock || 0) * 1.5
+                      ? <span className="badge badge-warning">Bajo</span>
+                      : <span className="badge badge-success">OK</span>
+                  }
+                </td>
+                <td>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button className="btn btn-sm btn-success" onClick={() => openAdjust(p, 'INCREASE')} title="Entrada de stock">
+                      <ArrowUpCircle size={14} /> Entrada
+                    </button>
+                    <button className="btn btn-sm btn-danger" onClick={() => openAdjust(p, 'DECREASE')} title="Salida de stock">
+                      <ArrowDownCircle size={14} /> Salida
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {!filtered.length && <tr><td colSpan={6} className="empty-state">Sin productos en inventario</td></tr>}
+          </tbody>
+        </table>
+      </div>
+
+      {showModal && selectedProduct && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">
+                {form.operation === 'INCREASE' ? '📦 Entrada de Stock' : '📤 Salida de Stock'}
+              </h2>
+              <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
+            </div>
+            <div style={{ padding: '12px 16px', borderRadius: 'var(--radius-md)', background: 'var(--bg-secondary)', marginBottom: 16 }}>
+              <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{selectedProduct.name}</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                Stock actual: <strong style={{ color: 'var(--accent)' }}>{selectedProduct.stock}</strong> {selectedProduct.unit || 'und'}
+              </div>
+            </div>
+            <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div className="form-group">
+                <label className="form-label">Cantidad</label>
+                <input className="form-input" type="number" min="1" value={form.quantity}
+                  onChange={e => setForm(p => ({ ...p, quantity: e.target.value }))} required
+                  placeholder={form.operation === 'INCREASE' ? 'Unidades a ingresar' : 'Unidades a retirar'} />
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="btn btn-ghost" onClick={() => setShowModal(false)}>Cancelar</button>
+                <button type="submit" className={`btn ${form.operation === 'INCREASE' ? 'btn-success' : 'btn-danger'}`}>
+                  {form.operation === 'INCREASE' ? 'Registrar Entrada' : 'Registrar Salida'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

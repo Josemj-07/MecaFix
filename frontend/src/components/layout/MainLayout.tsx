@@ -5,14 +5,14 @@ import TopBar from './TopBar';
 const pageTitles: Record<string, string> = {
   '/products': 'Productos',
   '/categories': 'Categorías',
-  '/inventory': 'Movimientos de Inventario',
+  '/inventory': 'Inventario',
   '/customers': 'Clientes',
   '/vehicles': 'Vehículos',
   '/services': 'Servicios',
   '/orders': 'Órdenes de Servicio',
   '/quotes': 'Cotizaciones',
   '/payments': 'Pagos',
-  '/reports': 'Reportes',
+  '/mechanics': 'Mecánicos',
   '/register': 'Agregar Administrador',
 };
 

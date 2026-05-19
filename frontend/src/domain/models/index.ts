@@ -3,7 +3,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  role: 'ADMIN' | 'MECHANIC' | 'CLIENT';
+  role: string;
 }
 
 export interface AuthResponse {
@@ -100,7 +100,7 @@ export interface ServiceOrder {
   customerName: string;
   mechanicId: number;
   mechanicName: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'CREATED' | 'FINALIZED' | 'DELIVERED' | 'CANCELED';
   diagnosis: string;
   notes: string;
   totalCost: number;
@@ -130,6 +130,7 @@ export interface Quote {
   totalEstimated: number;
   convertedToOrder: boolean;
   serviceOrderId: number;
+  status?: string;
   items: QuoteItem[];
   createdAt: string;
   validUntil: string;

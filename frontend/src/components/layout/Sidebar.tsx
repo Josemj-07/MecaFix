@@ -3,7 +3,7 @@ import { useAuthStore } from '../../features/auth/store/authStore';
 import {
   Package, FolderOpen, ArrowLeftRight,
   Users, Car, Wrench, ClipboardList, FileText,
-  CreditCard, BarChart3, LogOut, Settings, UserPlus,
+  CreditCard, Contact, LogOut, Settings, UserPlus,
 } from 'lucide-react';
 
 const adminLinks = [
@@ -16,7 +16,7 @@ const adminLinks = [
   { to: '/orders', icon: ClipboardList, label: 'Órdenes' },
   { to: '/quotes', icon: FileText, label: 'Cotizaciones' },
   { to: '/payments', icon: CreditCard, label: 'Pagos' },
-  { to: '/reports', icon: BarChart3, label: 'Reportes' },
+  { to: '/mechanics', icon: Contact, label: 'Mecánicos' },
   { to: '/register', icon: UserPlus, label: 'Agregar Admin' },
 ];
 

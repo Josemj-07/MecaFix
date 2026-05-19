@@ -1,9 +1,16 @@
 import api from '../../../config/axios';
-import type { Customer, Vehicle, Service, ServiceOrder, Quote, Payment, DashboardData } from '../../../domain/models';
+import type { Customer, Vehicle, Service, ServiceOrder, Quote, Payment } from '../../../domain/models';
 
+// ==================== CUSTOMERS ====================
 export const customersApi = {
-  getAll: () => api.get('/api/v1/customers').then(res => ({ ...res, data: res.data.customers.map((c: any) => ({ ...c, phone: c.mobilePhone })) })),
-  getById: (id: string | number) => api.get(`/api/v1/customers/${id}`).then(res => ({ ...res, data: { ...res.data, phone: res.data.mobilePhone, dni: res.data.dni } })),
+  getAll: () => api.get('/api/v1/customers').then(res => ({
+    ...res,
+    data: (res.data.customers || []).map((c: any) => ({ ...c, phone: c.mobilePhone }))
+  })),
+  getById: (id: string | number) => api.get(`/api/v1/customers/${id}`).then(res => ({
+    ...res,
+    data: { ...res.data, phone: res.data.mobilePhone, dni: res.data.nationalId }
+  })),
   create: (data: Partial<Customer>) => api.post<Customer>('/api/v1/customers', {
     firstName: data.firstName,
     lastName: data.lastName,
@@ -16,21 +23,31 @@ export const customersApi = {
     mobilePhone: data.phone,
     nationalId: data.dni
   }),
-  delete: (id: string | number) => api.delete(`/api/v1/customers/${id}`),
 };
 
+// ==================== VEHICLES ====================
 export const vehiclesApi = {
   getAll: async () => {
     const custRes = await customersApi.getAll();
     const customers = custRes.data || [];
-    const vehiclesPromises = customers.map((c: any) => 
-      api.get(`/api/v1/customers/${c.id}/vehicles`).then(r => (r.data.vehicles || []).map((v: any) => ({ ...v, year: v.manufacturingYear, customerId: c.id, customerName: `${c.firstName} ${c.lastName}` })))
+    const vehiclesPromises = customers.map((c: any) =>
+      api.get(`/api/v1/customers/${c.id}/vehicles`).then(r =>
+        (r.data.vehicles || []).map((v: any) => ({
+          ...v, year: v.manufacturingYear, customerId: c.id,
+          customerName: `${c.firstName} ${c.lastName}`
+        }))
+      )
     );
     const vehiclesArrays = await Promise.all(vehiclesPromises);
     return { data: vehiclesArrays.flat() };
   },
-  getById: (id: string | number) => api.get<Vehicle>(`/api/v1/vehicles/${id}`), // Optional endpoint
-  getByCustomer: (customerId: string | number) => api.get(`/api/v1/customers/${customerId}/vehicles`).then(r => ({ ...r, data: (r.data.vehicles || []).map((v:any) => ({...v, year: v.manufacturingYear, customerId: customerId}))})),
+  getByCustomer: (customerId: string | number) =>
+    api.get(`/api/v1/customers/${customerId}/vehicles`).then(r => ({
+      ...r,
+      data: (r.data.vehicles || []).map((v: any) => ({
+        ...v, year: v.manufacturingYear, customerId
+      }))
+    })),
   create: (data: any) => api.post<Vehicle>('/api/v1/vehicles', {
     customerId: data.customerId,
     plate: data.plate,
@@ -44,11 +61,11 @@ export const vehiclesApi = {
     mileage: data.mileage || 0,
     color: data.color
   }),
-  delete: (id: string | number) => api.delete(`/api/v1/vehicles/${id}`),
 };
 
+// ==================== SERVICES ====================
 export const servicesApi = {
-  getAll: () => api.get('/api/v1/services').then(res => ({ ...res, data: res.data.services })),
+  getAll: () => api.get('/api/v1/services').then(res => ({ ...res, data: res.data.services || [] })),
   getById: (id: string | number) => api.get<Service>(`/api/v1/services/${id}`),
   create: (data: Partial<Service>) => api.post<Service>('/api/v1/services', {
     name: data.name,
@@ -59,15 +76,15 @@ export const servicesApi = {
     description: data.description,
     laborPrice: data.laborPrice
   }),
-  delete: (id: string | number) => api.delete(`/api/v1/services/${id}`),
 };
 
+// ==================== SERVICE ORDERS ====================
 export const ordersApi = {
   getAll: async () => {
     try {
       const ordersRes = await api.get('/api/v1/service-orders');
       const orders = ordersRes.data.serviceOrders || [];
-      
+
       const enrichedOrdersPromises = orders.map(async (o: any) => {
         try {
           const quoteRes = await api.get(`/api/v1/quotes/${o.quoteId}`);
@@ -80,22 +97,29 @@ export const ordersApi = {
             vehicleInfo: q.vehiclePlate,
             totalCost: q.totalAmount,
           };
-        } catch (err) {
-          return { ...o, status: o.orderStatus, createdAt: o.creationDate, customerName: 'Desconocido', vehicleInfo: 'Desconocido', totalCost: 0 };
+        } catch {
+          return {
+            ...o, status: o.orderStatus, createdAt: o.creationDate,
+            customerName: 'Desconocido', vehicleInfo: 'Desconocido', totalCost: 0
+          };
         }
       });
       const enrichedOrders = await Promise.all(enrichedOrdersPromises);
       return { data: enrichedOrders };
-    } catch (err) {
+    } catch {
       return { data: [] };
     }
   },
   getById: (id: string | number) => api.get(`/api/v1/service-orders/${id}`),
   create: (data: any) => api.post('/api/v1/service-orders', { quoteId: data.quoteId }),
-  updateStatus: (id: string | number, status: string) => api.patch(`/api/v1/service-orders/${id}/advance-status`),
-  delete: (id: string | number) => Promise.reject(new Error("Not supported")),
+  advanceStatus: (id: string | number) => api.patch(`/api/v1/service-orders/${id}/advance-status`),
+  startTask: (serviceOrderId: string | number, taskId: string | number) =>
+    api.patch(`/api/v1/service-orders/${serviceOrderId}/tasks/${taskId}/start`),
+  completeTask: (serviceOrderId: string | number, taskId: string | number) =>
+    api.patch(`/api/v1/service-orders/${serviceOrderId}/tasks/${taskId}/complete`),
 };
 
+// ==================== QUOTES ====================
 export const quotesApi = {
   getAll: async () => {
     try {
@@ -112,32 +136,56 @@ export const quotesApi = {
             totalEstimated: q.totalAmount,
             convertedToOrder: q.status === 'APPROVED'
           }));
-        } catch (e) { return []; }
+        } catch { return []; }
       });
       const quotesArrays = await Promise.all(quotesPromises);
       return { data: quotesArrays.flat() };
-    } catch (e) { return { data: [] }; }
+    } catch { return { data: [] }; }
   },
   getById: (id: string | number) => api.get(`/api/v1/quotes/${id}`),
   create: (data: any) => api.post('/api/v1/quotes', {
     customerId: data.customerId,
     vehicleId: data.vehicleId,
-    items: data.items || []
+    items: data.items || [],
   }),
-  convert: (id: string | number) => api.patch(`/api/v1/quotes/${id}/approve`),
-  delete: (id: string | number) => api.patch(`/api/v1/quotes/${id}/reject`),
+  addItem: (quoteId: string | number, type: string, itemId: string, quantity: number) =>
+    api.post(`/api/v1/quotes/${quoteId}/items`, { type, itemId, quantity }),
+  approve: (id: string | number) => api.patch(`/api/v1/quotes/${id}/approve`),
+  reject: (id: string | number) => api.patch(`/api/v1/quotes/${id}/reject`),
+  delete: (id: string | number) => api.delete(`/api/v1/quotes/${id}`),
 };
 
+// ==================== PAYMENTS ====================
 export const paymentsApi = {
-  getAll: async () => ({ data: [] }), // Endpoint no existe en backend actualmente
-  getByOrder: (orderId: string | number) => Promise.resolve({ data: [] }), // Endpoint no existe en backend
-  create: (data: any) => api.post('/api/v1/payments', {
-    serviceOrderId: data.serviceOrderId,
-    amount: data.amount,
-    method: data.method
-  }),
+  register: (data: { serviceOrderId: string | number; amount: number; method: string }) =>
+    api.post('/api/v1/payments', {
+      serviceOrderId: data.serviceOrderId,
+      amountReceived: data.amount,
+      paymentMethod: data.method
+    }),
+  getAll: () => api.get('/api/v1/payments').then(res => ({
+    ...res,
+    data: res.data.payments || []
+  })),
+  getById: (id: string | number) => api.get(`/api/v1/payments/${id}`),
+  validate: (id: string | number) => api.patch(`/api/v1/payments/${id}/validate`),
 };
 
-export const reportsApi = {
-  getDashboard: async () => Promise.reject(new Error('Endpoint de Dashboard no implementado en backend')),
+// ==================== MECHANICS ====================
+export const mechanicsApi = {
+  getAll: () => api.get('/api/v1/mechanics').then(res => ({ ...res, data: res.data.mechanics || [] })),
+  getById: (id: string | number) => api.get(`/api/v1/mechanics/${id}`),
+  create: (data: { firstName: string; lastName: string; email: string; phone: string; dni: string; specialty: string }) =>
+    api.post('/api/v1/mechanics', {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      mobilePhone: data.phone,
+      nationalId: data.dni,
+      specialty: data.specialty
+    }),
+  getBySpecialty: (specialty: string) =>
+    api.get(`/api/v1/mechanics/specialty/${specialty}`).then(res => ({
+      ...res, data: res.data.mechanics || []
+    })),
 };

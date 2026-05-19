@@ -14,7 +14,7 @@ import ServicesPage from './features/services/pages/ServicesPage';
 import OrdersPage from './features/orders/pages/OrdersPage';
 import QuotesPage from './features/quotes/pages/QuotesPage';
 import PaymentsPage from './features/payments/pages/PaymentsPage';
-import ReportsPage from './features/reports/pages/ReportsPage';
+import MechanicsPage from './features/mechanics/pages/MechanicsPage';
 
 export default function App() {
   const { loadFromStorage } = useAuthStore();
@@ -39,7 +39,7 @@ export default function App() {
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/quotes" element={<QuotesPage />} />
             <Route path="/payments" element={<PaymentsPage />} />
-            <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/mechanics" element={<MechanicsPage />} />
             
             {/* Only Owner can register new administrators */}
             <Route element={<ProtectedRoute allowedRoles={['OWNER']} />}>

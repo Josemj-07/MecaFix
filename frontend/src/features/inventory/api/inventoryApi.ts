@@ -1,25 +1,27 @@
 import api from '../../../config/axios';
-import type { Product, Category, InventoryMovement } from '../../../domain/models';
+import type { Product, Category } from '../../../domain/models';
 
 export const inventoryApi = {
-  // Products
-  getProducts: () => api.get<Product[]>('/products'),
-  getProduct: (id: number) => api.get<Product>(`/products/${id}`),
-  getLowStock: () => api.get<Product[]>('/products/low-stock'),
-  searchProducts: (q: string) => api.get<Product[]>(`/products/search?q=${q}`),
-  createProduct: (data: Partial<Product>) => api.post<Product>('/products', data),
-  updateProduct: (id: number, data: Partial<Product>) => api.put<Product>(`/products/${id}`, data),
-  deleteProduct: (id: number) => api.delete(`/products/${id}`),
+  // Products — aligned with ProductController endpoints
+  getProducts: () => api.get('/api/v1/products').then(r => ({ ...r, data: r.data.products || r.data })),
+  getProduct: (id: string | number) => api.get<Product>(`/api/v1/products/${id}`),
+  createProduct: (data: Partial<Product>) => api.post<Product>('/api/v1/products', {
+    name: data.name,
+    description: data.description,
+    categoryId: data.categoryId,
+    purchasePrice: data.purchasePrice,
+    salePrice: data.salePrice,
+    stock: data.stock,
+  }),
+  updateProductPrice: (id: string | number, purchasePrice: number, salePrice: number) =>
+    api.patch(`/api/v1/products/${id}/price`, { purchasePrice, salePrice }),
+  updateProductStock: (id: string | number, quantity: number, operation: string) =>
+    api.patch(`/api/v1/products/${id}/stock`, { quantity, operation }),
 
-  // Categories
-  getCategories: () => api.get<Category[]>('/categories'),
-  createCategory: (data: Partial<Category>) => api.post<Category>('/categories', data),
-  updateCategory: (id: number, data: Partial<Category>) => api.put<Category>(`/categories/${id}`, data),
-  deleteCategory: (id: number) => api.delete(`/categories/${id}`),
-
-  // Movements
-  getMovements: () => api.get<InventoryMovement[]>('/inventory/movements'),
-  getProductMovements: (productId: number) => api.get<InventoryMovement[]>(`/inventory/movements/product/${productId}`),
-  createMovement: (data: { productId: number; type: string; quantity: number; reason?: string }) =>
-    api.post<InventoryMovement>('/inventory/movements', data),
+  // Categories — aligned with CategoryController endpoints (only POST and GET)
+  getCategories: () => api.get('/api/v1/categories').then(r => ({ ...r, data: r.data.categories || r.data })),
+  getCategory: (id: string | number) => api.get<Category>(`/api/v1/categories/${id}`),
+  createCategory: (data: Partial<Category>) => api.post<Category>('/api/v1/categories', {
+    name: data.name,
+  }),
 };

@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { servicesApi } from '../../shared/api';
 import type { Service } from '../../../domain/models';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2 } from 'lucide-react';
 
 export default function ServicesPage() {
   const [items, setItems] = useState<Service[]>([]);
@@ -14,11 +14,23 @@ export default function ServicesPage() {
 
   const openNew = () => { setEditing(null); setForm({ name: '', description: '', laborPrice: '' }); setShowModal(true); };
   const openEdit = (s: Service) => { setEditing(s); setForm({ name: s.name, description: s.description||'', laborPrice: s.laborPrice?.toString()||'' }); setShowModal(true); };
-  const submit = async (e: FormEvent) => { e.preventDefault(); const d: Partial<Service> = { name: form.name, description: form.description, laborPrice: Number(form.laborPrice) }; editing ? await servicesApi.update(editing.id, d) : await servicesApi.create(d); setShowModal(false); load(); };
-  const del = async (id: string | number) => { 
-    // if(confirm('¿Eliminar?')){ await servicesApi.delete(id); load(); } 
-    alert('La eliminación de servicios no está habilitada en esta versión.');
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const d: Partial<Service> = { name: form.name, description: form.description, laborPrice: Number(form.laborPrice) };
+    try {
+      if (editing) {
+        await servicesApi.update(editing.id, d);
+      } else {
+        await servicesApi.create(d);
+      }
+      setShowModal(false);
+      load();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.message || 'Error al guardar el servicio.');
+    }
   };
+
   const set = (f: string) => (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => setForm(p => ({ ...p, [f]: e.target.value }));
 
   return (
@@ -26,7 +38,7 @@ export default function ServicesPage() {
       <div className="page-header"><div><h1 className="page-title">Servicios</h1></div><button className="btn btn-primary" onClick={openNew}><Plus size={18}/>Nuevo</button></div>
       <div className="table-container"><table className="table"><thead><tr><th>Nombre</th><th>Descripción</th><th>Precio (Mano Obra)</th><th>Acciones</th></tr></thead><tbody>
         {items.map(s=><tr key={s.id}><td style={{fontWeight:600,color:'var(--text-primary)'}}>{s.name}</td><td>{s.description||'—'}</td><td>${s.laborPrice?.toFixed(2)}</td>
-          <td><div style={{display:'flex',gap:6}}><button className="btn btn-icon btn-ghost btn-sm" onClick={()=>openEdit(s)}><Edit2 size={15}/></button><button className="btn btn-icon btn-ghost btn-sm" style={{color:'var(--danger)'}} onClick={()=>del(s.id)}><Trash2 size={15}/></button></div></td></tr>)}
+          <td><div style={{display:'flex',gap:6}}><button className="btn btn-icon btn-ghost btn-sm" onClick={()=>openEdit(s)}><Edit2 size={15}/></button></div></td></tr>)}
         {!items.length&&<tr><td colSpan={4} className="empty-state">Sin servicios</td></tr>}
       </tbody></table></div>
       {showModal&&<div className="modal-overlay" onClick={()=>setShowModal(false)}><div className="modal-content" onClick={e=>e.stopPropagation()}><div className="modal-header"><h2 className="modal-title">{editing?'Editar':'Nuevo'} Servicio</h2><button className="modal-close" onClick={()=>setShowModal(false)}>✕</button></div>

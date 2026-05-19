@@ -12,6 +12,4 @@ export const authApi = {
       name: `${data.firstName} ${data.lastName}`.trim(),
       role: data.role || 'ADMINISTRATOR'
     }),
-
-  me: () => api.get<AuthResponse>('/auth/me'),
 };
