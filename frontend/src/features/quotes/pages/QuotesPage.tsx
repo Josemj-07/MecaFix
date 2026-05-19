@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment, type FormEvent } from 'react';
-import { quotesApi, customersApi, vehiclesApi, servicesApi } from '../../shared/api';
+import { quotesApi, customersApi, vehiclesApi, servicesApi, mechanicsApi, ordersApi } from '../../shared/api';
 import { inventoryApi } from '../../inventory/api/inventoryApi';
 import type { Quote, Customer, Vehicle, Service, Product } from '../../../domain/models';
 import { Plus, ArrowRight, PlusCircle, Eye, ChevronDown, ChevronUp, X } from 'lucide-react';
@@ -31,12 +31,20 @@ export default function QuotesPage() {
   const [addItemId, setAddItemId] = useState('');
   const [addItemQty, setAddItemQty] = useState('1');
 
+  // Aprobación y asignación de mecánicos
+  const [mechanics, setMechanics] = useState<any[]>([]);
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [approveQuoteId, setApproveQuoteId] = useState<string | number | null>(null);
+  const [approveServices, setApproveServices] = useState<any[]>([]);
+  const [assignedMechanics, setAssignedMechanics] = useState<Record<string, string>>({}); // serviceName -> mechanicId
+
   const load = () => { quotesApi.getAll().then(r => setItems(r.data)); };
   useEffect(() => {
     load();
     customersApi.getAll().then(r => setCustomers(r.data)).catch(() => {});
     servicesApi.getAll().then(r => setServices(r.data)).catch(() => {});
     inventoryApi.getProducts().then(r => setProducts(r.data)).catch(() => {});
+    mechanicsApi.getAll().then(r => setMechanics(r.data)).catch(() => {});
   }, []);
 
   const openCreate = () => {
@@ -95,7 +103,13 @@ export default function QuotesPage() {
       await quotesApi.create({
         customerId: createForm.customerId,
         vehicleId: createForm.vehicleId,
-        items: pendingItems.map(it => ({ type: it.type, itemId: it.itemId, quantity: it.quantity }))
+        items: pendingItems.map(it => ({ 
+          type: it.type, 
+          itemId: it.itemId, 
+          quantity: it.quantity,
+          name: it.itemName,
+          price: it.price
+        }))
       });
       setShowCreateModal(false);
       load();
@@ -112,10 +126,31 @@ export default function QuotesPage() {
 
   const handleAddItem = async (e: FormEvent) => {
     e.preventDefault();
-    if (!selectedQuoteId) return;
+    if (!selectedQuoteId || !itemForm.itemId) return;
+
+    let itemName = '';
+    let itemPrice = 0;
+    if (itemForm.type === 'SERVICE') {
+      const serv = services.find(s => String(s.id) === String(itemForm.itemId));
+      itemName = serv ? serv.name : '';
+      itemPrice = serv ? serv.laborPrice : 0;
+    } else {
+      const prod = products.find(p => String(p.id) === String(itemForm.itemId));
+      itemName = prod ? prod.name : '';
+      itemPrice = prod ? prod.salePrice : 0;
+    }
+
     try {
-      await quotesApi.addItem(selectedQuoteId, itemForm.type, itemForm.itemId, Number(itemForm.quantity));
+      await quotesApi.addItem(
+        selectedQuoteId,
+        itemForm.type,
+        itemForm.itemId,
+        Number(itemForm.quantity),
+        itemName,
+        itemPrice
+      );
       setShowItemModal(false);
+      setItemForm({ type: 'SERVICE', itemId: '', quantity: '1' });
       load();
       if (expandedId === selectedQuoteId) loadDetail(selectedQuoteId);
     } catch (err: any) {
@@ -128,13 +163,73 @@ export default function QuotesPage() {
       alert("No puedes aprobar una cotización vacía. Por favor, agrega servicios o productos primero.");
       return;
     }
-    if (confirm('¿Aprobar y convertir a orden de servicio?')) {
-      try { 
-        await quotesApi.approve(id); 
-        load(); 
-      } catch (err: any) {
-        alert(err.response?.data?.message || 'Error al aprobar cotización');
+    
+    try {
+      // 1. Obtener detalles de la cotización para ver sus servicios
+      const res = await quotesApi.getById(id);
+      const quoteDetails = res.data;
+      
+      // Filtrar servicios
+      const quoteServices = (quoteDetails.items || []).filter((item: any) => item.type === 'SERVICE');
+      
+      setApproveQuoteId(id);
+      setApproveServices(quoteServices);
+      
+      // Inicializar asignación con el primer mecánico si existe
+      const initialAssignments: Record<string, string> = {};
+      quoteServices.forEach((s: any) => {
+        const defaultMech = mechanics[0];
+        if (defaultMech) {
+          initialAssignments[s.name || s.serviceName] = String(defaultMech.id);
+        }
+      });
+      setAssignedMechanics(initialAssignments);
+      setShowApproveModal(true);
+    } catch (err) {
+      console.error('Error al preparar la aprobación:', err);
+      alert('Error al preparar la aprobación de la cotización.');
+    }
+  };
+
+  const handleConfirmApproval = async () => {
+    if (!approveQuoteId) return;
+
+    // Validar asignaciones de mecánicos
+    for (const s of approveServices) {
+      const nameKey = s.name || s.serviceName;
+      if (!assignedMechanics[nameKey]) {
+        alert(`Por favor asigna un mecánico para el servicio: ${nameKey}`);
+        return;
       }
+    }
+
+    try {
+      // 1. Aprobar la cotización en el backend
+      await quotesApi.approve(approveQuoteId);
+
+      // 2. Crear la orden de servicio con las tareas y mecánicos asignados
+      const tasksPayload = approveServices.map((s: any) => {
+        const nameKey = s.name || s.serviceName;
+        // Buscar el ID del servicio real por nombre
+        const serviceObj = services.find((serv: any) => serv.name === nameKey);
+        return {
+          serviceId: serviceObj ? serviceObj.id : null,
+          mechanicId: assignedMechanics[nameKey]
+        };
+      }).filter((t: any) => t.serviceId !== null);
+
+      await ordersApi.create({
+        quoteId: approveQuoteId,
+        tasks: tasksPayload,
+        serviceNames: approveServices.map(s => s.name || s.serviceName)
+      });
+
+      setShowApproveModal(false);
+      alert('Cotización aprobada y Orden de Servicio creada exitosamente.');
+      load();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.message || 'Error al aprobar y crear orden de servicio');
     }
   };
 
@@ -367,6 +462,64 @@ export default function QuotesPage() {
                 <button type="submit" className="btn btn-primary">Agregar Item</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Aprobación y Asignación de Mecánicos */}
+      {showApproveModal && approveQuoteId && (
+        <div className="modal-overlay" onClick={() => setShowApproveModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 500 }}>
+            <div className="modal-header">
+              <h2 className="modal-title">Aprobar Cotización #{approveQuoteId}</h2>
+              <button className="modal-close" onClick={() => setShowApproveModal(false)}>✕</button>
+            </div>
+            
+            <div style={{ marginTop: 12, marginBottom: 16 }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                Esta cotización se convertirá en una **Orden de Servicio** activa. Por favor, asigna un mecánico para cada servicio:
+              </p>
+            </div>
+
+            {approveServices.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                {approveServices.map((s, i) => {
+                  const nameKey = s.name || s.serviceName;
+                  return (
+                    <div key={i} style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: 16, background: 'var(--bg-secondary)' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: 8 }}>{nameKey}</div>
+                      <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label className="form-label" style={{ fontSize: '0.75rem' }}>Asignar Mecánico</label>
+                        <select 
+                          className="form-select"
+                          value={assignedMechanics[nameKey] || ''}
+                          onChange={e => setAssignedMechanics(prev => ({ ...prev, [nameKey]: e.target.value }))}
+                          required
+                        >
+                          <option value="">Seleccione un mecánico...</option>
+                          {mechanics.map(m => (
+                            <option key={m.id} value={m.id}>
+                              {m.firstName} {m.lastName} ({m.specialty || 'General'})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div style={{ padding: '24px 16px', textAlign: 'center', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', color: 'var(--text-muted)' }}>
+                Esta cotización no contiene servicios de mano de obra (solo repuestos). Se creará la orden directamente sin tareas iniciales.
+              </div>
+            )}
+
+            <div className="modal-actions" style={{ marginTop: 24 }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowApproveModal(false)}>Cancelar</button>
+              <button type="button" className="btn btn-primary" onClick={handleConfirmApproval}>
+                Aprobar y Crear Orden
+              </button>
+            </div>
           </div>
         </div>
       )}
