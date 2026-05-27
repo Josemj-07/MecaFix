@@ -6,6 +6,14 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  const publicAuthPaths = ['/auth/login', '/auth/register'];
+  const isPublicAuthRequest = publicAuthPaths.some((path) => config.url?.endsWith(path));
+
+  if (isPublicAuthRequest) {
+    delete config.headers.Authorization;
+    return config;
+  }
+
   const token = localStorage.getItem('mecafix_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
