@@ -198,6 +198,20 @@
   html {
     @apply scroll-smooth;
     font-size: var(--font-size-base);
+  }
+
+  /* Desktop scales like an image of the reference screen (1920 × 930 px,
+     16px root). Every size is in rem, so the root size follows whichever
+     side of the window is relatively smaller: the composition keeps its
+     proportions on any computer, browser, OS scaling or monitor. Phones and
+     tablets keep their own responsive layout. */
+  @media (min-width: 64rem) {
+    html {
+      font-size: min(calc(100vw / 120), calc(100vh / 58.125));
+    }
+  }
+
+  html {
     /* Anchored sections land below the floating navbar. */
     scroll-padding-top: 6.5rem;
   }

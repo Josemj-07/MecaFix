@@ -19,7 +19,7 @@ const riseDelay = (step: number) => ({
 export const Hero = () => (
   <section
     aria-labelledby="hero-title"
-    className="relative isolate flex min-h-[32rem] items-center overflow-hidden bg-night text-night-foreground sm:min-h-[34rem] lg:h-[calc(100svh-12rem)] lg:min-h-[30rem]"
+    className="relative isolate flex min-h-[32rem] items-center overflow-hidden bg-night text-night-foreground sm:min-h-[34rem] lg:min-h-[max(30rem,calc(100svh-12rem))]"
   >
     <HeroVideo />
     {/* Legibility veil: the copy side is darker than the footage side. */}
@@ -29,7 +29,7 @@ export const Hero = () => (
     />
     <HeroWedges />
 
-    <Container className="pt-28 pb-20 sm:pt-32 sm:pb-24 lg:pt-28 lg:pb-20">
+    <Container className="pt-32 pb-20 sm:pt-36 sm:pb-24 lg:pt-36 lg:pb-24">
       <div className="flex max-w-3xl flex-col gap-6">
         <Heading
           id="hero-title"
