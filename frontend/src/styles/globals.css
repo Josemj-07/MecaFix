@@ -1,0 +1,236 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource-variable/inter/index.css';
+@import '@fontsource/archivo-black/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+@import './theme.css';
+
+/*
+ * Brand geometry ("Facetado"). Use these utilities instead of writing
+ * clip-paths by hand, so every shape keeps the same angles.
+ */
+
+/* Parallelogram at the slope of the logo X (76°). Run set by --slant. */
+@utility clip-slant {
+  clip-path: polygon(
+    var(--slant) 0,
+    100% 0,
+    calc(100% - var(--slant)) 100%,
+    0 100%
+  );
+}
+
+/* Hex nut (the dot of the i): sockets for icons, avatars, chips. */
+@utility clip-hex {
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+}
+
+/* Bolt head seen from the side: status chips. */
+@utility clip-bolt {
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 50%,
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 50%
+  );
+}
+
+/* Machined plate: all four corners chamfered by --chamfer. */
+@utility clip-chamfer {
+  clip-path: polygon(
+    var(--chamfer) 0,
+    calc(100% - var(--chamfer)) 0,
+    100% var(--chamfer),
+    100% calc(100% - var(--chamfer)),
+    calc(100% - var(--chamfer)) 100%,
+    var(--chamfer) 100%,
+    0 calc(100% - var(--chamfer)),
+    0 var(--chamfer)
+  );
+}
+
+/* Top edge of a band drawn as a row of half hex nuts sticking out into the
+   previous band. Put it on an absolutely positioned element painted with
+   the band color. Same use for teeth-edge-top and saw-edge-top. */
+@utility nut-edge-top {
+  height: 16px;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='16'%3E%3Cpolygon points='12,16 21,0 43,0 52,16'/%3E%3C/svg%3E");
+  mask-repeat: repeat-x;
+  mask-size: 64px 16px;
+  mask-position: center bottom;
+}
+
+/* Square teeth, like the edge of a ruler or a gear. */
+@utility teeth-edge-top {
+  height: 12px;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='12'%3E%3Crect width='16' height='12'/%3E%3C/svg%3E");
+  mask-repeat: repeat-x;
+  mask-size: 32px 12px;
+  mask-position: center bottom;
+}
+
+/* Saw teeth at the slope of the X. */
+@utility saw-edge-top {
+  height: 14px;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14'%3E%3Cpolygon points='0,14 20,0 28,0 28,14'/%3E%3C/svg%3E");
+  mask-repeat: repeat-x;
+  mask-size: 28px 14px;
+  mask-position: center bottom;
+}
+
+/* Hairline that follows a clipped shape (place on the parent of the clipped
+   element). Color with --outline-color. */
+@utility shape-outline {
+  filter: drop-shadow(1px 0 0 var(--outline-color, var(--color-input)))
+    drop-shadow(-1px 0 0 var(--outline-color, var(--color-input)))
+    drop-shadow(0 1px 0 var(--outline-color, var(--color-input)))
+    drop-shadow(0 -1px 0 var(--outline-color, var(--color-input)));
+}
+
+/* Registration marks on the four corners (use on a ::before that sits a
+   few px outside the card). Color with --mark-color. */
+@utility crop-marks {
+  --mark: var(--mark-color, var(--color-steel));
+  background:
+    linear-gradient(var(--mark), var(--mark)) top left / 14px 1.5px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) top left / 1.5px 14px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) top right / 14px 1.5px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) top right / 1.5px 14px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) bottom left / 14px 1.5px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) bottom left / 1.5px 14px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) bottom right / 14px 1.5px
+      no-repeat,
+    linear-gradient(var(--mark), var(--mark)) bottom right / 1.5px 14px
+      no-repeat;
+}
+
+/* Measuring ruler: minor ticks every 10px, red major tick every 100px. */
+@utility bg-ruler {
+  background:
+    repeating-linear-gradient(
+        90deg,
+        var(--color-steel-light) 0 1px,
+        transparent 1px 10px
+      )
+      0 0 / 100% 7px no-repeat,
+    repeating-linear-gradient(
+        90deg,
+        var(--color-primary) 0 1.5px,
+        transparent 1.5px 100px
+      )
+      0 0 / 100% 14px no-repeat;
+}
+
+/* Technical drawing grid (light surfaces). */
+@utility bg-blueprint {
+  background-image:
+    linear-gradient(var(--color-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+}
+
+/* Hex nut mesh (dark surfaces only). */
+@utility bg-hex-mesh {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath fill='%23ffffff' fill-opacity='0.05' d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/svg%3E");
+}
+
+/* Diamond tread plate (red or steel surfaces). */
+@utility bg-tread {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cg stroke='%23ffffff' stroke-opacity='0.09' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M3 9l6-6'/%3E%3Cpath d='M15 15l6 6'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Range input with a hex-nut knob. Fill set inline with --fill (0%–100%). */
+@utility range-nut {
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+
+  &::-webkit-slider-runnable-track {
+    height: 6px;
+    background: linear-gradient(
+      90deg,
+      var(--color-primary) var(--fill, 50%),
+      var(--color-steel-pale) var(--fill, 50%)
+    );
+  }
+  &::-moz-range-track {
+    height: 6px;
+    background: var(--color-steel-pale);
+  }
+  &::-moz-range-progress {
+    height: 6px;
+    background: var(--color-primary);
+  }
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 24px;
+    height: 22px;
+    margin-top: -8px;
+    background: var(--color-inverse);
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  }
+  &::-moz-range-thumb {
+    width: 24px;
+    height: 22px;
+    border: 0;
+    border-radius: 0;
+    background: var(--color-inverse);
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 4px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply scroll-smooth;
+    font-size: var(--font-size-base);
+    /* Anchored sections land below the floating navbar. */
+    scroll-padding-top: 6.5rem;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading text-balance;
+  }
+
+  /* The heading face ships a single (black) weight: never fake a bolder one. */
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-heading {
+    font-synthesis: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

@@ -1,0 +1,373 @@
+/*
+ * DESIGN TOKENS — the single source of truth for the visual identity.
+ *
+ * MecaFix identity: "Facetado" (see BRAND.md).
+ * Everything comes from the logo: the triangular facets of the M (surfaces),
+ * the slope of the X (direction of actions and motion), the hex nut over
+ * the i (active state, bullets, confirmation) and the steel of the wrench
+ * (lines and technical text). Square corners; geometry is added on top of a
+ * shape, never cut out of a card.
+ *
+ * - Components only use semantic utilities generated from these tokens
+ *   (bg-primary, text-muted-foreground, bg-inverse, fill-primary-soft...).
+ * - Raw palette classes (bg-blue-500) and hex values in components are
+ *   forbidden by ESLint. To change the brand, change THIS file only.
+ * - Every color has a matching *-foreground for text placed on top of it.
+ *   Keep contrast >= 4.5:1 (WCAG AA) between each pair.
+ * - Light mode only (BRAND.md): there is no .dark palette.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces: paper (#FBFAF8), white sheets, carbon ink (#1E2126) */
+  --background: #fbfaf8;
+  --foreground: #1e2126;
+  --card: #ffffff;
+  --card-foreground: #1e2126;
+  --popover: #ffffff;
+  --popover-foreground: #1e2126;
+
+  /* Brand red (logo M). 7.2:1 with white */
+  --primary: #a52a2f;
+  --primary-foreground: #ffffff;
+  --primary-hover: #7e1f23;
+  /* Red that keeps contrast on carbon and night surfaces (5.1:1 on #14161A) */
+  --primary-bright: #e0484e;
+  /* Facet tones, illustration only */
+  --primary-soft: #c4464c;
+  --primary-tint: #f5e4e4;
+
+  /* Smoke (#F4F2EF): alternate sections and quiet fills */
+  --secondary: #f4f2ef;
+  --secondary-foreground: #1e2126;
+  --accent: #f4f2ef;
+  --accent-foreground: #1e2126;
+  --muted: #f4f2ef;
+  --muted-foreground: #4e535b; /* 7.6:1 on paper */
+
+  /* Band (#F0EDE8): alternate rows of the module showcase, a touch darker
+     than paper so the change reads without adding depth */
+  --band: #f0ede8;
+  /* Mist (#F6F5F2): between paper and smoke, for subtle alternate rows */
+  --mist: #f6f5f2;
+  --band-foreground: #1e2126;
+
+  /* Carbon (#1E2126) and night (#14161A): dark bands, footer, hero */
+  --inverse: #1e2126;
+  --inverse-foreground: #f4f2ef;
+  --inverse-muted: #2a2e35;
+  --inverse-muted-foreground: #b3b8be; /* 8.2:1 on carbon */
+  --inverse-border: #3a3f47;
+  --night: #14161a;
+  --night-foreground: #f4f2ef;
+
+  /* Steel (wrench): rules, rulers, technical captions */
+  --steel: #8b9198;
+  --steel-light: #bfc3c8;
+  --steel-pale: #e3e4e6;
+
+  /* Colombian license plate, used in product previews */
+  --plate: #f2c230;
+  --plate-foreground: #151515;
+
+  /* Feedback (an error is never only red: always icon + text) */
+  --destructive: #b42318;
+  --destructive-foreground: #ffffff;
+  --success: #2e7a4e;
+  --success-foreground: #ffffff;
+  --warning: #9a6200;
+  --warning-foreground: #ffffff;
+  --info: #2f5d8a;
+  --info-foreground: #ffffff;
+
+  /* Lines & focus */
+  --border: #dcd8d2;
+  --input: #bfc3c8;
+  --grid: #eceae6;
+  --ring: #a52a2f;
+  --overlay: rgb(20 22 26 / 0.7);
+
+  /* Shape: square corners. Brand geometry lives in globals.css utilities */
+  --radius: 0rem;
+  --slant: 11px; /* parallelogram run of actions (76°) */
+  --chamfer: 8px; /* field and plate corners */
+
+  /* Personality */
+  --heading-weight: 400;
+  --subheading-weight: 400;
+  --heading-tracking: -0.02em;
+  --heading-case: none;
+  --button-radius: 0rem;
+  --border-width: 1px;
+  --font-size-base: 100%;
+}
+
+/* Map the CSS variables above to Tailwind utilities. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-bright: var(--primary-bright);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-tint: var(--primary-tint);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-band: var(--band);
+  --color-mist: var(--mist);
+  --color-band-foreground: var(--band-foreground);
+  --color-inverse: var(--inverse);
+  --color-inverse-foreground: var(--inverse-foreground);
+  --color-inverse-muted: var(--inverse-muted);
+  --color-inverse-muted-foreground: var(--inverse-muted-foreground);
+  --color-inverse-border: var(--inverse-border);
+  --color-night: var(--night);
+  --color-night-foreground: var(--night-foreground);
+  --color-steel: var(--steel);
+  --color-steel-light: var(--steel-light);
+  --color-steel-pale: var(--steel-pale);
+  --color-plate: var(--plate);
+  --color-plate-foreground: var(--plate-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-grid: var(--grid);
+  --color-ring: var(--ring);
+  --color-overlay: var(--overlay);
+
+  --radius-sm: max(0px, calc(var(--radius) - 4px));
+  --radius-md: max(0px, calc(var(--radius) - 2px));
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-button: var(--button-radius);
+
+  /* Flat sheets. Floating layers (navbar, dialogs, toasts) keep shadow-lg. */
+  --shadow-xs: none;
+  --shadow-sm: none;
+}
+
+/* Typography: font families, self-hosted via @fontsource (see globals.css). */
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  /* Archivo Black: a single heavy weight (400) for every heading. */
+  --font-heading:
+    'Archivo Black', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --container-page: 76rem;
+
+  /* Motion (always behind motion-safe:) */
+  --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-bolt: cubic-bezier(0.3, 1.4, 0.5, 1);
+  /* Load entrance: rise from below-left, the slope of the X */
+  --animate-rise: rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* Hero wedges sliding in from their edge */
+  --animate-wedge-top: wedge-top 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-wedge-bottom: wedge-bottom 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* Facet corner assembling itself */
+  --animate-facet: facet 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* The nut of an eyebrow tightening once */
+  --animate-tighten: tighten 0.9s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  /* Endless ticker; content must be duplicated once */
+  --animate-marquee: marquee 40s linear infinite;
+  /* Status beacon on previews */
+  --animate-beacon: beacon 2.4s ease-out infinite;
+  /* Typing dots of the assistant preview */
+  --animate-typing: typing 1.2s ease-in-out infinite;
+  /* Product previews, played like a short video (pair with animationDelay) */
+  --animate-fade: fade 0.4s ease-out both;
+  --animate-pop: pop 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  --animate-grow-x: grow-x 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-grow-y: grow-y 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-swap-out: swap-out 0.3s ease-in both;
+  --animate-draw: draw 1.4s cubic-bezier(0.65, 0, 0.35, 1) both;
+  /* Story progress bar; set animationDuration inline */
+  --animate-progress: progress 6s linear both;
+  /* Pointer moving from (--cx0,--cy0) to (--cx1,--cy1) and tapping */
+  --animate-cursor: cursor 1.8s cubic-bezier(0.65, 0, 0.35, 1) both;
+  --animate-spin-slow: spin 1.2s linear infinite;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translate(-10px, 18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes wedge-top {
+    from {
+      transform: translate(-12%, -12%);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  @keyframes wedge-bottom {
+    from {
+      transform: translateY(40%);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  @keyframes facet {
+    from {
+      clip-path: polygon(100% 0, 100% 0, 100% 0);
+    }
+    to {
+      clip-path: polygon(0 0, 100% 0, 100% 100%);
+    }
+  }
+
+  @keyframes tighten {
+    from {
+      opacity: 0;
+      transform: rotate(-120deg) scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes beacon {
+    0% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    80%,
+    100% {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes grow-x {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes grow-y {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes swap-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 100;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes cursor {
+    0% {
+      opacity: 0;
+      transform: translate(var(--cx0), var(--cy0));
+    }
+    15% {
+      opacity: 1;
+    }
+    70% {
+      transform: translate(var(--cx1), var(--cy1));
+    }
+    80% {
+      transform: translate(var(--cx1), var(--cy1)) scale(0.8);
+    }
+    90%,
+    100% {
+      opacity: 1;
+      transform: translate(var(--cx1), var(--cy1));
+    }
+  }
+
+  @keyframes typing {
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
