@@ -6,10 +6,7 @@ import { Nut } from '@/components/ui/nut';
 import { Reveal } from '@/components/ui/reveal';
 import { Heading, Text } from '@/components/ui/typography';
 import { siteConfig } from '@/config/site';
-import { cn } from '@/utils/cn';
-import { formatCurrency } from '@/utils/format';
-
-import { useBillingCycle } from '../hooks/use-billing-cycle';
+import { useBillingCycle } from '@/features/marketing/hooks/use-billing-cycle';
 import {
   annualTotal,
   type BillingCycle,
@@ -17,7 +14,9 @@ import {
   monthlyAmount,
   type Plan,
   plans,
-} from '../utils/pricing';
+} from '@/features/marketing/utils/pricing';
+import { cn } from '@/utils/cn';
+import { formatCurrency } from '@/utils/format';
 
 import { BillingCycleToggle } from './billing-cycle-toggle';
 

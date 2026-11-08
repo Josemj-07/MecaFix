@@ -2,11 +2,10 @@ import { Container } from '@/components/layouts';
 import { Reveal } from '@/components/ui/reveal';
 import { Text } from '@/components/ui/typography';
 import { landingSections, siteConfig } from '@/config/site';
+import { landingFaq } from '@/features/marketing/utils/faq';
 
-import { landingFaq } from '../utils/faq';
-
-import { FaqList } from './faq-list';
-import { SectionHeading } from './section-heading';
+import { FaqList } from '../faq-list';
+import { SectionHeading } from '../section-heading';
 
 export const FaqSection = () => (
   <section

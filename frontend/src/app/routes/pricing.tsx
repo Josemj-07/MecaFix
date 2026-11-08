@@ -1,7 +1,7 @@
 import { Head } from '@/components/seo';
-import { PricingFaq } from '@/features/marketing/components/pricing-faq';
-import { PricingFeatureTable } from '@/features/marketing/components/pricing-feature-table';
-import { PricingPlans } from '@/features/marketing/components/pricing-plans';
+import { PricingFaq } from '@/features/marketing/components/pricing/pricing-faq';
+import { PricingFeatureTable } from '@/features/marketing/components/pricing/pricing-feature-table';
+import { PricingPlans } from '@/features/marketing/components/pricing/pricing-plans';
 
 const PricingRoute = () => {
   return (

@@ -3,11 +3,14 @@ import { Fragment } from 'react';
 
 import { Container } from '@/components/layouts';
 import { Reveal } from '@/components/ui/reveal';
+import {
+  type FeatureValue,
+  featureGroups,
+  plans,
+} from '@/features/marketing/utils/pricing';
 import { cn } from '@/utils/cn';
 
-import { type FeatureValue, featureGroups, plans } from '../utils/pricing';
-
-import { SectionHeading } from './section-heading';
+import { SectionHeading } from '../section-heading';
 
 const FeatureCell = ({ value }: { value: FeatureValue }) => {
   if (value === true) {

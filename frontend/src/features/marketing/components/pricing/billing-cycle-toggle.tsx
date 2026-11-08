@@ -1,6 +1,8 @@
+import {
+  ANNUAL_MONTHS_CHARGED,
+  type BillingCycle,
+} from '@/features/marketing/utils/pricing';
 import { cn } from '@/utils/cn';
-
-import { ANNUAL_MONTHS_CHARGED, type BillingCycle } from '../utils/pricing';
 
 const options: { value: BillingCycle; label: string }[] = [
   { value: 'mensual', label: 'Mensual' },

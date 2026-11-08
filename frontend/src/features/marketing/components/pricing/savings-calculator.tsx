@@ -7,16 +7,15 @@ import { Facet } from '@/components/ui/facet';
 import { Reveal } from '@/components/ui/reveal';
 import { Heading, Text } from '@/components/ui/typography';
 import { landingSections, siteConfig } from '@/config/site';
-import { formatCurrency } from '@/utils/format';
-
-import { useAnimatedNumber } from '../hooks/use-animated-number';
-import { plans } from '../utils/pricing';
+import { useAnimatedNumber } from '@/features/marketing/hooks/use-animated-number';
+import { plans } from '@/features/marketing/utils/pricing';
 import {
   type SavingsInput,
   estimateYearlySavings,
   paybackDays,
   savingsAssumptions,
-} from '../utils/savings';
+} from '@/features/marketing/utils/savings';
+import { formatCurrency } from '@/utils/format';
 
 type Slider = {
   key: keyof SavingsInput;

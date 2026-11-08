@@ -1,8 +1,10 @@
 import type * as React from 'react';
 
+import {
+  type PreviewStatus,
+  statusLabels,
+} from '@/features/marketing/utils/preview-data';
 import { cn } from '@/utils/cn';
-
-import { type PreviewStatus, statusLabels } from '../utils/preview-data';
 
 const statusClassName: Record<PreviewStatus, string> = {
   service: 'bg-primary-tint text-primary',

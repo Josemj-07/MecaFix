@@ -7,11 +7,11 @@ import { Facet } from '@/components/ui/facet';
 import { Reveal } from '@/components/ui/reveal';
 import { Heading, Text } from '@/components/ui/typography';
 import { landingSections } from '@/config/site';
+import { testimonials } from '@/features/marketing/utils/testimonials';
 import { cn } from '@/utils/cn';
 
-import { testimonials } from '../utils/testimonials';
+import { PlayOnView } from '../scenes/scene-kit';
 
-import { PlayOnView } from './scene-kit';
 import { TestimonialStory } from './testimonial-story';
 
 const pad = (value: number) => String(value).padStart(2, '0');

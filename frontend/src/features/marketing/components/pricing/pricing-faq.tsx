@@ -4,11 +4,10 @@ import { Facet } from '@/components/ui/facet';
 import { Reveal } from '@/components/ui/reveal';
 import { Heading, Text } from '@/components/ui/typography';
 import { siteConfig } from '@/config/site';
+import { pricingFaq } from '@/features/marketing/utils/faq';
 
-import { pricingFaq } from '../utils/faq';
-
-import { FaqList } from './faq-list';
-import { SectionHeading } from './section-heading';
+import { FaqList } from '../faq-list';
+import { SectionHeading } from '../section-heading';
 
 // Pricing questions and a last nudge towards the demo.
 export const PricingFaq = () => (

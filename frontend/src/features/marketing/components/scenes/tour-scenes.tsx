@@ -1,10 +1,9 @@
 import { Camera, Check, CircleCheck, Send } from 'lucide-react';
 
 import { Nut } from '@/components/ui/nut';
+import { at, reactionAt, tapAt } from '@/features/marketing/utils/scene-timing';
 import { cn } from '@/utils/cn';
 import { formatCurrency } from '@/utils/format';
-
-import { at, reactionAt, tapAt } from '../utils/scene-timing';
 
 import { PlateTag, StatusChip } from './preview-primitives';
 import { SceneCursor, SceneLabel, ScenePress, SceneSwap } from './scene-kit';

@@ -11,9 +11,8 @@ import type * as React from 'react';
 import { Container } from '@/components/layouts';
 import { Reveal } from '@/components/ui/reveal';
 import { Heading, Text } from '@/components/ui/typography';
+import { useTrackProgress } from '@/features/marketing/hooks/use-track-progress';
 import { cn } from '@/utils/cn';
-
-import { useTrackProgress } from '../hooks/use-track-progress';
 
 type Assurance = {
   title: string;

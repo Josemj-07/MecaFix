@@ -13,7 +13,7 @@ import { siteConfig } from '@/config/site';
 
 import { type PlatformModule, platformModules } from '../utils/modules';
 
-import { ModuleScreen } from './modules-showcase';
+import { ModuleScreen } from './landing/modules-showcase';
 
 // Base template of /plataforma/:moduleSlug. Every module page shares it
 // until each one gets its own in-depth content.

@@ -1,17 +1,16 @@
 import { Bot, Check, CircleCheck, Lightbulb, Send } from 'lucide-react';
 import type * as React from 'react';
 
-import { cn } from '@/utils/cn';
-import { formatCurrency } from '@/utils/format';
-
-import { type ModuleSlug } from '../utils/modules';
+import { type ModuleSlug } from '@/features/marketing/utils/modules';
 import {
   sampleAssistantChat,
   sampleMarginByService,
   samplePayroll,
   sampleStock,
-} from '../utils/preview-data';
-import { at, reactionAt, tapAt } from '../utils/scene-timing';
+} from '@/features/marketing/utils/preview-data';
+import { at, reactionAt, tapAt } from '@/features/marketing/utils/scene-timing';
+import { cn } from '@/utils/cn';
+import { formatCurrency } from '@/utils/format';
 
 import { PlateTag, StatusChip } from './preview-primitives';
 import { SceneCursor, SceneLabel, ScenePress, SceneSwap } from './scene-kit';

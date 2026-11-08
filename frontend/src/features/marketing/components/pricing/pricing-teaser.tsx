@@ -8,11 +8,10 @@ import { Nut } from '@/components/ui/nut';
 import { Reveal } from '@/components/ui/reveal';
 import { Text } from '@/components/ui/typography';
 import { paths } from '@/config/paths';
+import { includedInAllPlans, plans } from '@/features/marketing/utils/pricing';
 import { cn } from '@/utils/cn';
 
-import { includedInAllPlans, plans } from '../utils/pricing';
-
-import { SectionHeading } from './section-heading';
+import { SectionHeading } from '../section-heading';
 
 // Short version of the plans: who each one is for. Prices live on /precios.
 export const PricingTeaser = () => (

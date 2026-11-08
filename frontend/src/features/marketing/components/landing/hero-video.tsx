@@ -1,12 +1,11 @@
 import { preload } from 'react-dom';
 
+import posterUrl from '@/features/marketing/assets/hero-workshop-poster.webp';
+import videoSmallUrl from '@/features/marketing/assets/hero-workshop-sm.mp4';
+import videoMp4Url from '@/features/marketing/assets/hero-workshop.mp4';
+import videoWebmUrl from '@/features/marketing/assets/hero-workshop.webm';
+import { useBackgroundVideo } from '@/features/marketing/hooks/use-background-video';
 import { cn } from '@/utils/cn';
-
-import posterUrl from '../assets/hero-workshop-poster.webp';
-import videoSmallUrl from '../assets/hero-workshop-sm.mp4';
-import videoMp4Url from '../assets/hero-workshop.mp4';
-import videoWebmUrl from '../assets/hero-workshop.webm';
-import { useBackgroundVideo } from '../hooks/use-background-video';
 
 // Background footage of the hero. Temporary clips (Mixkit free license)
 // until MecaFix records its own workshop video: replace the files in

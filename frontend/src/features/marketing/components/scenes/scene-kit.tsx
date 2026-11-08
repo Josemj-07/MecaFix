@@ -1,10 +1,9 @@
 import { MousePointer2 } from 'lucide-react';
 import * as React from 'react';
 
+import { at, pressHalf } from '@/features/marketing/utils/scene-timing';
 import { useInView } from '@/hooks/use-in-view';
 import { cn } from '@/utils/cn';
-
-import { at, pressHalf } from '../utils/scene-timing';
 
 // Building blocks for the product scenes of the marketing pages. A scene is
 // a screen of the product whose pieces enter one after another (a few

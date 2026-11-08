@@ -1,10 +1,9 @@
 import { ArrowRight } from 'lucide-react';
 
 import { Facet } from '@/components/ui/facet';
+import { at } from '@/features/marketing/utils/scene-timing';
+import { type Testimonial } from '@/features/marketing/utils/testimonials';
 import { cn } from '@/utils/cn';
-
-import { at } from '../utils/scene-timing';
-import { type Testimonial } from '../utils/testimonials';
 
 const pad = (value: number) => String(value).padStart(2, '0');
 

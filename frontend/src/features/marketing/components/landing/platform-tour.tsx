@@ -18,13 +18,11 @@ import { Reveal } from '@/components/ui/reveal';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Heading, Text } from '@/components/ui/typography';
 import { landingSections } from '@/config/site';
+import { useSwipe } from '@/features/marketing/hooks/use-swipe';
 import { cn } from '@/utils/cn';
 
-import { useSwipe } from '../hooks/use-swipe';
-
-import { AppWindow } from './preview-primitives';
-import { PlayOnView } from './scene-kit';
-import { SectionHeading } from './section-heading';
+import { AppWindow } from '../scenes/preview-primitives';
+import { PlayOnView } from '../scenes/scene-kit';
 import {
   DeliveryScene,
   FollowUpScene,
@@ -32,7 +30,8 @@ import {
   QuoteScene,
   ReceptionScene,
   WorkshopBoardScene,
-} from './tour-scenes';
+} from '../scenes/tour-scenes';
+import { SectionHeading } from '../section-heading';
 
 type TourStop = {
   value: string;

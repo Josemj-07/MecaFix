@@ -8,19 +8,18 @@ import { Reveal } from '@/components/ui/reveal';
 import { Heading, Text } from '@/components/ui/typography';
 import { paths } from '@/config/paths';
 import { landingSections } from '@/config/site';
-import { cn } from '@/utils/cn';
-
 import {
   type ModuleSlug,
   type PlatformModule,
   moduleAnchor,
   platformModules,
-} from '../utils/modules';
+} from '@/features/marketing/utils/modules';
+import { cn } from '@/utils/cn';
 
-import { ModuleScene } from './module-scenes';
-import { AppWindow } from './preview-primitives';
-import { PlayOnView } from './scene-kit';
-import { SectionHeading } from './section-heading';
+import { ModuleScene } from '../scenes/module-scenes';
+import { AppWindow } from '../scenes/preview-primitives';
+import { PlayOnView } from '../scenes/scene-kit';
+import { SectionHeading } from '../section-heading';
 
 // Screen of a module with its animated scene, on a carbon or blueprint
 // backdrop. Shared by the landing showcase and the module pages.

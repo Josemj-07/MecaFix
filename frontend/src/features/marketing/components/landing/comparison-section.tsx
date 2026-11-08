@@ -6,7 +6,7 @@ import { Reveal } from '@/components/ui/reveal';
 import { Text } from '@/components/ui/typography';
 import { cn } from '@/utils/cn';
 
-import { SectionHeading } from './section-heading';
+import { SectionHeading } from '../section-heading';
 
 type Support = 'yes' | 'partial' | 'no';
 
