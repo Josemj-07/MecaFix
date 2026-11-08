@@ -16,18 +16,18 @@ type Contrast = {
 const contrasts: Contrast[] = [
   {
     today: {
-      title: 'El filtro se instaló, pero no se cobró',
-      detail: 'La orden en papel no se actualizó a tiempo.',
+      title: 'Fuga o pérdida de inventario',
+      detail: 'El repuesto se instala y nadie lo anota ni lo cobra.',
     },
     withMecafix: {
-      title: 'Cada repuesto queda en la orden y en la factura',
+      title: 'Cada repuesto en la orden y la factura',
       detail: 'Se agrega una vez y sale de bodega solo.',
     },
   },
   {
     today: {
-      title: 'Una tarde a la semana pasando datos',
-      detail: 'Facturas, quincena y caja, copiados a mano.',
+      title: 'Horas perdidas en papeleo',
+      detail: 'Una tarde a la semana copiando facturas, quincena y caja.',
     },
     withMecafix: {
       title: 'Facturas y quincena salen de las órdenes',
@@ -36,11 +36,11 @@ const contrasts: Contrast[] = [
   },
   {
     today: {
-      title: 'El cliente se fue y no volvió',
-      detail: 'Nadie le recordó su próximo mantenimiento.',
+      title: 'Clientes que no vuelven',
+      detail: 'Nadie les recordó su próximo mantenimiento.',
     },
     withMecafix: {
-      title: 'El cliente recibe su recordatorio por WhatsApp',
+      title: 'Recordatorio automático por WhatsApp',
       detail: 'Por fecha o kilometraje, sin que nadie llame.',
     },
   },
@@ -53,7 +53,7 @@ const ContrastPanel = ({ side }: { side: 'today' | 'withMecafix' }) => {
   return (
     <div
       className={cn(
-        'relative flex h-full flex-col overflow-hidden p-6 sm:p-8',
+        'relative flex h-full flex-col overflow-hidden p-4 sm:p-8',
         isToday
           ? 'bg-secondary text-muted-foreground'
           : 'bg-inverse text-inverse-muted-foreground',
@@ -62,7 +62,7 @@ const ContrastPanel = ({ side }: { side: 'today' | 'withMecafix' }) => {
       {!isToday && <Facet size="md" animated />}
       <h3
         className={cn(
-          'border-b pb-5 font-heading text-2xl font-extrabold sm:text-3xl',
+          'border-b pb-3 font-heading text-xl font-extrabold sm:pb-5 sm:text-3xl',
           isToday
             ? 'border-border text-foreground'
             : 'border-inverse-border text-inverse-foreground',
@@ -73,7 +73,7 @@ const ContrastPanel = ({ side }: { side: 'today' | 'withMecafix' }) => {
         ) : (
           <span className="flex items-center gap-3">
             Con
-            <Logo variant="inverse" alt="MecaFix" className="h-9 sm:h-11" />
+            <Logo variant="inverse" alt="MecaFix" className="h-7 sm:h-11" />
           </span>
         )}
       </h3>
@@ -84,7 +84,7 @@ const ContrastPanel = ({ side }: { side: 'today' | 'withMecafix' }) => {
             <li
               key={row.title}
               className={cn(
-                'grid grid-cols-[2rem_1fr] gap-3 border-b border-dashed py-5 last:border-b-0',
+                'grid grid-cols-[2rem_1fr] gap-3 border-b border-dashed py-3 last:border-b-0 sm:py-5',
                 isToday ? 'border-border' : 'border-inverse-border',
               )}
             >
@@ -101,13 +101,15 @@ const ContrastPanel = ({ side }: { side: 'today' | 'withMecafix' }) => {
               <span className="flex flex-col gap-1">
                 <span
                   className={cn(
-                    'text-lg font-semibold',
+                    'text-base font-semibold sm:text-lg',
                     isToday ? 'text-foreground' : 'text-inverse-foreground',
                   )}
                 >
                   {row.title}
                 </span>
-                <span className="text-[0.9375rem]">{row.detail}</span>
+                <span className="text-[0.9375rem] max-sm:hidden">
+                  {row.detail}
+                </span>
               </span>
             </li>
           );
@@ -120,11 +122,8 @@ const ContrastPanel = ({ side }: { side: 'today' | 'withMecafix' }) => {
 // Right after the hero (and visible without scrolling on desktop): the
 // reframe of the problem and the before/after of the workshop.
 export const ValueSection = () => (
-  <section
-    aria-labelledby="value-title"
-    className="pt-10 pb-6 sm:pt-12 sm:pb-8"
-  >
-    <Container className="flex flex-col gap-10 lg:gap-12">
+  <section aria-labelledby="value-title" className="pt-6 pb-4 sm:pt-12 sm:pb-8">
+    <Container className="flex flex-col gap-5 sm:gap-10 lg:gap-12">
       <div
         className="grid gap-5 motion-safe:animate-rise lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end lg:gap-14"
         style={{ animationDelay: '450ms' }}
@@ -133,12 +132,12 @@ export const ValueSection = () => (
           id="value-title"
           level="display"
           as="h2"
-          className="lg:text-[3.5rem]"
+          className="max-sm:text-3xl lg:text-[3.5rem]"
         >
           Cobra todo lo que tu taller{' '}
           <span className="text-primary">ya trabaja.</span>
         </Heading>
-        <Text className="text-lg leading-relaxed text-muted-foreground">
+        <Text className="text-lg leading-relaxed text-muted-foreground max-sm:hidden">
           Repuestos que se instalan y no se anotan, horas de papeleo y clientes
           que no vuelven. MecaFix cierra esas tres fugas.
         </Text>

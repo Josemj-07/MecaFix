@@ -20,14 +20,18 @@ const SlantIconButton = ({
   label,
   onClick,
   children,
+  duplicate = false,
 }: {
   label: string;
   onClick: () => void;
+  duplicate?: boolean;
   children: React.ReactNode;
 }) => (
   <button
     type="button"
     aria-label={label}
+    aria-hidden={duplicate || undefined}
+    tabIndex={duplicate ? -1 : undefined}
     onClick={onClick}
     className="group/arrow relative isolate grid size-12 place-items-center text-primary-foreground outline-none before:absolute before:inset-0 before:-z-10 before:bg-primary before:transition-colors before:[--slant:9px] before:clip-slant hover:before:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring active:before:bg-primary-hover"
   >
@@ -127,32 +131,52 @@ export const TestimonialsSection = () => {
           </Text>
         </Reveal>
 
-        <div
-          ref={trackRef}
-          onScroll={handleScroll}
-          role="region"
-          aria-roledescription="carrusel"
-          aria-label="Historias de talleres"
-          className="relative -mx-4 flex snap-x snap-mandatory [scrollbar-width:none] gap-3 overflow-x-auto overscroll-x-contain px-7 sm:-mx-6 sm:gap-4 sm:px-14 lg:mx-0 lg:gap-10 lg:px-0 [&::-webkit-scrollbar]:hidden"
-        >
-          {testimonials.map((testimonial, position) => (
-            <div
-              key={testimonial.id}
-              role="group"
-              aria-roledescription="testimonio"
-              aria-label={`${position + 1} de ${total}: ${testimonial.name}`}
-              data-active={position === index}
-              className="w-[calc(100vw-3.5rem)] shrink-0 snap-center transition-opacity duration-300 data-[active=false]:opacity-40 sm:w-[calc(100vw-7rem)] lg:w-full lg:data-[active=false]:opacity-100"
+        <div className="relative">
+          <div className="absolute top-1/2 left-0 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:block">
+            <SlantIconButton
+              duplicate
+              label="Testimonio anterior"
+              onClick={() => goTo(index - 1)}
             >
-              <PlayOnView className="h-full [&>div]:h-full">
-                <TestimonialStory
-                  testimonial={testimonial}
-                  position={position + 1}
-                  total={total}
-                />
-              </PlayOnView>
-            </div>
-          ))}
+              <ArrowLeft aria-hidden="true" className="size-5" />
+            </SlantIconButton>
+          </div>
+          <div className="absolute top-1/2 right-0 z-10 hidden translate-x-1/2 -translate-y-1/2 lg:block">
+            <SlantIconButton
+              duplicate
+              label="Testimonio siguiente"
+              onClick={() => goTo(index + 1)}
+            >
+              <ArrowRight aria-hidden="true" className="size-5" />
+            </SlantIconButton>
+          </div>
+          <div
+            ref={trackRef}
+            onScroll={handleScroll}
+            role="region"
+            aria-roledescription="carrusel"
+            aria-label="Historias de talleres"
+            className="relative -mx-4 flex snap-x snap-mandatory [scrollbar-width:none] gap-3 overflow-x-auto overscroll-x-contain px-7 sm:-mx-6 sm:gap-4 sm:px-14 lg:mx-0 lg:gap-10 lg:px-0 [&::-webkit-scrollbar]:hidden"
+          >
+            {testimonials.map((testimonial, position) => (
+              <div
+                key={testimonial.id}
+                role="group"
+                aria-roledescription="testimonio"
+                aria-label={`${position + 1} de ${total}: ${testimonial.name}`}
+                data-active={position === index}
+                className="w-[calc(100vw-3.5rem)] shrink-0 snap-center transition-opacity duration-300 data-[active=false]:opacity-40 sm:w-[calc(100vw-7rem)] lg:w-full lg:data-[active=false]:opacity-100"
+              >
+                <PlayOnView className="h-full [&>div]:h-full">
+                  <TestimonialStory
+                    testimonial={testimonial}
+                    position={position + 1}
+                    total={total}
+                  />
+                </PlayOnView>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="flex items-center justify-between gap-4 lg:border-t lg:border-inverse-border lg:pt-6">
@@ -210,7 +234,7 @@ export const TestimonialsSection = () => {
             })}
           </div>
 
-          <div className="flex shrink-0 items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3 lg:[&>button]:hidden">
             <span
               aria-hidden="true"
               className="font-mono text-xs text-inverse-muted-foreground tabular-nums max-[22rem]:hidden"

@@ -149,23 +149,26 @@ const StepButton = ({
     <button
       type="button"
       onClick={onClick}
+      aria-label={`${direction === 'prev' ? 'Anterior' : 'Siguiente'}: ${stop.tab}`}
       className={cn(
-        'group/step flex items-center gap-3 text-sm font-semibold text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:text-foreground focus-visible:underline max-lg:border-b',
-        direction === 'next' && 'flex-row-reverse text-right',
+        'group/step flex items-center gap-3 text-sm font-semibold text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:text-foreground max-lg:border-b lg:absolute lg:top-1/2 lg:z-10 lg:-translate-y-1/2',
+        direction === 'next'
+          ? 'flex-row-reverse text-right lg:right-5'
+          : 'lg:left-5',
         stepPlacement[direction],
       )}
     >
       <span
         className={cn(
-          'grid h-11 w-12 place-items-center transition-colors clip-hex group-hover/step:bg-primary group-hover/step:text-primary-foreground group-active/step:bg-primary-hover lg:h-9 lg:w-10',
+          'grid h-11 w-12 place-items-center transition-colors clip-hex group-hover/step:bg-primary-hover group-active/step:bg-primary-hover lg:h-14 lg:w-16',
           direction === 'next'
-            ? 'max-lg:bg-primary max-lg:text-primary-foreground lg:bg-secondary lg:text-primary'
-            : 'bg-secondary text-primary',
+            ? 'bg-primary text-primary-foreground'
+            : 'max-lg:bg-secondary max-lg:text-primary lg:bg-primary lg:text-primary-foreground',
         )}
       >
-        <Icon aria-hidden="true" className="size-4" />
+        <Icon aria-hidden="true" className="size-4 lg:size-6" />
       </span>
-      <span className="max-lg:sr-only">
+      <span className="sr-only">
         <span className="block font-mono text-[0.6875rem] font-normal tracking-[0.06em] uppercase">
           {direction === 'prev' ? 'Anterior' : 'Siguiente'}
         </span>
@@ -208,7 +211,7 @@ export const PlatformTour = () => {
           <Tabs
             value={active}
             onValueChange={setActive}
-            className="bg-card shadow-[inset_0_0_0_1px_var(--color-border)] max-lg:grid max-lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:flex lg:flex-col"
+            className="bg-card shadow-[inset_0_0_0_1px_var(--color-border)] max-lg:grid max-lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:relative lg:flex lg:flex-col"
           >
             <TabsList
               aria-label="Pasos del recorrido"
@@ -232,13 +235,13 @@ export const PlatformTour = () => {
               ))}
             </TabsList>
 
-            <div className="max-lg:contents lg:order-last lg:flex lg:items-center lg:justify-between lg:gap-4 lg:border-t lg:px-8 lg:py-4">
+            <div className="max-lg:contents lg:contents">
               <StepButton
                 direction="prev"
                 stop={stops[index - 1]}
                 onClick={() => setActive(stops[index - 1].value)}
               />
-              <span className="font-mono text-xs text-muted-foreground tabular-nums max-lg:hidden">
+              <span className="font-mono text-xs text-muted-foreground tabular-nums max-lg:hidden lg:absolute lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2">
                 {index + 1} / {stops.length}
               </span>
               <StepButton
@@ -258,7 +261,7 @@ export const PlatformTour = () => {
                   <TabsContent
                     key={stop.value}
                     value={stop.value}
-                    className="grid grid-cols-1 gap-3 px-4 pt-4 pb-4 sm:gap-6 sm:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-x-12 lg:gap-y-5 lg:p-12"
+                    className="grid grid-cols-1 gap-3 px-4 pt-4 pb-4 sm:gap-6 sm:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-x-12 lg:gap-y-5 lg:px-28 lg:py-12"
                   >
                     <Heading
                       level="h3"
