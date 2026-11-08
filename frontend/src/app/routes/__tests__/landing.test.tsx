@@ -44,10 +44,9 @@ test('follows the decision path from the reframe to the demo', async () => {
 
   const expectedOrder = [
     /cobra todo lo que tu taller ya trabaja/i,
-    /un carro, de la recepción al próximo mantenimiento/i,
+    /una sola fuente de verdad, un taller organizado/i,
     /te acompañamos en todo tu proceso/i,
     /conoce cómo.*optimiza tus flujos de trabajo/i,
-    /así pasas del cuaderno a mecafix/i,
     /talleres que ya dejaron el cuaderno/i,
     /¿por qué no seguir con el cuaderno\?/i,
     /planes en pesos/i,
@@ -79,7 +78,7 @@ test('walks through a working day of the platform', async () => {
   await renderApp(<LandingRoute />);
 
   const tour = screen.getByRole('region', {
-    name: /un carro, de la recepción al próximo mantenimiento/i,
+    name: /una sola fuente de verdad, un taller organizado/i,
   });
   expect(
     within(tour).getByRole('heading', {
@@ -114,12 +113,12 @@ test('shows every module with a link to its page', async () => {
     name: /optimiza tus flujos de trabajo/i,
   });
   const links = within(modules).getAllByRole('link', {
-    name: /ver la funcionalidad completa/i,
+    name: /^ver más de/i,
   });
   expect(links).toHaveLength(6);
   expect(
     within(modules).getByRole('link', {
-      name: /funcionalidad completa de nómina/i,
+      name: /ver más de nómina/i,
     }),
   ).toHaveAttribute('href', '/plataforma/nomina');
 });
@@ -152,16 +151,39 @@ test('labels placeholder testimonials and lets you browse them', async () => {
   const section = screen.getByRole('region', {
     name: /talleres que ya dejaron el cuaderno/i,
   });
-  expect(within(section).getByText('Ejemplo')).toBeInTheDocument();
-  expect(within(section).getByText(/tablero de corcho/i)).toBeInTheDocument();
+  const stories = within(section).getAllByRole('group');
+  expect(stories).toHaveLength(3);
+  // Every placeholder story is labelled as an example.
+  for (const story of stories) {
+    expect(within(story).getAllByText('Ejemplo').length).toBeGreaterThan(0);
+  }
+  expect(
+    within(stories[0]).getByText(/tablero de corcho/i),
+  ).toBeInTheDocument();
+  expect(within(section).getByText(/testimonio 1 de 3/i)).toBeInTheDocument();
 
   await userEvent.click(
     within(section).getByRole('button', { name: /testimonio siguiente/i }),
   );
 
+  expect(within(section).getByText(/testimonio 2 de 3/i)).toBeInTheDocument();
   expect(
-    within(section).getByText(/la quincena me tomaba/i),
-  ).toBeInTheDocument();
+    within(section).getByRole('group', { name: /2 de 3/i }),
+  ).toHaveTextContent(/la quincena me tomaba/i);
+
+  // The avatars jump straight to a story; it shows the task that changed,
+  // before and after.
+  const julian = within(section).getByRole('button', {
+    name: /ver testimonio de julián/i,
+  });
+  await userEvent.click(julian);
+
+  expect(julian).toHaveAttribute('aria-current', 'true');
+  expect(within(section).getByText(/testimonio 3 de 3/i)).toBeInTheDocument();
+  const story = within(section).getByRole('group', { name: /3 de 3/i });
+  expect(story).toHaveTextContent(/qué repuestos tengo/i);
+  expect(within(story).getByText('Con cuaderno')).toBeInTheDocument();
+  expect(within(story).getByText('Ninguno')).toBeInTheDocument();
 });
 
 test('links the pricing teaser to the pricing page', async () => {
@@ -179,7 +201,7 @@ test('validates and sends a demo request', async () => {
     name: /mira mecafix funcionando/i,
   });
   const submit = within(section).getByRole('button', {
-    name: /agendar mi demo gratis/i,
+    name: /agendar mi demo/i,
   });
 
   await userEvent.click(submit);

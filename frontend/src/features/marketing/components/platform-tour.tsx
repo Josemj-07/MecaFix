@@ -20,6 +20,8 @@ import { Heading, Text } from '@/components/ui/typography';
 import { landingSections } from '@/config/site';
 import { cn } from '@/utils/cn';
 
+import { useSwipe } from '../hooks/use-swipe';
+
 import { AppWindow } from './preview-primitives';
 import { PlayOnView } from './scene-kit';
 import { SectionHeading } from './section-heading';
@@ -119,6 +121,13 @@ const stops: TourStop[] = [
   },
 ];
 
+// On a phone the buttons sit at both ends of the row of step icons; from
+// lg up they are the footer of the card, with the name of the step.
+const stepPlacement = {
+  prev: 'max-lg:col-start-1 max-lg:row-start-1 max-lg:pl-1',
+  next: 'max-lg:col-start-3 max-lg:row-start-1 max-lg:pr-1',
+} as const;
+
 const StepButton = ({
   direction,
   stop,
@@ -128,21 +137,35 @@ const StepButton = ({
   stop: TourStop | undefined;
   onClick: () => void;
 }) => {
-  if (!stop) return <span />;
+  if (!stop) {
+    return (
+      <span
+        className={cn('max-lg:w-13 max-lg:border-b', stepPlacement[direction])}
+      />
+    );
+  }
   const Icon = direction === 'prev' ? ArrowLeft : ArrowRight;
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'group/step flex items-center gap-3 text-sm font-semibold text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:text-foreground focus-visible:underline',
+        'group/step flex items-center gap-3 text-sm font-semibold text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:text-foreground focus-visible:underline max-lg:border-b',
         direction === 'next' && 'flex-row-reverse text-right',
+        stepPlacement[direction],
       )}
     >
-      <span className="grid h-9 w-10 place-items-center bg-secondary text-primary transition-colors clip-hex group-hover/step:bg-primary group-hover/step:text-primary-foreground">
+      <span
+        className={cn(
+          'grid h-11 w-12 place-items-center transition-colors clip-hex group-hover/step:bg-primary group-hover/step:text-primary-foreground group-active/step:bg-primary-hover lg:h-9 lg:w-10',
+          direction === 'next'
+            ? 'max-lg:bg-primary max-lg:text-primary-foreground lg:bg-secondary lg:text-primary'
+            : 'bg-secondary text-primary',
+        )}
+      >
         <Icon aria-hidden="true" className="size-4" />
       </span>
-      <span>
+      <span className="max-lg:sr-only">
         <span className="block font-mono text-[0.6875rem] font-normal tracking-[0.06em] uppercase">
           {direction === 'prev' ? 'Anterior' : 'Siguiente'}
         </span>
@@ -155,9 +178,17 @@ const StepButton = ({
 // "Mira la plataforma": the main features as the steps of a working day.
 // You move with the tabs or the previous/next buttons; each screen plays
 // its short animation when it opens and then stays put.
+//
+// On a phone the whole step fits one screen: the tabs become six icons, the
+// step and its arrows sit right under them, then the title, the screen and
+// the description. Swiping the step sideways moves to the next one.
 export const PlatformTour = () => {
   const [active, setActive] = React.useState(stops[0].value);
   const index = stops.findIndex((stop) => stop.value === active);
+  const swipe = useSwipe((direction) => {
+    const next = stops[index + direction];
+    if (next) setActive(next.value);
+  });
 
   return (
     <section
@@ -169,83 +200,45 @@ export const PlatformTour = () => {
         <SectionHeading
           id="platform-title"
           eyebrow="Mira la plataforma"
-          title="Un carro, de la recepción al próximo mantenimiento"
-          description="Recorre un día del taller paso a paso y mira cómo se ve cada funcionalidad por dentro. Los datos son de ejemplo."
+          title="Una sola fuente de verdad, un taller organizado"
+          description="Lo que registra el asesor lo ven al instante el mecánico, la bodega y caja. Nadie vuelve a digitar ni a preguntar en qué va un carro. Recorre un día del taller y mira cómo se ve por dentro, con datos de ejemplo."
         />
 
         <Reveal>
           <Tabs
             value={active}
             onValueChange={setActive}
-            className="bg-card shadow-[inset_0_0_0_1px_var(--color-border)]"
+            className="bg-card shadow-[inset_0_0_0_1px_var(--color-border)] max-lg:grid max-lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:flex lg:flex-col"
           >
-            <TabsList aria-label="Pasos del recorrido" className="px-2">
+            <TabsList
+              aria-label="Pasos del recorrido"
+              className="max-lg:col-start-2 max-lg:row-start-1 max-lg:grid max-lg:grid-cols-6 lg:px-2"
+            >
               {stops.map(({ value, tab, icon: Icon }, stopIndex) => (
-                <TabsTrigger key={value} value={value}>
+                <TabsTrigger
+                  key={value}
+                  value={value}
+                  className="max-lg:justify-center max-lg:px-0 max-lg:py-3.5 max-lg:after:inset-x-2 max-lg:[&_svg]:size-5"
+                >
                   <span
                     aria-hidden="true"
-                    className="font-mono text-[0.6875rem] text-muted-foreground"
+                    className="font-mono text-[0.6875rem] text-muted-foreground max-lg:hidden"
                   >
                     {String(stopIndex + 1).padStart(2, '0')}
                   </span>
                   <Icon aria-hidden="true" />
-                  {tab}
+                  <span className="max-lg:sr-only">{tab}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            {stops.map((stop) => {
-              const Scene = stop.scene;
-              return (
-                <TabsContent
-                  key={stop.value}
-                  value={stop.value}
-                  className="grid grid-cols-1 gap-10 p-6 sm:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-12 lg:p-12"
-                >
-                  <div className="flex min-w-0 flex-col gap-5 motion-safe:animate-rise">
-                    <Heading level="h3" className="text-2xl sm:text-3xl">
-                      {stop.title}
-                    </Heading>
-                    <Text className="text-muted-foreground">
-                      {stop.description}
-                    </Text>
-                    <ul className="flex flex-col gap-2.5">
-                      {stop.points.map((point) => (
-                        <li
-                          key={point}
-                          className="flex items-start gap-2.5 text-[0.9375rem]"
-                        >
-                          <Nut filled className="mt-1 size-3.5 text-primary" />
-                          {point}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="relative min-w-0">
-                    <div
-                      aria-hidden="true"
-                      className="absolute -inset-3 overflow-hidden bg-inverse bg-hex-mesh sm:-inset-5"
-                    >
-                      <Facet size="lg" />
-                    </div>
-                    <PlayOnView className="relative">
-                      <AppWindow title={stop.window}>
-                        <Scene />
-                      </AppWindow>
-                    </PlayOnView>
-                  </div>
-                </TabsContent>
-              );
-            })}
-
-            <div className="flex items-center justify-between gap-4 border-t px-6 py-4 sm:px-8">
+            <div className="max-lg:contents lg:order-last lg:flex lg:items-center lg:justify-between lg:gap-4 lg:border-t lg:px-8 lg:py-4">
               <StepButton
                 direction="prev"
                 stop={stops[index - 1]}
                 onClick={() => setActive(stops[index - 1].value)}
               />
-              <span className="font-mono text-xs text-muted-foreground tabular-nums">
+              <span className="font-mono text-xs text-muted-foreground tabular-nums max-lg:hidden">
                 {index + 1} / {stops.length}
               </span>
               <StepButton
@@ -253,6 +246,66 @@ export const PlatformTour = () => {
                 stop={stops[index + 1]}
                 onClick={() => setActive(stops[index + 1].value)}
               />
+            </div>
+
+            <div
+              {...swipe}
+              className="touch-pan-y max-lg:col-span-3 max-lg:row-start-2"
+            >
+              {stops.map((stop) => {
+                const Scene = stop.scene;
+                return (
+                  <TabsContent
+                    key={stop.value}
+                    value={stop.value}
+                    className="grid grid-cols-1 gap-3 px-4 pt-4 pb-4 sm:gap-6 sm:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-x-12 lg:gap-y-5 lg:p-12"
+                  >
+                    <Heading
+                      level="h3"
+                      className="text-lg motion-safe:animate-rise sm:text-2xl lg:col-start-1 lg:row-start-2 lg:text-3xl"
+                    >
+                      {stop.title}
+                    </Heading>
+
+                    <div className="relative min-w-0 max-lg:mx-2 max-lg:my-2 lg:col-start-2 lg:row-span-4 lg:row-start-1 lg:self-center">
+                      <div
+                        aria-hidden="true"
+                        className="absolute -inset-2 overflow-hidden bg-inverse bg-hex-mesh sm:-inset-5"
+                      >
+                        <Facet size="md" className="sm:size-36" />
+                      </div>
+                      <PlayOnView className="relative">
+                        <AppWindow
+                          title={stop.window}
+                          className="max-sm:[zoom:0.82]"
+                        >
+                          <Scene />
+                        </AppWindow>
+                      </PlayOnView>
+                    </div>
+
+                    <div className="flex min-w-0 flex-col gap-4 motion-safe:animate-rise-sm lg:col-start-1 lg:row-start-3 lg:gap-5">
+                      <Text className="text-[0.9375rem] text-muted-foreground sm:text-base">
+                        {stop.description}
+                      </Text>
+                      <ul className="flex flex-col gap-2.5 max-sm:hidden">
+                        {stop.points.map((point) => (
+                          <li
+                            key={point}
+                            className="flex items-start gap-2.5 text-[0.9375rem]"
+                          >
+                            <Nut
+                              filled
+                              className="mt-1 size-3.5 text-primary"
+                            />
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </TabsContent>
+                );
+              })}
             </div>
           </Tabs>
         </Reveal>

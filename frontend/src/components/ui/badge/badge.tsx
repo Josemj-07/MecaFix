@@ -30,5 +30,3 @@ export type BadgeProps = React.ComponentProps<'span'> &
 export const Badge = ({ className, variant, ...props }: BadgeProps) => (
   <span className={cn(badgeVariants({ variant }), className)} {...props} />
 );
-
-export { badgeVariants };

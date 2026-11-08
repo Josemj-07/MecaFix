@@ -76,5 +76,3 @@ export const Button = ({
     </button>
   );
 };
-
-export { buttonVariants };

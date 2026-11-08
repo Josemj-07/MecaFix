@@ -8,7 +8,6 @@ import { ComparisonSection } from '@/features/marketing/components/comparison-se
 import { FaqSection } from '@/features/marketing/components/faq-section';
 import { Hero } from '@/features/marketing/components/hero';
 import { ModulesShowcase } from '@/features/marketing/components/modules-showcase';
-import { OnboardingSteps } from '@/features/marketing/components/onboarding-steps';
 import { PlatformTour } from '@/features/marketing/components/platform-tour';
 import { PricingTeaser } from '@/features/marketing/components/pricing-teaser';
 import { SavingsCalculator } from '@/features/marketing/components/savings-calculator';
@@ -18,7 +17,7 @@ import { ValueSection } from '@/features/marketing/components/value-section';
 
 // Order follows the decision path of a workshop owner (see the landing
 // research): promise → reframe and before/after → the product → trust →
-// modules in depth → how to start → proof → status quo → price → their own
+// modules in depth → proof → status quo → price → their own
 // numbers → doubts → action.
 const LandingRoute = () => {
   return (
@@ -29,7 +28,6 @@ const LandingRoute = () => {
       <PlatformTour />
       <TrustStrip />
       <ModulesShowcase />
-      <OnboardingSteps />
       <TestimonialsSection />
       <ComparisonSection />
       <PricingTeaser />

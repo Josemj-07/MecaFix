@@ -15,7 +15,6 @@ import { paths } from './paths';
 export const landingSections = {
   platform: 'plataforma',
   modules: 'modulos',
-  howToStart: 'como-empezar',
   savings: 'calculadora',
   testimonials: 'testimonios',
   faq: 'preguntas',
@@ -90,7 +89,6 @@ const mainNav: NavItem[] = [
       },
     ],
   },
-  { label: 'Cómo empezar', href: landingAnchor('howToStart') },
   { label: 'Precios', href: paths.pricing.getHref(), isRoute: true },
   { label: 'Preguntas', href: landingAnchor('faq') },
 ];
@@ -107,7 +105,6 @@ const footerNav: { title: string; links: NavLink[] }[] = [
   {
     title: 'Empezar',
     links: [
-      { label: 'Cómo empezar', href: landingAnchor('howToStart') },
       { label: 'Testimonios', href: landingAnchor('testimonials') },
       { label: 'Preguntas frecuentes', href: landingAnchor('faq') },
       { label: 'Prueba una demo gratis', href: landingAnchor('demo') },

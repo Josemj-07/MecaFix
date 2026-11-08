@@ -4,15 +4,28 @@ import { Nut } from '@/components/ui/nut';
 import { cn } from '@/utils/cn';
 import { formatCurrency } from '@/utils/format';
 
+import { at, reactionAt, tapAt } from '../utils/scene-timing';
+
 import { PlateTag, StatusChip } from './preview-primitives';
-import { SceneCursor, SceneLabel, SceneSwap, at } from './scene-kit';
+import { SceneCursor, SceneLabel, ScenePress, SceneSwap } from './scene-kit';
 
 // Scenes of "Mira la plataforma": one car through a working day, from the
 // reception desk to the maintenance reminder. Sample data.
+//
+// Pacing: rows of a list cascade 60-100ms apart (under 500ms in total);
+// the longer pauses are reserved for the beats of the story. Whatever a
+// cursor tap causes starts at reactionAt(cursor), never before the tap.
 
+// Panels, cards and messages.
 const rise = 'motion-safe:animate-rise';
+// Rows, chips and supporting blocks.
+const settle = 'motion-safe:animate-rise-sm';
 const pop = 'motion-safe:animate-pop';
-const fade = 'motion-safe:animate-fade';
+
+const receptionCursor = 3000;
+const quoteCursor = 2400;
+const partsCursor = 2400;
+const deliveryCursor = 600;
 
 const checklist = [
   'Luces y direccionales',
@@ -31,7 +44,7 @@ export const ReceptionScene = () => (
         <span className="text-sm font-semibold">Chevrolet Onix 2021</span>
         <PlateTag>ABC 214</PlateTag>
       </div>
-      <div className="grid grid-cols-2 gap-3 text-[0.8125rem]">
+      <div className="grid grid-cols-2 gap-3 text-[0.8125rem] max-sm:hidden">
         <div className={cn('flex flex-col gap-1', rise)} style={at(150)}>
           <SceneLabel>Kilometraje</SceneLabel>
           <span className="font-mono font-semibold tabular-nums">
@@ -50,13 +63,20 @@ export const ReceptionScene = () => (
       </div>
       <ul className="flex flex-col divide-y border-y text-[0.8125rem]">
         {checklist.map((item, index) => (
-          <li key={item} className="flex items-center gap-3 py-2">
+          <li
+            key={item}
+            // On a phone two items tell the story and keep the step on screen.
+            className={cn(
+              'flex items-center gap-3 py-2',
+              index > 1 && 'max-sm:hidden',
+            )}
+          >
             <span
               className={cn(
                 'grid size-5 shrink-0 place-items-center bg-success text-success-foreground clip-hex',
                 pop,
               )}
-              style={at(700 + index * 260)}
+              style={at(700 + index * 150)}
             >
               <Check aria-hidden="true" className="size-3" />
             </span>
@@ -73,10 +93,10 @@ export const ReceptionScene = () => (
           <span
             key={photo}
             className={cn(
-              'grid aspect-[4/3] place-items-center bg-steel-pale text-steel',
+              'grid aspect-[16/10] place-items-center bg-steel-pale text-steel sm:aspect-[4/3]',
               pop,
             )}
-            style={at(1800 + photo * 180)}
+            style={at(1800 + photo * 100)}
           >
             <Camera aria-hidden="true" className="size-4" />
           </span>
@@ -102,15 +122,17 @@ export const ReceptionScene = () => (
         </svg>
       </div>
       <div className="mt-auto flex items-center justify-between gap-3">
-        <span className="bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground">
-          Abrir orden
-        </span>
+        <ScenePress tap={tapAt(receptionCursor)}>
+          <span className="bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground">
+            Abrir orden
+          </span>
+        </ScenePress>
         <span
           className={cn(
             'inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-success',
             pop,
           )}
-          style={at(4300)}
+          style={at(reactionAt(receptionCursor))}
         >
           <CircleCheck aria-hidden="true" className="size-4" />
           OT-03877 creada
@@ -120,7 +142,7 @@ export const ReceptionScene = () => (
     <SceneCursor
       from={['30cqw', '180px']}
       to={['62cqw', '300px']}
-      delay={3000}
+      delay={receptionCursor}
     />
   </div>
 );
@@ -137,7 +159,7 @@ export const QuoteScene = () => (
       <div className="flex items-center justify-between gap-3">
         <span className="font-mono text-sm font-semibold">COT-01288</span>
         <SceneSwap
-          delay={4200}
+          delay={reactionAt(quoteCursor) + 200}
           before={<StatusChip status="pending" />}
           after={
             <span className="inline-flex items-center gap-1.5 bg-success/15 px-3.5 py-1 text-xs font-semibold text-success clip-bolt">
@@ -147,12 +169,13 @@ export const QuoteScene = () => (
           }
         />
       </div>
-      <ul className="flex flex-col divide-y divide-dashed border-y text-[0.8125rem]">
+      {/* On a phone the quote is its total: the approval is the story. */}
+      <ul className="flex flex-col divide-y divide-dashed border-y text-[0.8125rem] max-sm:hidden">
         {quoteLines.map((line, index) => (
           <li
             key={line.label}
-            className={cn('flex justify-between gap-4 py-2.5', rise)}
-            style={at(200 + index * 300)}
+            className={cn('flex justify-between gap-4 py-2.5', settle)}
+            style={at(200 + index * 100)}
           >
             <span>{line.label}</span>
             <span className="font-mono tabular-nums">
@@ -164,9 +187,9 @@ export const QuoteScene = () => (
       <div
         className={cn(
           'flex justify-between bg-secondary px-3 py-2.5 text-sm font-bold',
-          fade,
+          settle,
         )}
-        style={at(1200)}
+        style={at(900)}
       >
         <span>Total</span>
         <span className="font-mono tabular-nums">{formatCurrency(450000)}</span>
@@ -185,9 +208,11 @@ export const QuoteScene = () => (
         Hola Ana, tu Onix necesita frenos delanteros. Total{' '}
         {formatCurrency(450000)}.
         <span className="mt-3 flex gap-2">
-          <span className="bg-success px-3 py-1.5 text-xs font-semibold text-success-foreground">
-            Aprobar
-          </span>
+          <ScenePress tap={tapAt(quoteCursor)}>
+            <span className="bg-success px-3 py-1.5 text-xs font-semibold text-success-foreground">
+              Aprobar
+            </span>
+          </ScenePress>
           <span className="px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-[inset_0_0_0_1px_var(--color-border)]">
             Ver detalle
           </span>
@@ -198,7 +223,7 @@ export const QuoteScene = () => (
           'self-end bg-success/15 px-3 py-1.5 text-xs font-semibold text-success',
           pop,
         )}
-        style={at(4000)}
+        style={at(reactionAt(quoteCursor))}
       >
         Ana aprobó la cotización
       </span>
@@ -206,7 +231,7 @@ export const QuoteScene = () => (
     <SceneCursor
       from={['80cqw', '260px']}
       to={['56cqw', '128px']}
-      delay={2400}
+      delay={quoteCursor}
     />
   </div>
 );
@@ -239,12 +264,17 @@ const bays = [
 ];
 
 export const WorkshopBoardScene = () => (
-  <div className="grid gap-3 p-5 sm:grid-cols-3 sm:p-6">
+  <div className="grid grid-cols-2 gap-3 p-5 sm:grid-cols-3 sm:p-6">
     {bays.map((bay, index) => (
       <div
         key={bay.bay}
-        className={cn('flex flex-col gap-3 bg-secondary p-3', rise)}
-        style={at(index * 220)}
+        className={cn(
+          'flex flex-col gap-3 bg-secondary p-3',
+          // On a phone the middle bay is left out: two bays side by side.
+          index === 1 && 'max-sm:hidden',
+          rise,
+        )}
+        style={at(index * 100)}
       >
         <div className="flex items-center justify-between">
           <SceneLabel>{bay.bay}</SceneLabel>
@@ -258,7 +288,7 @@ export const WorkshopBoardScene = () => (
             'flex flex-col gap-2 bg-card p-3 shadow-[inset_0_0_0_1px_var(--color-border)]',
             pop,
           )}
-          style={at(500 + index * 220)}
+          style={at(500 + index * 100)}
         >
           <span className="text-[0.8125rem] font-semibold">{bay.car}</span>
           <PlateTag>{bay.plate}</PlateTag>
@@ -269,7 +299,7 @@ export const WorkshopBoardScene = () => (
                 bay.progress,
                 bay.done ? 'bg-success' : 'bg-primary',
               )}
-              style={at(1000 + index * 300)}
+              style={at(1000 + index * 100)}
             />
           </span>
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -311,7 +341,7 @@ export const PartsScene = () => (
           key={line.label}
           className={cn(
             'flex flex-wrap items-center justify-between gap-2 py-3',
-            rise,
+            settle,
           )}
           style={at(200 + index * 500)}
         >
@@ -320,7 +350,7 @@ export const PartsScene = () => (
             className={cn(
               'font-mono text-[0.6875rem] font-semibold',
               line.low ? 'text-warning' : 'text-muted-foreground',
-              fade,
+              settle,
             )}
             style={at(700 + index * 500)}
           >
@@ -343,11 +373,13 @@ export const PartsScene = () => (
         Sugerimos pedir 6 und. a Autopartes Sur.
       </span>
       <SceneSwap
-        delay={3800}
+        delay={reactionAt(partsCursor)}
         before={
-          <span className="bg-inverse px-3 py-1.5 text-xs font-semibold text-inverse-foreground">
-            Crear orden de compra
-          </span>
+          <ScenePress tap={tapAt(partsCursor)}>
+            <span className="bg-inverse px-3 py-1.5 text-xs font-semibold text-inverse-foreground">
+              Crear orden de compra
+            </span>
+          </ScenePress>
         }
         after={
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-success">
@@ -360,7 +392,7 @@ export const PartsScene = () => (
     <SceneCursor
       from={['30cqw', '60px']}
       to={['74cqw', '190px']}
-      delay={2400}
+      delay={partsCursor}
     />
   </div>
 );
@@ -387,14 +419,16 @@ export const DeliveryScene = () => (
             key={method}
             className={cn(
               'px-3 py-1.5 text-xs font-semibold shadow-[inset_0_0_0_1px_var(--color-border)]',
-              rise,
+              settle,
             )}
-            style={at(300 + index * 120)}
+            style={at(300 + index * 60)}
           >
             {index === 2 ? (
               <SceneSwap
-                delay={1900}
-                before={method}
+                delay={reactionAt(deliveryCursor)}
+                before={
+                  <ScenePress tap={tapAt(deliveryCursor)}>{method}</ScenePress>
+                }
                 after={<span className="text-primary">✓ {method}</span>}
               />
             ) : (
@@ -426,7 +460,7 @@ export const DeliveryScene = () => (
       <dl
         className={cn(
           'grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-[0.8125rem]',
-          fade,
+          settle,
         )}
         style={at(2400)}
       >
@@ -438,7 +472,7 @@ export const DeliveryScene = () => (
       <span
         className={cn(
           'inline-flex items-center gap-1.5 font-mono text-[0.6875rem] text-muted-foreground',
-          fade,
+          settle,
         )}
         style={at(3900)}
       >
@@ -449,7 +483,7 @@ export const DeliveryScene = () => (
     <SceneCursor
       from={['10cqw', '220px']}
       to={['36cqw', '150px']}
-      delay={600}
+      delay={deliveryCursor}
     />
   </div>
 );
@@ -480,7 +514,12 @@ export const FollowUpScene = () => (
       {followUp.map((step, index) => (
         <li
           key={step.label}
-          className={cn('relative flex flex-col', rise)}
+          className={cn(
+            'relative flex flex-col',
+            // On a phone the chat beside it already shows the message.
+            index === 2 && 'max-sm:hidden',
+            rise,
+          )}
           style={at(step.delay)}
         >
           <span

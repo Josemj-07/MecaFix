@@ -2,57 +2,91 @@ import * as React from 'react';
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
+// Height of the screen where the car sits on the vertical rail: low enough
+// that it reaches the finish while the goal is still on screen.
+const readingLine = 0.72;
+
 // Progress (0 → 1) of the race car along the trust track.
-// - With a mouse, the car follows the pointer across the track.
-// - On touch screens, it advances as the section scrolls through the view.
+// - On a phone the track is a vertical rail beside the list: the car sits
+//   at the reading line, so it goes down with the scroll and reaches the
+//   finish when the last item is read. `vertical` is then true.
+// - With a mouse, the car follows the pointer across the horizontal track.
+// - On other touch screens, it advances as the section scrolls through.
 // - With reduced motion, it starts at the finish line.
 export const useTrackProgress = <
   TSection extends HTMLElement,
   TTrack extends HTMLElement,
+  TRail extends HTMLElement,
 >() => {
   const sectionRef = React.useRef<TSection>(null);
   const trackRef = React.useRef<TTrack>(null);
+  const railRef = React.useRef<TRail>(null);
   const [progress, setProgress] = React.useState(0);
+  const [vertical, setVertical] = React.useState(false);
 
   React.useEffect(() => {
     const section = sectionRef.current;
     const track = trackRef.current;
-    if (!section || !track) return;
+    const rail = railRef.current;
+    if (!section || !track || !rail) return;
+
+    // The rail is only laid out on a phone (it is hidden from sm up).
+    const isVertical = () => rail.offsetHeight > 0;
 
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setVertical(isVertical());
       setProgress(1);
       return;
     }
 
-    const canHover = window.matchMedia?.('(hover: hover)').matches ?? false;
+    const measureScroll = () => {
+      const viewport = window.innerHeight;
+      if (isVertical()) {
+        const rect = rail.getBoundingClientRect();
+        setVertical(true);
+        setProgress(clamp((viewport * readingLine - rect.top) / rect.height));
+        return;
+      }
+      const rect = section.getBoundingClientRect();
+      setVertical(false);
+      setProgress(
+        clamp((viewport * 0.85 - rect.top) / (rect.height + viewport * 0.2)),
+      );
+    };
 
-    if (canHover) {
-      const onPointerMove = (event: PointerEvent) => {
-        const rect = track.getBoundingClientRect();
-        setProgress(clamp((event.clientX - rect.left) / rect.width));
-      };
-      section.addEventListener('pointermove', onPointerMove);
-      return () => section.removeEventListener('pointermove', onPointerMove);
-    }
+    const onPointerMove = (event: PointerEvent) => {
+      if (isVertical()) return;
+      const rect = track.getBoundingClientRect();
+      setProgress(clamp((event.clientX - rect.left) / rect.width));
+    };
 
     let frame = 0;
     const onScroll = () => {
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const rect = section.getBoundingClientRect();
-        const viewport = window.innerHeight;
-        setProgress(
-          clamp((viewport * 0.85 - rect.top) / (rect.height + viewport * 0.2)),
-        );
-      });
+      frame = requestAnimationFrame(measureScroll);
     };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const canHover = window.matchMedia?.('(hover: hover)').matches ?? false;
+    // A mouse drives the horizontal track; the rail always follows the scroll.
+    const followScroll = () => !canHover || isVertical();
+
+    const onScrollIfNeeded = () => {
+      if (followScroll()) onScroll();
+    };
+
+    if (followScroll()) measureScroll();
+    else setVertical(false);
+
+    if (canHover) section.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('scroll', onScrollIfNeeded, { passive: true });
+    window.addEventListener('resize', onScrollIfNeeded);
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', onScroll);
+      section.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('scroll', onScrollIfNeeded);
+      window.removeEventListener('resize', onScrollIfNeeded);
     };
   }, []);
 
-  return { sectionRef, trackRef, progress };
+  return { sectionRef, trackRef, railRef, progress, vertical };
 };

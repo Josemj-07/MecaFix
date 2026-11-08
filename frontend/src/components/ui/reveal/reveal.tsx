@@ -35,7 +35,7 @@ export const Reveal = ({
       ref={ref}
       data-state={inView ? 'visible' : 'hidden'}
       className={cn(
-        'group/reveal motion-safe:transition-[opacity,translate] motion-safe:duration-700 motion-safe:ease-out motion-safe:data-[state=hidden]:opacity-0',
+        'group/reveal motion-safe:transition-[opacity,translate] motion-safe:duration-700 motion-safe:ease-brand motion-safe:data-[state=hidden]:opacity-0',
         hiddenOffset[from],
         className,
       )}

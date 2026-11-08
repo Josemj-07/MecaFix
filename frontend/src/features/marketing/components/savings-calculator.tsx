@@ -136,7 +136,7 @@ export const SavingsCalculator = () => {
       <Container>
         <Reveal className="grid bg-card shadow-[inset_0_0_0_1px_var(--color-border)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <form
-            className="flex flex-col gap-7 p-6 sm:p-8 lg:p-10"
+            className="flex flex-col gap-7 p-5 sm:p-8 lg:p-10"
             onSubmit={(event) => event.preventDefault()}
           >
             <Eyebrow>Haz la cuenta de tu taller</Eyebrow>
@@ -155,14 +155,14 @@ export const SavingsCalculator = () => {
             ))}
           </form>
 
-          <div className="relative flex flex-col gap-6 overflow-hidden bg-night p-6 text-night-foreground sm:p-8 lg:p-10">
+          <div className="relative flex flex-col gap-6 overflow-hidden bg-night p-5 text-night-foreground sm:p-8 lg:p-10">
             <Facet size="md" />
-            <span className="font-heading text-xl font-extrabold text-inverse-foreground">
+            <span className="pr-12 font-heading text-xl font-extrabold text-inverse-foreground sm:pr-16">
               Lo que puedes recuperar al año
             </span>
             <span
               aria-live="polite"
-              className="font-heading text-[2.75rem] leading-none font-extrabold text-inverse-foreground tabular-nums sm:text-6xl"
+              className="font-heading text-[clamp(1.75rem,8.5vw,2.75rem)] leading-none font-extrabold text-inverse-foreground tabular-nums sm:text-6xl"
             >
               {formatCurrency(total)}
             </span>
@@ -191,9 +191,7 @@ export const SavingsCalculator = () => {
               </div>
             )}
             <CtaButton asChild tone="light" className="self-start">
-              <a href={siteConfig.primaryCta.href}>
-                Revisa estos números en tu demo
-              </a>
+              <a href={siteConfig.primaryCta.href}>Revísalos en tu demo</a>
             </CtaButton>
             <details className="group/assume border-t border-inverse-border pt-4 text-sm text-inverse-muted-foreground">
               <summary className="cursor-pointer font-mono text-[0.8125rem] font-semibold tracking-[0.04em] text-inverse-foreground uppercase">

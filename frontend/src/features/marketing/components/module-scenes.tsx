@@ -11,24 +11,36 @@ import {
   samplePayroll,
   sampleStock,
 } from '../utils/preview-data';
+import { at, reactionAt, tapAt } from '../utils/scene-timing';
 
 import { PlateTag, StatusChip } from './preview-primitives';
-import { SceneCursor, SceneLabel, SceneSwap, at } from './scene-kit';
+import { SceneCursor, SceneLabel, ScenePress, SceneSwap } from './scene-kit';
 import { DeliveryScene, WorkshopBoardScene } from './tour-scenes';
 
 // Scenes of the module showcase and module pages. Sample data.
 
+// Same pacing rules as tour-scenes: rows cascade 80ms apart and whatever a
+// cursor tap causes starts at reactionAt(cursor).
+
+// Panels and messages.
 const rise = 'motion-safe:animate-rise';
+// Rows, chips and supporting blocks.
+const settle = 'motion-safe:animate-rise-sm';
 const pop = 'motion-safe:animate-pop';
+// Chart labels only: small and secondary.
 const fade = 'motion-safe:animate-fade';
+
+const inventoryCursor = 2100;
+const payrollCursor = 2300;
+const assistantCursor = 2800;
 
 const OrdersModuleScene = () => (
   <div className="flex flex-col">
     <WorkshopBoardScene />
     <div
       className={cn(
-        'mx-5 mb-5 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-[0.8125rem] sm:mx-6 sm:mb-6',
-        fade,
+        'mx-5 mb-5 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-[0.8125rem] max-sm:hidden sm:mx-6 sm:mb-6',
+        settle,
       )}
       style={at(1800)}
     >
@@ -54,8 +66,13 @@ const InventoryModuleScene = () => (
         return (
           <li
             key={item.part}
-            className={cn('flex flex-col gap-2 py-3', rise)}
-            style={at(index * 180)}
+            className={cn(
+              'flex flex-col gap-2 py-3',
+              // A phone shows three parts, enough to read the alert.
+              index > 2 && 'max-sm:hidden',
+              settle,
+            )}
+            style={at(index * 80)}
           >
             <div className="flex items-center justify-between gap-3 text-[0.8125rem]">
               <span className="truncate font-medium">{item.part}</span>
@@ -67,7 +84,7 @@ const InventoryModuleScene = () => (
                     : 'bg-success/15 text-success',
                   pop,
                 )}
-                style={at(900 + index * 180)}
+                style={at(900 + index * 80)}
               >
                 {item.available} / mín. {item.minimum}
               </span>
@@ -78,7 +95,7 @@ const InventoryModuleScene = () => (
                   'absolute inset-y-0 left-0 origin-left motion-safe:animate-grow-x',
                   low ? 'bg-warning' : 'bg-success',
                 )}
-                style={{ width: `${percent}%`, ...at(400 + index * 180) }}
+                style={{ width: `${percent}%`, ...at(400 + index * 80) }}
               />
               <span
                 aria-hidden="true"
@@ -105,11 +122,13 @@ const InventoryModuleScene = () => (
         </span>
       </span>
       <SceneSwap
-        delay={3400}
+        delay={reactionAt(inventoryCursor)}
         before={
-          <span className="bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
-            Enviar pedido
-          </span>
+          <ScenePress tap={tapAt(inventoryCursor)}>
+            <span className="bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
+              Enviar pedido
+            </span>
+          </ScenePress>
         }
         after={
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-bright">
@@ -122,7 +141,7 @@ const InventoryModuleScene = () => (
     <SceneCursor
       from={['40cqw', '120px']}
       to={['80cqw', '262px']}
-      delay={2100}
+      delay={inventoryCursor}
     />
   </div>
 );
@@ -140,7 +159,7 @@ const PayrollModuleScene = () => (
     <div className="flex items-center justify-between gap-3">
       <SceneLabel>Quincena 1 · noviembre</SceneLabel>
       <SceneSwap
-        delay={3600}
+        delay={reactionAt(payrollCursor)}
         before={<StatusChip status="pending" />}
         after={
           <span className="inline-flex items-center gap-1.5 bg-success/15 px-3.5 py-1 text-xs font-semibold text-success clip-bolt">
@@ -156,9 +175,9 @@ const PayrollModuleScene = () => (
           key={person.name}
           className={cn(
             'grid grid-cols-[auto_1fr_auto] items-center gap-3 py-3',
-            rise,
+            settle,
           )}
-          style={at(index * 220)}
+          style={at(index * 80)}
         >
           <span className="grid h-9 w-10 place-items-center bg-inverse text-xs font-bold text-inverse-foreground clip-hex">
             {person.name
@@ -178,7 +197,7 @@ const PayrollModuleScene = () => (
                 className="block h-full origin-left bg-primary motion-safe:animate-grow-x"
                 style={{
                   width: `${(person.commission / maxCommission) * 100}%`,
-                  ...at(600 + index * 220),
+                  ...at(600 + index * 80),
                 }}
               />
             </span>
@@ -190,7 +209,7 @@ const PayrollModuleScene = () => (
       ))}
     </ul>
     <div
-      className={cn('flex items-center justify-between gap-3', fade)}
+      className={cn('flex items-center justify-between gap-3', settle)}
       style={at(1600)}
     >
       <span className="text-[0.8125rem]">
@@ -199,14 +218,16 @@ const PayrollModuleScene = () => (
           {formatCurrency(payrollTotal)}
         </strong>
       </span>
-      <span className="bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
-        Aprobar quincena
-      </span>
+      <ScenePress tap={tapAt(payrollCursor)}>
+        <span className="bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
+          Aprobar quincena
+        </span>
+      </ScenePress>
     </div>
     <SceneCursor
       from={['30cqw', '80px']}
       to={['84cqw', '250px']}
-      delay={2300}
+      delay={payrollCursor}
     />
   </div>
 );
@@ -251,7 +272,7 @@ const AssistantModuleScene = () => (
     <div
       className={cn(
         'flex flex-wrap items-center justify-between gap-3 bg-primary-tint px-3 py-2.5 text-xs',
-        fade,
+        settle,
       )}
       style={at(2400)}
     >
@@ -259,12 +280,14 @@ const AssistantModuleScene = () => (
         Basado en OT-03876 · elevador 3 · 75 % avance
       </span>
       <SceneSwap
-        delay={4000}
+        delay={reactionAt(assistantCursor)}
         before={
-          <span className="inline-flex items-center gap-1.5 bg-primary px-2.5 py-1 font-semibold text-primary-foreground">
-            <Send aria-hidden="true" className="size-3" />
-            Aprobar y enviar
-          </span>
+          <ScenePress tap={tapAt(assistantCursor)}>
+            <span className="inline-flex items-center gap-1.5 bg-primary px-2.5 py-1 font-semibold text-primary-foreground">
+              <Send aria-hidden="true" className="size-3" />
+              Aprobar y enviar
+            </span>
+          </ScenePress>
         }
         after={
           <span className="inline-flex items-center gap-1.5 font-semibold text-success">
@@ -277,7 +300,7 @@ const AssistantModuleScene = () => (
     <SceneCursor
       from={['20cqw', '60px']}
       to={['82cqw', '232px']}
-      delay={2800}
+      delay={assistantCursor}
     />
   </div>
 );
@@ -294,8 +317,8 @@ const ReportsModuleScene = () => (
       ].map((kpi, index) => (
         <div
           key={kpi.label}
-          className={cn('flex flex-col gap-1 bg-secondary p-3', rise)}
-          style={at(index * 150)}
+          className={cn('flex flex-col gap-1 bg-secondary p-3', settle)}
+          style={at(index * 100)}
         >
           <SceneLabel>{kpi.label}</SceneLabel>
           <span className="font-heading text-lg font-extrabold tabular-nums">
@@ -306,7 +329,7 @@ const ReportsModuleScene = () => (
     </div>
     <div className="flex flex-col gap-2">
       <SceneLabel>Margen por servicio</SceneLabel>
-      <div className="flex h-36 items-end gap-3 border-b border-foreground pt-2">
+      <div className="flex h-20 items-end gap-3 border-b border-foreground pt-2 sm:h-36">
         {sampleMarginByService.map((row, index) => (
           <div
             key={row.service}
@@ -317,7 +340,7 @@ const ReportsModuleScene = () => (
                 'text-center font-mono text-[0.6875rem] tabular-nums',
                 fade,
               )}
-              style={at(1100 + index * 150)}
+              style={at(1100 + index * 60)}
             >
               {row.margin} %
             </span>
@@ -328,7 +351,7 @@ const ReportsModuleScene = () => (
               )}
               style={{
                 height: `${(row.margin / maxMargin) * 80}%`,
-                ...at(600 + index * 150),
+                ...at(600 + index * 60),
               }}
             />
           </div>
@@ -364,11 +387,17 @@ const ReportsModuleScene = () => (
   </div>
 );
 
-export const moduleScenes: Record<ModuleSlug, () => React.ReactElement> = {
+const moduleScenes: Record<ModuleSlug, () => React.ReactElement> = {
   ordenes: OrdersModuleScene,
   inventario: InventoryModuleScene,
   facturacion: DeliveryScene,
   nomina: PayrollModuleScene,
   'asistente-ia': AssistantModuleScene,
   reportes: ReportsModuleScene,
+};
+
+// Animated scene of a module, picked by its slug.
+export const ModuleScene = ({ slug }: { slug: ModuleSlug }) => {
+  const Scene = moduleScenes[slug];
+  return <Scene />;
 };

@@ -13,7 +13,7 @@ const FeatureCell = ({ value }: { value: FeatureValue }) => {
   if (value === true) {
     return (
       <span className="inline-flex items-center gap-2">
-        <span className="grid h-6 w-7 place-items-center bg-primary text-primary-foreground clip-hex">
+        <span className="grid h-5 w-6 place-items-center bg-primary text-primary-foreground clip-hex sm:h-6 sm:w-7">
           <Check aria-hidden="true" className="size-3.5" />
         </span>
         <span className="sr-only">Incluido</span>
@@ -28,10 +28,13 @@ const FeatureCell = ({ value }: { value: FeatureValue }) => {
       </span>
     );
   }
-  return <span className="text-sm font-medium">{value}</span>;
+  return <span className="text-xs font-medium sm:text-sm">{value}</span>;
 };
 
-// Plan by plan comparison of every module.
+const planCell = 'px-1.5 py-3 text-center sm:px-5 sm:py-4 sm:text-left';
+
+// Plan by plan comparison of every module. On a phone the three plans stay
+// on screen side by side: narrow columns, short cells, no sideways scroll.
 export const PricingFeatureTable = () => (
   <section
     aria-labelledby="features-title"
@@ -43,15 +46,15 @@ export const PricingFeatureTable = () => (
         eyebrow="Compara los planes"
         title="Qué incluye cada plan"
       />
-      <Reveal className="overflow-x-auto bg-card shadow-[inset_0_0_0_1px_var(--color-border)]">
-        <table className="w-full min-w-[40rem] border-collapse text-left">
+      <Reveal className="bg-card shadow-[inset_0_0_0_1px_var(--color-border)]">
+        <table className="w-full table-fixed border-collapse text-left sm:table-auto">
           <caption className="sr-only">
             Módulos incluidos en cada plan de MecaFix
           </caption>
           <thead>
             <tr className="border-b-2 border-foreground">
-              <th scope="col" className="w-2/5 p-5">
-                <span className="font-mono text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+              <th scope="col" className="px-3 py-3 sm:w-2/5 sm:p-5">
+                <span className="font-mono text-[0.6875rem] font-semibold tracking-[0.08em] text-muted-foreground uppercase sm:text-xs">
                   Módulo
                 </span>
               </th>
@@ -60,7 +63,7 @@ export const PricingFeatureTable = () => (
                   key={plan.id}
                   scope="col"
                   className={cn(
-                    'p-5 font-heading text-lg font-extrabold',
+                    'w-[4.75rem] px-1.5 py-3 text-center align-bottom font-heading text-xs leading-tight font-extrabold sm:w-auto sm:p-5 sm:text-left sm:text-lg',
                     plan.recommended && 'bg-primary-tint text-primary',
                   )}
                 >
@@ -76,7 +79,7 @@ export const PricingFeatureTable = () => (
                   <th
                     scope="colgroup"
                     colSpan={plans.length + 1}
-                    className="px-5 py-3 font-mono text-xs font-semibold tracking-[0.08em] text-foreground uppercase"
+                    className="px-3 py-3 font-mono text-[0.6875rem] font-semibold tracking-[0.08em] text-foreground uppercase sm:px-5 sm:text-xs"
                   >
                     {group.title}
                   </th>
@@ -88,7 +91,7 @@ export const PricingFeatureTable = () => (
                   >
                     <th
                       scope="row"
-                      className="px-5 py-4 text-[0.9375rem] font-medium"
+                      className="px-3 py-3 text-sm font-medium sm:px-5 sm:py-4 sm:text-[0.9375rem]"
                     >
                       {row.label}
                     </th>
@@ -96,7 +99,7 @@ export const PricingFeatureTable = () => (
                       <td
                         key={plan.id}
                         className={cn(
-                          'px-5 py-4',
+                          planCell,
                           plan.recommended && 'bg-primary-tint/40',
                         )}
                       >

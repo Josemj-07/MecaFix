@@ -52,24 +52,24 @@ export const ClosingCta = ({ form }: ClosingCtaProps) => (
       />
     </svg>
 
-    <Container className="grid gap-12 py-20 sm:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:items-center lg:gap-16 lg:py-28">
-      <Reveal className="flex flex-col gap-6">
+    <Container className="grid grid-cols-1 gap-8 py-16 sm:gap-12 sm:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:items-center lg:gap-16 lg:py-28">
+      <Reveal className="flex min-w-0 flex-col gap-4 sm:gap-6">
         <Eyebrow tone="onPrimary">Prueba una demo gratis</Eyebrow>
         <Heading
           id="demo-title"
           level="h2"
-          className="text-primary-foreground lg:text-5xl"
+          className="text-[1.75rem] text-primary-foreground sm:text-4xl lg:text-5xl"
         >
           Mira MecaFix funcionando con carros como los de tu taller
         </Heading>
         <Text
           variant="lead"
-          className="max-w-[48ch] text-primary-foreground/85"
+          className="max-w-[48ch] text-primary-foreground/85 max-sm:text-base"
         >
           Déjanos tus datos y te escribimos por WhatsApp para agendar la demo en
           el horario que te sirva.
         </Text>
-        <ul className="flex flex-col gap-2.5">
+        <ul className="flex flex-col gap-2.5 max-sm:hidden">
           {assurances.map((item) => (
             <li key={item} className="flex items-center gap-2.5 font-medium">
               <Nut filled className="size-4" />
@@ -80,7 +80,7 @@ export const ClosingCta = ({ form }: ClosingCtaProps) => (
         <CtaButton
           asChild
           tone="outline-inverse"
-          className="mt-2 self-start [--cta-fill:var(--color-primary)] hover:[--cta-fg:var(--color-primary)]"
+          className="mt-2 self-start [--cta-fill:var(--color-primary)] hover:[--cta-fg:var(--color-primary)] max-sm:hidden"
         >
           <a href={siteConfig.secondaryCta.href}>
             {siteConfig.secondaryCta.label}
@@ -88,7 +88,9 @@ export const ClosingCta = ({ form }: ClosingCtaProps) => (
         </CtaButton>
       </Reveal>
 
-      <Reveal delay={150}>{form}</Reveal>
+      <Reveal delay={150} className="min-w-0">
+        {form}
+      </Reveal>
     </Container>
   </section>
 );

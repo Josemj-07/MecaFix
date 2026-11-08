@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import { Button } from '../button';
 
@@ -22,8 +22,11 @@ export type ConfirmationDialogProps = {
   cancelLabel?: string;
   variant?: 'default' | 'destructive';
   isLoading?: boolean;
-  // Close the dialog when the action finishes (e.g. mutation.isSuccess).
-  isDone?: boolean;
+  // Optional controlled state. Without them the dialog manages itself; to
+  // close it when an action finishes, control it and call onOpenChange(false)
+  // from the mutation's onSuccess.
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onConfirm: () => void;
 };
 
@@ -35,17 +38,12 @@ export const ConfirmationDialog = ({
   cancelLabel = 'Cancelar',
   variant = 'destructive',
   isLoading = false,
-  isDone = false,
+  open,
+  onOpenChange,
   onConfirm,
 }: ConfirmationDialogProps) => {
-  const [open, setOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    if (isDone) setOpen(false);
-  }, [isDone]);
-
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{triggerButton}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

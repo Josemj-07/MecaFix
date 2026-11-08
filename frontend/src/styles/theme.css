@@ -193,6 +193,12 @@
   --animate-typing: typing 1.2s ease-in-out infinite;
   /* Product previews, played like a short video (pair with animationDelay) */
   --animate-fade: fade 0.4s ease-out both;
+  /* Short rise (same slope) for rows, chips and blocks inside a scene */
+  --animate-rise-sm: rise-sm 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* Red line crossing out a value (background on an inline element) */
+  --animate-strike: strike 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* A control pressed by the scene cursor; deepest point at 50% */
+  --animate-press: press 0.24s ease-in-out both;
   --animate-pop: pop 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
   --animate-grow-x: grow-x 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-grow-y: grow-y 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -212,6 +218,33 @@
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  @keyframes rise-sm {
+    from {
+      opacity: 0;
+      transform: translate(-4px, 7px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes strike {
+    from {
+      background-size: 0% 2px;
+    }
+    to {
+      background-size: 100% 2px;
+    }
+  }
+
+  @keyframes press {
+    50% {
+      transform: scale(0.95);
+      filter: brightness(0.88);
     }
   }
 

@@ -61,12 +61,28 @@ const supportLabel: Record<Support, string> = {
   no: 'No',
 };
 
+// On a phone the status columns show only the icon (the word stays for
+// screen readers) and a legend under the table explains them.
+const statusHead =
+  'w-16 px-1 py-3 align-bottom font-heading text-[0.6875rem] font-extrabold max-sm:text-center sm:w-auto sm:px-4 sm:py-4 sm:text-base';
+const statusCell = 'px-1 py-3 sm:px-4 sm:py-4';
+
+const legend = [
+  {
+    icon: Check,
+    label: supportLabel.yes,
+    tone: 'bg-primary-bright text-night',
+  },
+  { icon: Minus, label: supportLabel.partial, tone: 'bg-steel-pale' },
+  { icon: X, label: supportLabel.no, tone: 'bg-steel-pale' },
+];
+
 const SupportCell = ({ value }: { value: Support }) => {
   const Icon = value === 'yes' ? Check : value === 'partial' ? Minus : X;
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-2 text-sm whitespace-nowrap',
+        'inline-flex items-center gap-2 text-sm whitespace-nowrap max-sm:justify-center',
         value === 'yes' && 'font-semibold text-inverse-foreground',
         value === 'partial' && 'text-muted-foreground',
         value === 'no' && 'text-muted-foreground',
@@ -83,7 +99,7 @@ const SupportCell = ({ value }: { value: Support }) => {
       >
         <Icon className="size-3.5" />
       </span>
-      {supportLabel[value]}
+      <span className="max-sm:sr-only">{supportLabel[value]}</span>
     </span>
   );
 };
@@ -102,7 +118,8 @@ export const ComparisonSection = () => (
           eyebrow="Cuaderno, Excel o MecaFix"
           title="¿Por qué no seguir con el cuaderno?"
         />
-        <Reveal delay={100} className="flex flex-col gap-4">
+        {/* On a phone the table speaks for itself. */}
+        <Reveal delay={100} className="flex flex-col gap-4 max-sm:hidden">
           <Text className="text-muted-foreground">
             El cuaderno es gratis y ya lo conoces. Funciona mientras todo pase
             por tus manos.
@@ -115,32 +132,36 @@ export const ComparisonSection = () => (
         </Reveal>
       </div>
 
-      <Reveal delay={150} className="overflow-x-auto">
-        <table className="w-full min-w-[36rem] border-collapse text-left">
+      <Reveal delay={150} className="flex flex-col gap-4">
+        <table className="w-full table-fixed border-collapse text-left sm:table-auto">
           <caption className="sr-only">
             Comparación entre el cuaderno, Excel y MecaFix
           </caption>
           <thead>
             <tr>
-              <th scope="col" className="w-[46%] py-4 pr-4 align-bottom">
-                <span className="font-mono text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+              <th
+                scope="col"
+                className="py-3 pr-2 align-bottom sm:w-[46%] sm:py-4 sm:pr-4"
+              >
+                <span className="font-mono text-[0.6875rem] font-semibold tracking-[0.08em] text-muted-foreground uppercase sm:text-xs">
                   Lo que necesita el taller
                 </span>
               </th>
-              <th
-                scope="col"
-                className="px-4 py-4 align-bottom font-heading text-base font-extrabold"
-              >
+              <th scope="col" className={statusHead}>
                 Cuaderno
               </th>
-              <th
-                scope="col"
-                className="px-4 py-4 align-bottom font-heading text-base font-extrabold"
-              >
+              <th scope="col" className={statusHead}>
                 Excel
               </th>
-              <th scope="col" className="bg-inverse px-4 py-4 align-bottom">
-                <Logo variant="inverse" alt="MecaFix" className="h-7" />
+              <th
+                scope="col"
+                className="w-16 bg-inverse px-1 py-3 align-bottom max-sm:text-center sm:w-auto sm:px-4 sm:py-4"
+              >
+                <Logo
+                  variant="inverse"
+                  alt="MecaFix"
+                  className="inline-block h-3.5 sm:h-7"
+                />
               </th>
             </tr>
           </thead>
@@ -149,23 +170,38 @@ export const ComparisonSection = () => (
               <tr key={row.label} className="border-t">
                 <th
                   scope="row"
-                  className="py-4 pr-4 text-[0.9375rem] font-medium"
+                  className="py-3 pr-2 text-sm font-medium sm:py-4 sm:pr-4 sm:text-[0.9375rem]"
                 >
                   {row.label}
                 </th>
-                <td className="px-4 py-4">
+                <td className={statusCell}>
                   <SupportCell value={row.notebook} />
                 </td>
-                <td className="px-4 py-4">
+                <td className={statusCell}>
                   <SupportCell value={row.spreadsheet} />
                 </td>
-                <td className="border-t border-inverse-border bg-inverse px-4 py-4">
+                <td className="border-t border-inverse-border bg-inverse px-1 py-3 sm:px-4 sm:py-4">
                   <SupportCell value="yes" />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <ul
+          aria-hidden="true"
+          className="flex gap-5 text-xs text-muted-foreground sm:hidden"
+        >
+          {legend.map(({ icon: Icon, label, tone }) => (
+            <li key={label} className="flex items-center gap-1.5">
+              <span
+                className={cn('grid h-5 w-6 place-items-center clip-hex', tone)}
+              >
+                <Icon className="size-3" />
+              </span>
+              {label}
+            </li>
+          ))}
+        </ul>
       </Reveal>
     </Container>
   </section>

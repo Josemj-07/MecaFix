@@ -17,7 +17,7 @@ import {
   platformModules,
 } from '../utils/modules';
 
-import { moduleScenes } from './module-scenes';
+import { ModuleScene } from './module-scenes';
 import { AppWindow } from './preview-primitives';
 import { PlayOnView } from './scene-kit';
 import { SectionHeading } from './section-heading';
@@ -31,23 +31,26 @@ export const ModuleScreen = ({
   module: PlatformModule;
   backdrop?: 'inverse' | 'blueprint';
 }) => {
-  const Scene = moduleScenes[module.slug];
   return (
     <div className="relative min-w-0">
       <div
         aria-hidden="true"
         className={cn(
-          'absolute -inset-3 overflow-hidden sm:-inset-5',
+          'absolute -inset-2 overflow-hidden sm:-inset-5',
           backdrop === 'inverse'
             ? 'bg-inverse bg-hex-mesh'
             : 'bg-card bg-blueprint shadow-[inset_0_0_0_1px_var(--color-border)]',
         )}
       >
-        <Facet size="lg" tone={backdrop === 'inverse' ? 'primary' : 'steel'} />
+        <Facet
+          size="md"
+          tone={backdrop === 'inverse' ? 'primary' : 'steel'}
+          className="sm:size-40"
+        />
       </div>
       <PlayOnView className="relative" loop={9500}>
-        <AppWindow title={module.window}>
-          <Scene />
+        <AppWindow title={module.window} className="max-sm:[zoom:0.82]">
+          <ModuleScene slug={module.slug} />
         </AppWindow>
       </PlayOnView>
     </div>
@@ -163,6 +166,9 @@ const RowEdge = ({ edge, paint }: { edge: Edge; paint: string }) => {
   );
 };
 
+// On a phone a module reads top to bottom in one screen: its name and
+// benefit, the screen playing, a short description and "Ver más". From lg
+// up the text sits beside the screen, centered on it.
 const ModuleRow = ({
   module,
   index,
@@ -183,18 +189,21 @@ const ModuleRow = ({
       className={cn('relative', theme.surface)}
     >
       <RowEdge edge={theme.edge} paint={theme.edgePaint} />
-      <Container className="grid grid-cols-1 items-center gap-12 overflow-x-clip py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
+      <Container className="grid grid-cols-1 items-center gap-x-16 gap-y-5 overflow-x-clip py-10 sm:gap-y-10 sm:py-16 lg:grid-cols-2 lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-y-5 lg:py-24">
         <Reveal
           from={textSide}
-          className={cn('flex min-w-0 flex-col gap-5', flipped && 'lg:order-2')}
+          className={cn(
+            'flex min-w-0 flex-col gap-3 sm:gap-5 lg:row-start-2',
+            flipped ? 'lg:col-start-2' : 'lg:col-start-1',
+          )}
         >
           <div className="flex items-center gap-3">
-            <span className="grid h-11 w-12 place-items-center bg-primary text-primary-foreground clip-hex">
-              <Icon aria-hidden="true" className="size-5" />
+            <span className="grid h-9 w-10 place-items-center bg-primary text-primary-foreground clip-hex sm:h-11 sm:w-12">
+              <Icon aria-hidden="true" className="size-4 sm:size-5" />
             </span>
             <span
               className={cn(
-                'font-mono text-sm font-semibold tracking-[0.06em] uppercase',
+                'font-mono text-[0.8125rem] font-semibold tracking-[0.06em] uppercase sm:text-sm',
                 theme.dark ? 'text-primary-bright' : 'text-primary',
               )}
             >
@@ -203,7 +212,7 @@ const ModuleRow = ({
           </div>
           <Text
             className={cn(
-              'border-l-2 pl-3 italic',
+              'border-l-2 pl-3 italic max-sm:hidden',
               theme.dark
                 ? 'border-inverse-border text-inverse-muted-foreground'
                 : 'border-steel-light text-muted-foreground',
@@ -216,15 +225,36 @@ const ModuleRow = ({
             level="h2"
             as="h3"
             className={cn(
-              'lg:text-[2.5rem]',
+              'text-2xl sm:text-4xl lg:text-[2.5rem]',
               theme.dark && 'text-inverse-foreground',
             )}
           >
             {module.benefit}
           </Heading>
+        </Reveal>
+
+        <Reveal
+          from={screenSide}
+          delay={150}
+          className={cn(
+            'min-w-0 max-sm:mx-2 lg:row-span-4 lg:row-start-1',
+            flipped ? 'lg:col-start-1' : 'lg:col-start-2',
+          )}
+        >
+          <ModuleScreen module={module} backdrop={theme.backdrop} />
+        </Reveal>
+
+        <Reveal
+          from={textSide}
+          delay={100}
+          className={cn(
+            'flex min-w-0 flex-col gap-3 sm:gap-5 lg:row-start-3',
+            flipped ? 'lg:col-start-2' : 'lg:col-start-1',
+          )}
+        >
           <Text
             className={cn(
-              'text-lg leading-relaxed',
+              'text-[0.9375rem] leading-relaxed sm:text-lg',
               theme.dark
                 ? 'text-inverse-muted-foreground'
                 : 'text-muted-foreground',
@@ -234,7 +264,7 @@ const ModuleRow = ({
           </Text>
           <ul
             className={cn(
-              'flex flex-col gap-2.5',
+              'flex flex-col gap-2.5 max-sm:hidden',
               theme.dark && 'text-inverse-foreground',
             )}
           >
@@ -254,24 +284,16 @@ const ModuleRow = ({
           <CtaButton
             asChild
             tone={theme.dark ? 'light' : 'dark'}
-            className="mt-2 self-start"
+            className="self-start sm:mt-2"
           >
             <Link
               variant="unstyled"
               to={paths.platformModule.getHref(module.slug)}
-              aria-label={`Ver la funcionalidad completa de ${module.name}`}
+              aria-label={`Ver más de ${module.name}`}
             >
-              Ver la funcionalidad completa
+              Ver más
             </Link>
           </CtaButton>
-        </Reveal>
-
-        <Reveal
-          from={screenSide}
-          delay={150}
-          className={cn('min-w-0', flipped && 'lg:order-1')}
-        >
-          <ModuleScreen module={module} backdrop={theme.backdrop} />
         </Reveal>
       </Container>
     </article>

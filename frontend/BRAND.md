@@ -1,119 +1,245 @@
-# Brief de marca y producto — MecaFix
+# Guía de estilo — MecaFix
 
-## Identidad visual: "Facetado"
+Identidad visual **"Facetado"**. Todo el sistema sale del logo: las facetas triangulares de la M, la
+pendiente de la X, la tuerca sobre la i y el acero de la llave. El resultado debe sentirse **preciso,
+confiable, robusto, industrial y empresarial**: una herramienta de taller bien hecha, no una app genérica.
 
-> Todo el sistema sale del logo (`src/assets/logo*.webp`). Referencias: Siesa (estructura del hero y navbar),
-> Tekmetric (estilo propio y coherente; NO copiar sus tarjetas de una esquina cortada). Exploración completa:
-> artifact "Sistema de marca MecaFix".
-
-- **Faceta** (triángulos de la M): esquina facetada en superficies destacadas, cortes del hero, cierres. Componente `<Facet>`.
-- **Pendiente de la X**: dirección de las acciones y del movimiento (abajo-izquierda → arriba-derecha).
-- **Tuerca** (punto de la i): marca de cada eyebrow, estado activo, viñetas, sockets de iconos y confirmación ("se aprieta" al girar). `<Nut>`, `<Eyebrow>`, `clip-hex`. También dibuja el borde entre bandas (`nut-edge-top/bottom`).
-- **Acero** (llave): reglas, cotas, marcas de registro y texto técnico.
-- **Acciones**: paralelogramo a 76° con bloque de flecha (`<CtaButton>`), brillo diagonal al pasar el cursor.
-- **Tarjetas**: siempre rectas; la geometría se suma (faceta, cuña, marcas de registro, regla, remaches). Nunca una sola esquina cortada.
-- **Fondos**: plano técnico, malla hexagonal (oscuro), lámina antideslizante (rojo), remaches.
-- **Separadores**: cotas, regla de medición, cadena de tuercas, cuña facetada.
-
-> `/bulletproof-feature` consulta este archivo en cada cambio. Si algo cambia, edítalo aquí.
+Los valores técnicos viven en `src/styles/theme.css` (tokens) y `src/styles/globals.css` (utilidades de
+marca). Si algo de esta guía cambia, se edita aquí y en esos archivos a la vez.
 
 ---
 
-## 1. Identidad
+## 1. Esencia
 
-- **Nombre de la app**: MecaFix
-- **Tagline (frase corta)**: Tu taller, a toda máquina.
-- **Descripción (1-2 frases, se usa en SEO)**: Software de gestión para talleres automotrices en Colombia: órdenes de trabajo, inventario, clientes, nómina de mecánicos y facturación electrónica DIAN en un solo sistema.
-- **Problema que resuelve / propósito**: Los talleres llevan clientes, cotizaciones, órdenes y pagos en papel, WhatsApp y hojas de cálculo. MecaFix centraliza la operación diaria del taller y da al dueño visibilidad financiera.
-- **Público objetivo**: Dueños y administradores de talleres automotrices pequeños y medianos en Colombia (contexto completo en `../../.claude/product-marketing.md`).
-- **Idioma de la interfaz**: es
-- **Locale para fechas y números**: es-CO
-- **Moneda por defecto**: COP
-- **Formato de fecha preferido**: "30 oct 2026" (decidido por Claude)
+- **Nombre**: MecaFix
+- **Frase**: "Tu taller, a toda máquina."
+- **Personalidad**: preciso, confiable, robusto, industrial, empresarial.
+- **Qué evitar**: verse genérico; superficies recargadas; tarjetas con una sola esquina cortada; todo en
+  tipografía mono; degradados decorativos; esquinas redondeadas; iconos sueltos sin socket.
+- **Modo**: solo claro. La profundidad la dan las bandas oscuras (carbón y noche), no un modo oscuro.
 
-## 2. Personalidad y estilo visual
+## 2. Los cuatro elementos del logo
 
-- **Sistema de diseño base**: propio, "Facetado" (ver bloque superior)
-- **Adjetivos**: preciso, confiable, robusto, industrial, empresarial
-- **Referencias**: Siesa (hero con video y cortes, navbar flotante), Tekmetric (coherencia de marca)
-- **Lo que NO quieres**: verse genérico ni copiar a Tekmetric (tarjetas con una sola esquina cortada, todo en mono); nada recargado.
-- **Densidad**: normal
-- **Modo oscuro**: solo claro (con bandas oscuras de carbón y noche)
+Cada pieza visual nueva usa al menos uno de estos elementos y ninguno más que no salga de aquí.
 
-## 3. Colores
+| Elemento      | Origen             | Uso                                                                                                                                                       | Implementación                                                 |
+| ------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Faceta**    | Triángulos de la M | Esquina facetada en superficies destacadas (pantallas de producto, bandas oscuras, tarjetas recomendadas), cortes del hero, cierres de sección            | `<Facet>` (tamaños `sm`, `md`, `lg`; tonos `primary`, `steel`) |
+| **Pendiente** | Trazo de la X, 76° | Dirección de toda acción y movimiento: de abajo-izquierda hacia arriba-derecha. Botones en paralelogramo, barras activas inclinadas, entradas en diagonal | `clip-slant` (`--slant`), `-skew-x-[14deg]`                    |
+| **Tuerca**    | Punto de la i      | Marca de cada eyebrow, viñetas, estado activo, sockets de iconos, avatares, confirmaciones (se "aprieta" al girar)                                        | `<Nut>`, `<Eyebrow>`, `clip-hex`, `nut-edge-top/bottom`        |
+| **Acero**     | Llave              | Reglas, cotas, marcas de registro, regla de medición y texto técnico                                                                                      | `bg-ruler`, `crop-marks`, tokens `steel*`                      |
 
-- **Rojo primario** `#A52A2F` (acción, marca) · hover `#7E1F23` · sobre oscuro `#E0484E` · facetas `#C4464C` · tinte `#F5E4E4`
-- **Carbón** `#1E2126` (bandas oscuras) · **Noche** `#14161A` (hero, footer)
-- **Gris acero** `#8B9198` (+ `#BFC3C8`, `#E3E4E6`)
-- **Blanco humo** `#F4F2EF` (secciones alternas) · banda `#F0EDE8` (filas de módulos) · papel `#FBFAF8` · hojas `#FFFFFF`
-- **Placa** `#F2C230` (solo previews de placas colombianas)
-- **Gradientes**: solo el velo oscuro sobre el video del hero para legibilidad.
+**Regla de oro**: las tarjetas y superficies son siempre **rectas**. La geometría se **suma** encima
+(faceta, cuña, marcas de registro, regla) y nunca recorta la silueta de una tarjeta.
+
+## 3. Color
+
+Solo se usan tokens semánticos (`bg-primary`, `text-muted-foreground`...). Cada color de fondo tiene su
+`-foreground` con contraste AA (≥ 4.5:1).
+
+### Marca
+
+| Token            | Valor     | Uso                                                                                             |
+| ---------------- | --------- | ----------------------------------------------------------------------------------------------- |
+| `primary`        | `#A52A2F` | Rojo de la M. Acciones principales, estado activo, viñetas, sockets de iconos. 7.2:1 con blanco |
+| `primary-hover`  | `#7E1F23` | Hover y bloque de flecha del botón principal                                                    |
+| `primary-bright` | `#E0484E` | Rojo sobre carbón y noche (5.1:1 sobre noche). Eyebrows y acentos en bandas oscuras             |
+| `primary-soft`   | `#C4464C` | Tono de faceta, solo ilustración                                                                |
+| `primary-tint`   | `#F5E4E4` | Fondo suave de lo destacado ("Con MecaFix", plan recomendado, chips de rol)                     |
+
+### Superficies (de claro a oscuro)
+
+| Token                 | Valor     | Uso                                                              |
+| --------------------- | --------- | ---------------------------------------------------------------- |
+| `card`                | `#FFFFFF` | Hojas: tarjetas, formularios, pantallas de producto              |
+| `background`          | `#FBFAF8` | Papel: fondo general                                             |
+| `mist`                | `#F6F5F2` | Filas alternas sutiles                                           |
+| `secondary` / `muted` | `#F4F2EF` | Humo: secciones alternas y rellenos tranquilos                   |
+| `band`                | `#F0EDE8` | Bandas alternas de la vitrina de módulos                         |
+| `inverse`             | `#1E2126` | Carbón: bandas oscuras, marcos de pantallas, columnas destacadas |
+| `inverse-muted`       | `#2A2E35` | Relleno sobre carbón (pista, sockets apagados)                   |
+| `night`               | `#14161A` | Noche: hero, testimonios, resultados de la calculadora, footer   |
+
+Texto: `foreground` `#1E2126` · `muted-foreground` `#4E535B` (7.6:1 sobre papel) · sobre oscuro
+`inverse-foreground` `#F4F2EF` y `inverse-muted-foreground` `#B3B8BE` (8.2:1 sobre carbón).
+
+### Acero y líneas
+
+`steel` `#8B9198` · `steel-light` `#BFC3C8` · `steel-pale` `#E3E4E6` · `border` `#DCD8D2` ·
+`input` `#BFC3C8` · `grid` `#ECEAE6` · `inverse-border` `#3A3F47`.
+
+### Estados y datos
+
+`success` `#2E7A4E` · `warning` `#9A6200` · `info` `#2F5D8A` · `destructive` `#B42318` ·
+`plate` `#F2C230` (solo placas colombianas en las pantallas de producto).
+
+- El rojo de marca y `destructive` son cercanos: **un error nunca se comunica solo con color**, siempre
+  con icono y texto.
+- Estados suaves con opacidad del token: `bg-success/15 text-success`, `bg-warning/15 text-warning`.
+- **Degradados**: solo el velo oscuro sobre el video del hero, para legibilidad.
+
+### Ritmo de bandas
+
+Las secciones alternan superficie para separar sin líneas: papel → humo → carbón → papel... Una banda
+oscura (carbón o noche) aparece cada pocas secciones para dar peso y nunca dos seguidas.
 
 ## 4. Tipografía
 
-- **Títulos**: Montserrat Alternates ExtraBold (800), tracking −0.025em, sin mayúsculas forzadas
-- **Interfaz y texto**: Inter (variable)
-- **Etiquetas, eyebrows, órdenes, placas y valores**: IBM Plex Mono 500/600, MAYÚSCULAS con tracking en etiquetas
-- **Tamaño base del texto**: 16px
+| Rol                                           | Fuente                                 | Detalle                                                      |
+| --------------------------------------------- | -------------------------------------- | ------------------------------------------------------------ |
+| Títulos                                       | **Archivo Black** (400, su único peso) | Interlineado 1.05, tracking −0.02em, sin mayúsculas forzadas |
+| Interfaz y texto                              | **Inter** (variable)                   | Base 16px, cuerpo con interlineado 1.75                      |
+| Etiquetas, eyebrows, órdenes, placas, valores | **IBM Plex Mono** 500/600              | Etiquetas en MAYÚSCULAS con tracking 0.06–0.08em             |
 
-## 5. Forma, profundidad y movimiento
+Siempre con `<Heading level>` y `<Text variant>`; nunca estilizar `h1`/`p` a mano.
 
-- **Esquinas**: rectas (radio 0); la geometría de marca viene de `clip-*`
-- **Botones**: `<CtaButton>` en marketing (paralelogramo + bloque de flecha); `<Button>` recto en la app
-- **Sombras**: solo capas flotantes (navbar, menús, toasts) y la pantalla de producto
-- **Animaciones**: entrada `rise` escalonada, `Reveal` al hacer scroll, brillo diagonal en botones, facetas que cambian de tono en hover, tuerca que gira. Las pantallas de producto (`scene-kit.tsx`) se reproducen una vez al aparecer, como un video corto, y quedan quietas. Nada de scroll secuestrado ni pantallas fijadas. Siempre con `motion-safe:`
-- **Ancho máximo del contenido**: 76rem
+**Escala de títulos** (móvil → escritorio):
 
-## 6. Logo, iconos e imágenes
+- `hero`: 2.375rem → 3.75rem (sm) → 4.25rem (lg), interlineado 1.02
+- `h1`: 1.875rem → 2.25rem
+- `h2` (título de sección): 1.875rem → 2.25rem (sm) → 2.75rem (lg)
+- `h3`: 1.25rem · `h4`: 1.125rem
 
-- **Logo**: `src/assets/logo.webp` (claro, "Fix" en carbón), `logo-inverse.webp` (oscuro), `logo-mark.webp` (M con llave). Componente `<Logo>`. Favicon en `public/favicon.png`.
-- **Iconos**: lucide, dentro de sockets hexagonales (`clip-hex`)
-- **Video del hero**: `src/features/marketing/assets/hero-workshop*` (clips de Mixkit, licencia gratuita) hasta tener video propio; mismo nombre de archivo para reemplazarlo
-- **Ilustraciones**: pantallas del producto dibujadas con código (`platform-previews.tsx`) con datos de ejemplo
+**Texto**: `lead` 1.125rem (introducciones de sección) · `body` 1rem · `small` 0.875rem ·
+`caption` 0.75rem · `label` mono 0.8125rem, semibold, mayúsculas.
 
-## 7. Estructura y navegación
+- Cifras, importes y placas con `tabular-nums` y formateados con `@/utils/format`.
+- En celular los títulos de bloque bajan un paso (p. ej. `text-2xl` en vez de `text-4xl`) para que el
+  bloque quepa en una pantalla.
+- Logo dentro de un título: `<Logo>` en línea a `1.1em` de alto.
 
-- **Tipo de sitio**: landing + página de precios + app con sidebar (pendiente)
-- **Header**: barra blanca flotante fija (estructura Siesa): logo, Plataforma ▾ (módulos), Cómo empezar, Precios, Preguntas, CTA "Prueba una demo gratis"
-- **Footer**: noche, cinta roja diagonal arriba, columnas, contacto y créditos
+## 5. Forma y superficies
 
-## 8. Mapa de pantallas
+- **Esquinas**: rectas (radio 0) en todo.
+- **Recortes de marca** (`globals.css`):
+  - `clip-slant`: paralelogramo a 76° (acciones, bloques de flecha).
+  - `clip-hex`: tuerca (sockets de iconos, avatares, viñetas).
+  - `clip-bolt`: chips de estado.
+  - `clip-chamfer`: campos de formulario y placas.
+  - `shape-outline`: contorno de una forma recortada.
+- **Bordes entre bandas**: tuercas (`nut-edge-top`), dientes (`teeth-edge-top`), sierra
+  (`saw-edge-top`), cuña inclinada o cuña facetada en SVG. Cada fila de módulos tiene el suyo.
+- **Fondos con textura**:
+  - `bg-blueprint`: plano técnico, retícula de 48px.
+  - `bg-hex-mesh`: malla hexagonal, solo sobre oscuro.
+  - `bg-tread`: lámina antideslizante, solo sobre rojo.
+  - `bg-ruler`: regla de medición.
+  - `crop-marks`: marcas de registro en las esquinas de lo enmarcado.
+- **Sombras**: solo en capas flotantes (navbar, menús, diálogos, toasts) y en las pantallas de producto
+  (sombra larga y suave hacia abajo). Las tarjetas son hojas planas con borde de 1px.
 
-- `/` · Landing (hecha): Hero con video ("Tu taller, a toda máquina."; CTAs "Prueba una demo gratis" y "Mira la plataforma") → Reencuadre visible sin scroll ("Cobra todo lo que tu taller ya trabaja.") + Con cuaderno y Excel / Con MecaFix → Mira la plataforma (`#plataforma`: 6 pasos de un día del taller en pestañas) → Confianza como pista de carreras con la meta "Un taller que funciona mejor" → 6 módulos (`#modulos`, `#modulo-<slug>`: filas alternas blanco / banda con borde de tuercas; texto y pantalla entran por lados opuestos; la pantalla se repite como video corto mientras está a la vista) → Cómo empezar → Calculadora (`#calculadora`, "¿Cuánta plata se le escapa a tu taller al año?") → Testimonios (de ejemplo) → Cuaderno vs Excel vs MecaFix → Precios (resumen) → Preguntas → Demo (`#demo`)
-- `/plataforma/:modulo` · Página de módulo (plantilla base para ordenes, inventario, facturacion, nomina, asistente-ia, reportes; cada una se ampliará)
-- `/precios` · Precios (hecha): planes con ciclo mensual/anual en la URL (`?ciclo=anual`), tabla comparativa, preguntas. Precios provisionales.
-- `/auth/login` · Inicio de sesión (pendiente)
-- `/app` · Panel del taller (pendiente)
+## 6. Componentes de marca
 
-## 9. Voz y contenido
+- **`<CtaButton>`**: acción de marketing. Paralelogramo a 76° con bloque de flecha que crece al pasar el
+  cursor y un brillo diagonal que lo cruza.
+  - Tonos: `primary`, `dark`, `light`, `outline` y `outline-inverse` (los de contorno van sin flecha).
+  - Tamaños: `sm` (40px), `md` (48px) y `lg` (56px).
+  - Textos cortos, en mayúsculas automáticas: "Ver más", "Agendar mi demo". Nunca ocupa todo el ancho
+    salvo en el envío de un formulario en celular.
+- **`<Button>`**: recto, para formularios y la app.
+- **`<Eyebrow>`**: tuerca + etiqueta mono sobre cada título de sección. Tonos `default`, `inverse` y `onPrimary`.
+- **`<Nut>`**: viñetas de listas (rellena en rojo).
+- **`<Facet>`**: esquina facetada en superficies destacadas.
+- **`<Logo>`**: variantes `default` (claro), `inverse` (oscuro) y `mark` (la M con la llave).
+- **`<Tabs>`**: el activo se marca con una barra roja inclinada a la pendiente de la X.
+- **Iconos**: lucide, siempre dentro de un socket hexagonal (`clip-hex`) rojo o carbón, nunca sueltos.
+  Tamaño 16–20px; decorativos con `aria-hidden`.
+- **Pantallas de producto** (`AppWindow` + escenas): ventana blanca con barra de título humo, tres
+  tuercas (roja, acero, acero) y título en mono mayúsculas. Se apoyan sobre un marco carbón con malla
+  hexagonal y faceta roja, o sobre plano técnico. Datos de ejemplo realistas: placas, nombres y pesos
+  colombianos.
+- **Formularios**: campos con `clip-chamfer`, etiqueta mono en mayúsculas encima, error con icono y texto.
 
-- **Tono**: cercano y profesional
-- **Trato al usuario**: tú
-- **Ejemplos de textos de botones**: "Registrar vehículo", "Crear cotización", "Guardar cambios"
-- **Cómo hablar en errores**: claro y sin culpar: "No pudimos guardar la cotización. Inténtalo de nuevo."
+## 7. Movimiento
+
+Toda animación va detrás de `motion-safe:`. Con movimiento reducido, todo aparece en su estado final.
+
+- **Curvas**:
+  - `ease-brand` `cubic-bezier(0.2, 0.8, 0.2, 1)`: entradas.
+  - `ease-bolt` `cubic-bezier(0.3, 1.4, 0.5, 1)`: rebote corto al "apretar".
+- **Dirección**: las entradas suben desde abajo-izquierda, siguiendo la pendiente de la X.
+- **Entradas**: `Reveal` al hacer scroll; `rise` (0.8s) para bloques y `rise-sm` (0.45s) para filas y
+  chips. Escalonado corto: 60–150ms entre elementos, total por debajo de 500ms.
+- **Pantallas de producto**: se reproducen una vez al aparecer, como un video corto, y quedan quietas.
+  - Primero la causa, luego el efecto: un cursor llega, el botón se hunde (`press`, 0.24s) y entonces
+    cambia el estado.
+  - Valores que se tachan (`strike`), barras que crecen (`grow-x` y `grow-y`) y chips que aparecen
+    con rebote (`pop`).
+- **Microinteracciones**:
+  - Brillo diagonal en los botones de acción.
+  - Facetas que cambian de tono al pasar el cursor.
+  - La tuerca del eyebrow se aprieta una vez (`tighten`).
+  - Balizas de estado (`beacon`).
+- **Pista de confianza**: un carro de carreras recorre una pista y enciende cada compromiso que pasa.
+  En escritorio la pista es horizontal y sigue al cursor. En celular es un carril vertical: el carro baja
+  con el scroll y la meta es la última parada.
+- **Prohibido**:
+  - Scroll secuestrado y secciones fijadas.
+  - Animaciones en bucle que distraigan.
+  - Botones para pausar animaciones: no hacen falta, porque nada se repite indefinidamente.
+
+## 8. Imágenes
+
+- **Hero**: video de taller en bucle bajo un velo oscuro, con cuñas rojas facetadas en los bordes.
+- **Ilustraciones**: no se usan ilustraciones dibujadas. El producto se muestra con pantallas
+  construidas en código con datos de ejemplo.
+- **Retratos de testimonios**: formato 4:5 en WebP.
+  - Van enmarcados con marcas de registro y faceta; en el selector se recortan en tuerca.
+  - Mientras no sean clientes reales se marcan como "Ejemplo".
+  - Se reemplazan por fotos reales, con permiso escrito, usando el mismo nombre de archivo.
+- Todas las imágenes llevan `alt`, dimensiones o `aspect-*`, y carga diferida fuera del primer pantallazo.
+
+## 9. Estructura y diseño de página
+
+- **Ancho máximo del contenido**: 76rem (`<Container>`), con margen lateral de 16px en celular.
+- **Espaciado** en múltiplos de 4.
+  - Secciones: `py-16` en celular, `sm:py-24` y `lg:py-28` en pantallas grandes.
+  - Separación entre título de sección y contenido: `gap-10` a `gap-12`.
+- **Encabezado de sección**: eyebrow → título → lead opcional (`SectionHeading`), alineado a la izquierda.
+- **Navbar**: barra blanca flotante y fija, separada de los bordes, con sombra. Contiene logo, menú
+  Plataforma con los módulos, Precios, Preguntas y la acción "Prueba una demo gratis".
+- **Footer**: noche, con una cinta roja inclinada arriba, columnas de enlaces, contacto y créditos.
+- **Escritorio**: texto y pantalla de producto lado a lado. El texto se centra verticalmente con la
+  pantalla, y las filas alternan el lado de la pantalla.
+
+### En celular (prioridad)
+
+La landing se diseña primero para el celular. Cada bloque debe entenderse en **una sola pantalla**
+(unos 620px útiles bajo la navbar).
+
+- **Orden de lectura**: título → pantalla de producto → descripción → acción. Nunca obligar a bajar
+  para ver la imagen y subir para leer.
+- **Recortar, no apretar**: en celular se ocultan los textos secundarios (listas de puntos, frases de
+  problema, párrafos que la tabla ya explica). Las escenas muestran menos filas y las pantallas se
+  escalan un poco (`zoom` 0.82).
+- **Navegación horizontal**: pasos y testimonios se cambian deslizando el dedo y con flechas al alcance.
+  El siguiente elemento asoma por el borde para indicar que se puede deslizar.
+- **Tablas**: caben completas en el ancho de la pantalla, sin desplazamiento lateral. Celdas con icono,
+  el texto queda para lectores de pantalla y hay una leyenda debajo.
+- **Nada se desborda**: ninguna página se desplaza de lado. Los botones y las cifras grandes se
+  ajustan al ancho.
+
+## 10. Voz y contenido
+
+- **Tono**: cercano y profesional, como un colega que conoce el taller. Frases cortas y concretas.
+- **Trato**: tú.
+- **Idioma y formatos**: español de Colombia.
+  - Fechas como "30 oct 2026".
+  - Pesos colombianos con punto de miles: "$ 450.000".
+- **Vocabulario del taller**: carro, orden, elevador, repuestos, quincena, placa, cotización.
+- **Beneficio antes que función**: "Sabes en qué va cada carro sin bajar al taller", no "Módulo de
+  seguimiento de órdenes".
+- **Sin cifras inventadas**: solo compromisos que el equipo cumple hoy.
+- **Botones**: verbo + objeto, cortos: "Registrar vehículo", "Crear cotización", "Guardar cambios",
+  "Ver más".
+- **Errores**: claros y sin culpar: "No pudimos guardar la cotización. Inténtalo de nuevo."
 - **Estados vacíos**: con una acción: "Aún no hay vehículos registrados. Registra el primero."
 
-## 10. Datos, backend y autenticación
+## 11. Accesibilidad
 
-- **URL de la API**: http://localhost:8080 (Spring Boot REST, en `server/`). Colección Postman en `MecaFix_Postman_Collection.json`.
-- **Entidades principales**: usuario, cliente, vehículo, mecánico, servicio, categoría, producto, cotización (con detalle de servicios y productos), orden de servicio, tarea, pago.
-- **Autenticación**: email + contraseña (backend existente)
-- **Roles**: ADMIN (operación diaria) y OWNER (todo lo de admin + finanzas y estadísticas)
-- **Integraciones externas** (producto): agentes de IA, WhatsApp, facturación electrónica DIAN. Formulario de demo → `POST /api/v1/demo-requests` (pendiente en backend; mock MSW).
-
-## 11. SEO y compartir
-
-- **Título de la pestaña**: MecaFix
-- **Imagen para compartir en redes (OG)** (ruta):
-- **Palabras clave**: taller mecánico, software para talleres, gestión de taller, Medellín, órdenes de servicio, cotizaciones
-
-## 12. Calidad y extras
-
-- **Prioridad de dispositivo**: ambos (el panel se usa en escritorio; la landing debe ser impecable en móvil)
-- **Accesibilidad**: AA estándar
-- **Extras a instalar**: ninguno por ahora
-
-## 13. Notas libres
-
-- Proyecto de portafolio: la arquitectura y cada detalle deben estar cuidados.
-- El frontend vive en `frontend/`. `server/docker-compose.yml` hace build de `../frontend` y expone el puerto 5173. No se toca nada del backend (`server/`, `db/`).
+- Contraste AA en cada par de color y foco siempre visible: contorno rojo con separación de 4px en
+  las acciones de marketing.
+- HTML semántico, títulos en orden y secciones con `aria-labelledby`.
+- Botones de solo icono con `aria-label`.
+- Carruseles con región y anuncio del elemento activo.
+- Se respeta el movimiento reducido en todo.

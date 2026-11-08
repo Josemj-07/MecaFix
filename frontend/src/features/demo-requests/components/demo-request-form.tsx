@@ -49,7 +49,7 @@ export const DemoRequestForm = () => {
   }
 
   return (
-    <div className="bg-card p-6 text-card-foreground sm:p-8">
+    <div className="bg-card p-5 text-card-foreground sm:p-8">
       <Heading level="h3" className="mb-1 text-xl">
         Agenda tu demo gratis
       </Heading>
@@ -59,7 +59,7 @@ export const DemoRequestForm = () => {
       <Form
         schema={createDemoRequestInputSchema}
         onSubmit={(values) => demoRequest.mutate({ data: values })}
-        className="grid gap-5 space-y-0 sm:grid-cols-2"
+        className="grid grid-cols-1 gap-4 space-y-0 sm:grid-cols-2 sm:gap-5"
       >
         {({ register, formState }) => (
           <>
@@ -96,13 +96,13 @@ export const DemoRequestForm = () => {
                 size="lg"
                 disabled={demoRequest.isPending}
                 aria-busy={demoRequest.isPending || undefined}
-                className="justify-between"
+                className="justify-between max-sm:w-full"
               >
                 <span className="flex items-center gap-2">
                   {demoRequest.isPending && (
                     <Spinner size="sm" className="text-current" />
                   )}
-                  Agendar mi demo gratis
+                  Agendar mi demo
                 </span>
               </CtaButton>
               <Text variant="caption">

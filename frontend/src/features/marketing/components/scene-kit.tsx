@@ -4,15 +4,12 @@ import * as React from 'react';
 import { useInView } from '@/hooks/use-in-view';
 import { cn } from '@/utils/cn';
 
+import { at, pressHalf } from '../utils/scene-timing';
+
 // Building blocks for the product scenes of the marketing pages. A scene is
 // a screen of the product whose pieces enter one after another (a few
 // seconds, like a short video) and then rest, fully readable. Nothing is
 // tied to the scroll position.
-
-// Animation delay for a piece of a scene.
-export const at = (ms: number): React.CSSProperties => ({
-  animationDelay: `${ms}ms`,
-});
 
 // Plays the animations inside it when it scrolls into view. Until then they
 // wait paused on their first frame. With `loop` (ms) the scene starts over
@@ -78,6 +75,23 @@ export const SceneCursor = ({ from, to, delay }: CursorProps) => (
     }
   >
     <MousePointer2 className="size-5 fill-foreground text-card drop-shadow-sm" />
+  </span>
+);
+
+// Control that presses down when the scene cursor taps it. Pass the moment
+// of the tap (`tapAt(cursorDelay)`); the press is deepest right then.
+export const ScenePress = ({
+  tap,
+  children,
+}: {
+  tap: number;
+  children: React.ReactNode;
+}) => (
+  <span
+    className="inline-flex motion-safe:animate-press"
+    style={at(tap - pressHalf)}
+  >
+    {children}
   </span>
 );
 
